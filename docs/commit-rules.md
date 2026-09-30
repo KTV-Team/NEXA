@@ -33,16 +33,33 @@ Refs: #123
 Format:
 
 ```text
-<type>/<short-description>
+<category>/<area>/<short-description>
 ```
 
-- Use the same types as commits.
+- `category`: `feature`, `fix`, `docs`, `refactor`, or `chore`.
+- `area`: `web`, `mobile`, or `api`.
 - Use lowercase kebab-case.
 - Keep it short and specific.
 
-Example: `feat/login-retry`
+Examples:
 
-## 3. Merge request
+```text
+feature/web/login-screen
+feature/mobile/login-screen
+feature/api/login-endpoint
+```
+
+## 3. Commits by area
+
+Use the affected area as the commit scope. Keep each commit focused on one logical change.
+
+```text
+feat(mobile): add login screen
+feat(api): add login endpoint
+test(api): add login tests
+```
+
+## 4. Merge request
 
 1. Create a branch from `main`.
 2. Push only that branch.
