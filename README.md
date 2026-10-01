@@ -12,7 +12,7 @@ A scalable monorepo built with **Turborepo**, **pnpm workspaces**, and **TypeScr
 | `packages/types` | Shared TypeScript types |
 | `packages/api-client` | Shared fetch-based API client |
 | `packages/validation` | Shared Zod validation schemas |
-| `packages/design-tokens` | Shared platform-agnostic design tokens |
+| `packages/design-tokens` | Shared platform-agnostic design tokens (the [`DESIGN.md`](./DESIGN.md) system) |
 
 ## Repository structure
 
@@ -129,22 +129,38 @@ if (!result.success) {
 
 ### `@nexa/design-tokens`
 
-Platform-agnostic design primitives.
+The single source of truth for the interface described in [`DESIGN.md`](./DESIGN.md): cream canvas,
+saturated feature cards, rounded display type, no heavy shadows. Token names mirror the design doc,
+so a `{colors.brand-pink}` reference resolves to `colors['brand-pink']` in code.
 
 ```ts
-import { colors, spacing, fontSize, borderRadius } from '@nexa/design-tokens';
+import {
+  colors,
+  typography,
+  rounded,
+  spacing,
+  mobileTypography,
+  componentStyle,
+} from '@nexa/design-tokens';
 
-// Web (inline styles / CSS-in-JS)
-const style = {
-  color: colors.primary[500],
-  padding: spacing[4],
-};
+// Web — component recipes resolve to ready-to-spread style objects
+const button = componentStyle('button-primary');
+const heading = { ...typography['display-lg'], color: colors.ink };
 
-// React Native (StyleSheet)
+// React Native — typography resolves to StyleSheet values (line-height in points)
 const styles = StyleSheet.create({
-  text: { color: colors.primary[500], fontSize: fontSize.base },
+  title: { ...mobileTypography('title-md'), color: colors.ink },
+  card: {
+    backgroundColor: colors['surface-card'],
+    borderRadius: rounded.lg,
+    padding: spacing.lg,
+  },
 });
 ```
+
+Token groups: `colors`, `typography`, `fontFamily` / `fontStacks`, `rounded`, `spacing`, `layout`,
+`breakpoints`, `shadows`, `elevation`, `components` — plus `cssVariables` for plain-CSS consumers.
+The web app mirrors the same values as CSS custom properties in `apps/web/src/app/globals.css`.
 
 ## Turborepo task graph
 

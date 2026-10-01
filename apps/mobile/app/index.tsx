@@ -7,7 +7,12 @@ import {
   Pressable,
   ScrollView,
 } from 'react-native';
-import { colors, spacing, fontSize, borderRadius } from '@nexa/design-tokens';
+import {
+  colors,
+  mobileTypography,
+  rounded,
+  spacing,
+} from '@nexa/design-tokens';
 import { createApiClient } from '@nexa/api-client';
 import type { HealthStatus } from '@nexa/types';
 
@@ -38,35 +43,51 @@ export default function HomeScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const isOk = health?.status === 'ok';
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>NEXA Mobile</Text>
+      <View style={styles.badge}>
+        <Text style={styles.badgeText}>Monorepo starter</Text>
+      </View>
+
+      <Text style={styles.title}>NEXA</Text>
       <Text style={styles.subtitle}>Expo + React Native + Turborepo</Text>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>API Status</Text>
+        <View style={styles.cardHeader}>
+          <Text style={styles.cardTitle}>API Status</Text>
+          <View style={styles.badge}>
+            <Text style={[styles.badgeText, { color: isOk ? colors.success : colors.error }]}>
+              {isOk ? 'Live' : 'Offline'}
+            </Text>
+          </View>
+        </View>
 
-        {loading && <ActivityIndicator color={colors.primary[500]} style={styles.loader} />}
+        {loading && <ActivityIndicator color={colors.primary} style={styles.loader} />}
 
         {!loading && health && (
           <View style={styles.statusContainer}>
             <View style={styles.row}>
-              <Text style={styles.label}>Status: </Text>
+              <Text style={styles.label}>Status</Text>
               <Text
                 style={[
                   styles.value,
-                  { color: health.status === 'ok' ? colors.success.main : colors.error.main },
+                  {
+                    color: isOk ? colors.success : colors.error,
+                    fontWeight: '600',
+                  },
                 ]}
               >
-                {health.status === 'ok' ? '✓ OK' : '✗ Error'}
+                {health.status}
               </Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Version: </Text>
+              <Text style={styles.label}>Version</Text>
               <Text style={styles.value}>{health.version}</Text>
             </View>
             <View style={styles.row}>
-              <Text style={styles.label}>Checked: </Text>
+              <Text style={styles.label}>Checked</Text>
               <Text style={styles.value}>
                 {new Date(health.timestamp).toLocaleTimeString()}
               </Text>
@@ -76,7 +97,7 @@ export default function HomeScreen() {
 
         {!loading && error && (
           <Text style={styles.errorText}>
-            ⚠ Could not reach API{'\n'}
+            API not reachable{'\n'}
             <Text style={styles.errorHint}>Run `pnpm dev` to start the API server</Text>
           </Text>
         )}
@@ -89,90 +110,109 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Refresh</Text>
         </Pressable>
       </View>
+
+      <Text style={styles.footnote}>GET http://localhost:4000/api/v1/health</Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  // Cream canvas floor — non-negotiable per DESIGN.md.
   container: {
     flexGrow: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: spacing[6],
-    backgroundColor: colors.gray[50],
-    gap: spacing[4],
+    padding: spacing.lg,
+    backgroundColor: colors.canvas,
+    gap: spacing.md,
+  },
+  badge: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors['surface-card'],
+    borderRadius: rounded.pill,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+  },
+  badgeText: {
+    ...mobileTypography('caption-uppercase'),
+    color: colors.ink,
   },
   title: {
-    fontSize: fontSize['3xl'],
-    fontWeight: '700',
-    color: colors.primary[600],
+    ...mobileTypography('display-sm'),
+    color: colors.ink,
   },
   subtitle: {
-    fontSize: fontSize.base,
-    color: colors.gray[500],
-    textAlign: 'center',
+    ...mobileTypography('body-md'),
+    color: colors.body,
   },
+  // {component.product-mockup-card} — canvas fill, hairline border, rounded.lg.
   card: {
-    width: '100%',
-    backgroundColor: colors.white,
-    borderRadius: borderRadius.xl,
-    padding: spacing[5],
-    shadowColor: colors.black,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
-    gap: spacing[3],
+    marginTop: spacing.sm,
+    backgroundColor: colors.canvas,
+    borderWidth: 1,
+    borderColor: colors.hairline,
+    borderRadius: rounded.lg,
+    padding: spacing.lg,
+    gap: spacing.md,
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
   },
   cardTitle: {
-    fontSize: fontSize.lg,
-    fontWeight: '600',
-    color: colors.gray[900],
-    marginBottom: spacing[1],
+    ...mobileTypography('title-md'),
+    color: colors.ink,
   },
   loader: {
-    marginVertical: spacing[4],
+    marginVertical: spacing.md,
   },
   statusContainer: {
-    gap: spacing[2],
+    gap: spacing.sm,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: spacing.sm,
   },
   label: {
-    fontSize: fontSize.sm,
-    color: colors.gray[500],
+    ...mobileTypography('body-sm'),
+    color: colors.muted,
   },
   value: {
-    fontSize: fontSize.sm,
-    color: colors.gray[900],
-    fontWeight: '500',
+    ...mobileTypography('body-sm'),
+    color: colors.ink,
   },
   errorText: {
-    color: colors.warning.dark,
-    fontSize: fontSize.sm,
-    lineHeight: 20,
+    ...mobileTypography('body-sm'),
+    color: colors.warning,
   },
   errorHint: {
-    color: colors.gray[500],
-    fontStyle: 'italic',
+    ...mobileTypography('caption'),
+    color: colors.muted,
   },
+  // {component.button-primary} — 44px tall, rounded.md, ink fill.
   button: {
-    backgroundColor: colors.primary[500],
-    borderRadius: borderRadius.lg,
-    paddingVertical: spacing[3],
-    paddingHorizontal: spacing[5],
+    minHeight: 44,
     alignItems: 'center',
-    marginTop: spacing[2],
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: rounded.md,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.sm,
+    marginTop: spacing.xs,
   },
+  // {component.button-primary-active}
   buttonPressed: {
-    backgroundColor: colors.primary[600],
-    opacity: 0.9,
+    backgroundColor: colors['primary-active'],
   },
   buttonText: {
-    color: colors.white,
-    fontWeight: '600',
-    fontSize: fontSize.base,
+    ...mobileTypography('button'),
+    color: colors['on-primary'],
+  },
+  footnote: {
+    ...mobileTypography('caption'),
+    color: colors['muted-soft'],
   },
 });
