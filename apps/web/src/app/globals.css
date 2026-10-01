@@ -1,0 +1,189 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   NEXA global styles
+   Mirrors /DESIGN.md (“Clay-design-analysis”) and @nexa/design-tokens.
+   Names match the token groups: --color-*, --space-*, --radius-*, --text-*,
+   --font-*, --shadow-*.
+
+   System contracts encoded here:
+     · Cream canvas floor — no cool gray, no dark-mode inversion.
+     · Inter for running text/UI; Plain Black (→ Inter 500 fallback) for display.
+     · No heavy shadows — depth comes from saturated color on cream.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Colors — Primary */
+  --color-primary: #0a0a0a;
+  --color-primary-active: #1f1f1f;
+  --color-primary-disabled: #e5e5e5;
+
+  /* Colors — Text */
+  --color-ink: #0a0a0a;
+  --color-body-strong: #1a1a1a;
+  --color-body: #3a3a3a;
+  --color-muted: #6a6a6a;
+  --color-muted-soft: #9a9a9a;
+
+  /* Colors — Hairlines */
+  --color-hairline: #e5e5e5;
+  --color-hairline-soft: #f0f0f0;
+
+  /* Colors — Surfaces (cream throughout) */
+  --color-canvas: #fffaf0;
+  --color-surface-soft: #faf5e8;
+  --color-surface-card: #f5f0e0;
+  --color-surface-strong: #ebe6d6;
+  --color-surface-dark: #0a1a1a;
+  --color-surface-dark-elevated: #1a2a2a;
+
+  /* Colors — On-color text */
+  --color-on-primary: #ffffff;
+  --color-on-dark: #ffffff;
+  --color-on-dark-soft: #a0a0a0;
+
+  /* Colors — Brand */
+  --color-brand-pink: #ff4d8b;
+  --color-brand-teal: #1a3a3a;
+  --color-brand-lavender: #b8a4ed;
+  --color-brand-peach: #ffb084;
+  --color-brand-ochre: #e8b94a;
+  --color-brand-mint: #a4d4c5;
+  --color-brand-coral: #ff6b5a;
+
+  /* Colors — Semantic */
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  /* Colors — Base */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+
+  /* Spacing — base unit 4px */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 96px;
+
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 9999px;
+  --radius-full: 9999px;
+
+  /* Typography — sizes (families in --font-*) */
+  --text-display-xl-size: 72px;
+  --text-display-lg-size: 56px;
+  --text-display-md-size: 40px;
+  --text-display-sm-size: 32px;
+  --text-title-lg-size: 24px;
+  --text-title-md-size: 18px;
+  --text-title-sm-size: 16px;
+  --text-body-md-size: 16px;
+  --text-body-sm-size: 14px;
+  --text-caption-size: 13px;
+  --text-caption-uppercase-size: 12px;
+  --text-button-size: 14px;
+  --text-nav-link-size: 14px;
+
+  /* Typography — families. Plain Black is licensed to Clay and unavailable;
+     the browser falls through to Inter at weight 500 (DESIGN.md substitute). */
+  --font-display: 'Plain Black', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    sans-serif;
+  --font-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
+
+  /* Elevation — faint only */
+  --shadow-none: none;
+  --shadow-subtle: 0 1px 2px rgba(10, 10, 10, 0.06);
+  --shadow-hover: 0 4px 12px -2px rgba(10, 10, 10, 0.08);
+
+  /* Layout */
+  --layout-max-width: 1280px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-body);
+  font-family: var(--font-sans);
+  font-size: var(--text-body-md-size);
+  font-weight: 400;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Display voice: Plain Black 500 → Inter 500 with negative letter-spacing. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-ink);
+  font-weight: 500;
+}
+
+/* Inline body links — ink with underline ({component.text-link}). */
+a {
+  color: var(--color-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: var(--font-mono);
+}
+
+code {
+  background-color: var(--color-surface-card);
+  border-radius: var(--radius-xs);
+  padding: 2px 6px;
+  font-size: var(--text-body-sm-size);
+}
+
+/* Keyboard accessibility only — the system encodes no hover styling. */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* Layout helpers — max content width and section rhythm ({spacing.section}). */
+.nx-container {
+  width: 100%;
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-lg);
+}
+
+.nx-section {
+  padding-block: var(--space-section);
+}
+
+@media (max-width: 768px) {
+  .nx-section {
+    padding-block: var(--space-xxl);
+  }
+}

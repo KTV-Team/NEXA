@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "NEXA Mobile",
+    "slug": "nexa-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "nexa",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nexa.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ff4d8b"
+      },
+      "package": "com.nexa.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
