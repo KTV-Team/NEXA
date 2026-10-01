@@ -1,0 +1,33 @@
+{
+  "name": "@nexa/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "build": "expo export",
+    "lint": "expo lint",
+    "typecheck": "tsc --noEmit",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "clean": "rm -rf dist .expo"
+  },
+  "dependencies": {
+    "@nexa/api-client": "workspace:*",
+    "@nexa/design-tokens": "workspace:*",
+    "@nexa/types": "workspace:*",
+    "@nexa/validation": "workspace:*",
+    "expo": "~53.0.0",
+    "expo-router": "~5.0.0",
+    "expo-status-bar": "~2.2.0",
+    "react": "^19.0.0",
+    "react-native": "0.79.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "typescript": "^5.7.2"
+  }
+}
