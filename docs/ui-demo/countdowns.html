@@ -1,0 +1,24 @@
+<!doctype html>
+<!--
+  Web feature screen · F6 countdowns.
+  Composition: KPI row → type filter chips → the three most urgent countdowns as
+  saturated feature cards with a live d/h/m/s readout, the rest as plain cards,
+  then the past-due group. One 1s interval created at page init updates only the
+  [data-cd-days] / [data-cd-clock] nodes, so a re-render never stacks timers.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Countdowns</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="countdowns">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/countdowns.js"></script>
+  </body>
+</html>

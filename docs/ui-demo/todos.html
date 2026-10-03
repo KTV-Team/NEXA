@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  Web feature screen · F5 todo template builder.
+  Two panes: the template list on the left, the builder on the right. The builder
+  edits a local draft (reorder with HTML5 drag-and-drop or the arrow fallback,
+  toggle the day-of-week pattern, rename tasks) and only writes back to
+  state.data.templates on Save. "Apply to dates" computes the recurrence, creates
+  TodoSchedule rows in state.data.todos, and lists them at the bottom.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Todo templates</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="todos">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/todos.js"></script>
+  </body>
+</html>

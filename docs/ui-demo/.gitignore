@@ -1,0 +1,3 @@
+# Generated artefacts — recreate with `node tools/cdp-check.mjs`.
+# The screenshots are a review aid, not source; regenerating them is one command.
+.shots/

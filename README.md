@@ -71,6 +71,34 @@ This starts:
 | `pnpm test` | Run all tests |
 | `pnpm format` | Format all files with Prettier |
 
+## Documentation
+
+| Document | Covers |
+|---|---|
+| [`INSTRUCTIONS.md`](./INSTRUCTIONS.md) | Feature roadmap (F1–F6), data models, API endpoints, testing strategy |
+| [`DESIGN.md`](./DESIGN.md) | The Clay-derived design system behind `@nexa/design-tokens` |
+| [`docs/ui-demo/`](./docs/ui-demo/README.md) | **UI/UX prototype** — clickable HTML screens for every feature on both surfaces, the review artefact for the interface freeze |
+| [`docs/shared-code.md`](./docs/shared-code.md) | `@nexa/utils` — what shared runtime code exists, what belongs in it, what does not |
+| [`docs/coding-rules.md`](./docs/coding-rules.md) | ESLint configuration, styling rules, naming, and when shared code is **required** |
+
+### UI/UX prototype
+
+The interface is prototyped end-to-end before implementation:
+
+```bash
+# open the gallery (no server, no build step)
+start docs/ui-demo/index.html
+
+# re-render every screen and check for console errors / horizontal overflow
+node docs/ui-demo/tools/cdp-check.mjs
+node docs/ui-demo/tools/check-links.mjs
+```
+
+Screenshots land in `docs/ui-demo/.shots/`. Feature coverage and the
+prototype → production mapping are documented in
+[`docs/ui-demo/README.md`](./docs/ui-demo/README.md); the per-screen contract is
+[`docs/ui-demo/BUILD-SPEC.md`](./docs/ui-demo/BUILD-SPEC.md).
+
 ### Running a single app
 
 ```bash

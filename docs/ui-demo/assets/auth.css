@@ -1,0 +1,290 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   NEXA UI demo — auth surface
+   Sign in, sign up, password reset, and OTP verification.
+
+   Layout mirrors DESIGN.md's hero band: a 7/5 split on the cream canvas with
+   the form on the left and a saturated illustration card on the right (teal on
+   sign in, lavender on sign up, ochre on reset, peach on verification — never
+   the same surface twice in a row). Below 900px the illustration card is
+   dropped and the form takes the full viewport, so the same markup also serves
+   the 430px mobile capture.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+body.auth {
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+}
+
+.auth-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--space-xxl);
+  align-items: center;
+  max-width: 1120px;
+  margin-inline: auto;
+  padding: var(--space-xxl) var(--space-lg);
+  min-height: 100vh;
+}
+
+.auth-panel {
+  width: 100%;
+  max-width: 440px;
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  text-decoration: none;
+}
+
+.auth-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+/* Inline icon + label rows inside buttons and text links stay on one baseline. */
+.auth-panel .link-btn,
+.auth-panel .btn,
+.auth-panel .t-caption > .link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xxs);
+}
+.auth-panel .btn svg,
+.auth-panel .link-btn svg {
+  flex: none;
+}
+.auth-panel .auth-foot a {
+  color: var(--color-ink);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-muted);
+  font-size: var(--text-caption-size);
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-hairline);
+}
+
+.auth-alt {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.auth-foot {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/* Password strength meter — fills with the semantic scale as the score rises. */
+.strength {
+  display: flex;
+  gap: 4px;
+}
+.strength span {
+  flex: 1;
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-strong);
+}
+.strength[data-score='1'] span:nth-child(-n + 1) {
+  background-color: var(--color-error);
+}
+.strength[data-score='2'] span:nth-child(-n + 2) {
+  background-color: var(--color-warning);
+}
+.strength[data-score='3'] span:nth-child(-n + 3) {
+  background-color: var(--color-success);
+}
+.strength[data-score='4'] span:nth-child(-n + 4) {
+  background-color: var(--color-success);
+}
+
+/* OTP entry: one box per digit, sized for thumbs.
+   Grid with `minmax(0, 1fr)` columns so the row can never contribute a
+   min-content width larger than the panel — six inputs side by side otherwise
+   push the whole auth shell wider than a 390–430px viewport. */
+.otp-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-xs);
+}
+.otp-box {
+  width: 100%;
+  min-width: 0;
+  height: 60px;
+  padding: 0;
+  text-align: center;
+  font-size: var(--text-title-lg-size);
+  font-weight: 600;
+  color: var(--color-ink);
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  outline: none;
+  font-variant-numeric: tabular-nums;
+  appearance: none;
+}
+.otp-box:focus {
+  border-color: var(--color-ink);
+}
+.otp-box[data-filled='true'] {
+  background-color: var(--color-surface-card);
+  border-color: var(--color-ink);
+}
+
+/* Right-hand illustration card — saturated surface, product fragment inside. */
+.auth-art {
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 520px;
+}
+.auth-art-teal {
+  background-color: var(--color-brand-teal);
+  color: var(--color-on-dark);
+}
+.auth-art-lavender {
+  background-color: var(--color-brand-lavender);
+  color: var(--color-ink);
+}
+.auth-art-ochre {
+  background-color: var(--color-brand-ochre);
+  color: var(--color-ink);
+}
+.auth-art-peach {
+  background-color: var(--color-brand-peach);
+  color: var(--color-ink);
+}
+.auth-art h2 {
+  color: inherit;
+}
+.auth-art .frag {
+  background-color: var(--tint-on-dark);
+}
+.auth-art-teal .frag {
+  background-color: var(--tint-on-dark-soft);
+  color: var(--color-on-dark);
+}
+.auth-art :is(.auth-art-lavender, .auth-art-ochre, .auth-art-peach) .frag {
+  background-color: var(--tint-on-light-strong);
+  color: var(--color-ink);
+}
+
+.auth-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: auto;
+}
+.auth-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  font-size: var(--text-body-sm-size);
+}
+.auth-list-item svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 2px;
+}
+
+/* Success / verification notice */
+.auth-note {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-body-sm-size);
+  background-color: var(--color-surface-card);
+  color: var(--color-ink);
+}
+.auth-note svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 2px;
+}
+.auth-note-error {
+  background-color: var(--tint-error);
+  color: var(--color-error-strong);
+}
+.auth-note-success {
+  background-color: var(--tint-success);
+  color: var(--color-success-strong);
+}
+
+/* Captcha-less "trusted device" row used on verification. */
+.auth-device {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 900px) {
+  .auth-shell {
+    grid-template-columns: 1fr;
+    padding: var(--space-lg) var(--space-md) var(--space-xxl);
+    align-items: start;
+    min-height: 0;
+  }
+  .auth-art {
+    display: none;
+  }
+  .auth-panel {
+    max-width: 480px;
+    padding-top: var(--space-md);
+  }
+}
+
+@media (max-width: 430px) {
+  .auth-shell {
+    padding: var(--space-md) var(--space-md) var(--space-xl);
+  }
+  .otp-box {
+    height: 52px;
+    font-size: var(--text-title-md-size);
+  }
+}

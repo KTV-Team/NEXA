@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  Web feature screen · F4 calendar.
+  Composition: view switcher (month / week / day) + period stepper → shared
+  NEXA.calendarMonth / calendarWeek / timelineDay renderers beside a selected-day
+  agenda and the entry-type filter → next-seven-days agenda and the holiday strip.
+  Creating an entry appends to NEXA.state.data.calendar and re-renders, which is
+  the same shape POST /calendar/events will return.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Calendar</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="calendar">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/calendar.js"></script>
+  </body>
+</html>

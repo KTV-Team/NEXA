@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  F2 · Event detail — mobile (owner: mobile A).
+  Reads ?id=, falls back to the first seeded event, and shows an empty state for
+  an unknown id. Composition: saturated feature-card hero → RSVP segmented
+  control → attendance stats → per-person response list → secondary actions.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NEXA · Event detail</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body class="mobile" data-page="event-detail">
+    <template id="page-template">
+      <div data-slot="shell"></div>
+    </template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/event-detail.js"></script>
+  </body>
+</html>

@@ -1,0 +1,385 @@
+/* Gallery + reference pages (index.html, styleguide.html).
+   Uses the same tokens as every other surface; adds only the device frames and
+   documentation layout that DESIGN.md does not specify. */
+
+body.gallery,
+body.styleguide {
+  background-color: var(--color-canvas);
+  min-height: 100vh;
+}
+
+.doc-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: var(--layout-topnav);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: 0 var(--space-lg);
+  background-color: var(--color-canvas);
+  border-bottom: 1px solid var(--color-hairline-soft);
+}
+.doc-nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.doc-nav-links a {
+  font-size: var(--text-nav-link-size);
+  font-weight: 500;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.doc-nav-links a:hover {
+  text-decoration: underline;
+}
+/* Button-styled links keep the button recipe's own colours — without this the
+   `.doc-nav-links a` ink colour wins on specificity and the primary button
+   renders near-black text on a near-black fill. */
+.doc-nav-links a.btn,
+.doc-nav-links a.btn:hover {
+  text-decoration: none;
+}
+.doc-nav-links a.btn-primary {
+  color: var(--color-on-primary);
+}
+.doc-nav-links a.btn-secondary {
+  color: var(--color-ink);
+}
+
+.doc-hero {
+  padding: var(--space-xxl) 0 var(--space-xl);
+}
+.doc-hero h1 {
+  max-width: 20ch;
+}
+.doc-hero p {
+  max-width: 62ch;
+  margin-top: var(--space-md);
+}
+
+.doc-stats {
+  display: flex;
+  gap: var(--space-xl);
+  flex-wrap: wrap;
+  margin-top: var(--space-xl);
+}
+.doc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.doc-stat strong {
+  font-family: var(--font-display);
+  font-size: var(--text-display-sm-size);
+  font-weight: 500;
+  letter-spacing: -0.5px;
+  color: var(--color-ink);
+  line-height: 1;
+}
+.doc-stat span {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-muted);
+}
+
+.doc-section {
+  padding-block: var(--space-xl) var(--space-xxl);
+}
+.doc-section > .nx-container > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-hairline);
+}
+.doc-section h2 {
+  font-size: var(--text-title-lg-size);
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: var(--color-ink);
+}
+.doc-section .doc-note {
+  font-size: var(--text-body-sm-size);
+  color: var(--color-muted);
+  max-width: 60ch;
+}
+
+/* ── Screen cards ────────────────────────────────────────────────────────── */
+
+.screen-grid {
+  display: grid;
+  gap: var(--space-lg);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.screen-grid-mobile {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+.screen-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  text-decoration: none;
+  color: inherit;
+}
+.screen-frame {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-surface-soft);
+  overflow: hidden;
+  transition: border-color 140ms ease, transform 140ms ease;
+}
+.screen-card:hover .screen-frame {
+  border-color: var(--color-ink);
+}
+.screen-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* Placeholder shown when a screenshot has not been generated yet. */
+.shot-missing {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: var(--space-md);
+  text-align: center;
+  font-size: var(--text-caption-size);
+  color: var(--color-muted);
+  background-color: var(--color-surface-card);
+}
+.screen-frame-crop {
+  height: 300px;
+  overflow: hidden;
+}
+.screen-frame-crop img {
+  width: 100%;
+  height: auto;
+}
+
+/* Phone frame: the 430px capture inside a rounded bezel. */
+.screen-frame-phone {
+  padding: var(--space-xs);
+  background-color: var(--color-surface-card);
+  border-radius: var(--radius-xl);
+}
+.screen-frame-phone .screen-crop {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 300px;
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-canvas);
+}
+.screen-frame-phone .screen-crop img {
+  width: 100%;
+  height: auto;
+}
+
+/* Browser frame: the 1440px capture behind a chrome bar. */
+.screen-frame-browser {
+  padding: 0;
+  background-color: var(--color-canvas);
+}
+.browser-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 10px var(--space-sm);
+  background-color: var(--color-surface-soft);
+  border-bottom: 1px solid var(--color-hairline);
+}
+.browser-dots {
+  display: flex;
+  gap: 5px;
+}
+.browser-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: var(--color-surface-strong);
+}
+.browser-url {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-micro-size);
+  color: var(--color-muted);
+  background-color: var(--color-canvas);
+  border-radius: var(--radius-pill);
+  padding: 3px 12px;
+  border: 1px solid var(--color-hairline);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.screen-frame-browser .screen-crop {
+  height: 268px;
+  overflow: hidden;
+  background-color: var(--color-canvas);
+}
+.screen-frame-browser .screen-crop img {
+  width: 100%;
+  height: auto;
+}
+
+.screen-meta {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+.screen-meta .grow {
+  min-width: 0;
+}
+.screen-title {
+  font-size: var(--text-title-sm-size);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.screen-desc {
+  font-size: var(--text-caption-size);
+  color: var(--color-muted);
+  line-height: 1.5;
+}
+.screen-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.tag {
+  font-size: var(--text-micro-size);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: var(--radius-pill);
+  padding: 2px 8px;
+  background-color: var(--color-surface-card);
+  color: var(--color-body-strong);
+}
+.tag-feature {
+  background-color: var(--color-ink);
+  color: var(--color-on-primary);
+}
+
+/* ── Styleguide specific ─────────────────────────────────────────────────── */
+
+.swatch-grid {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+.swatch {
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-canvas);
+}
+.swatch-chip {
+  height: 64px;
+}
+.swatch-body {
+  padding: var(--space-xs) var(--space-sm) var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.swatch-name {
+  font-size: var(--text-caption-size);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.swatch-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro-size);
+  color: var(--color-muted);
+}
+
+.spec-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  padding: var(--space-sm) 0;
+  border-bottom: 1px solid var(--color-hairline-soft);
+  flex-wrap: wrap;
+}
+.spec-row:last-child {
+  border-bottom: 0;
+}
+.spec-key {
+  width: 132px;
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-mini-size);
+  color: var(--color-muted);
+}
+.spec-demo {
+  flex: 1;
+  min-width: 220px;
+}
+.spec-note {
+  font-size: var(--text-caption-size);
+  color: var(--color-muted);
+  width: 260px;
+}
+
+.token-table td code {
+  font-size: var(--text-mini-size);
+  background-color: var(--color-surface-soft);
+}
+
+.contract-list {
+  display: grid;
+  gap: var(--space-sm);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+}
+.contract {
+  display: flex;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  background-color: var(--color-canvas);
+}
+.contract svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 2px;
+}
+.contract-no svg {
+  color: var(--color-error);
+}
+.contract-yes svg {
+  color: var(--color-success);
+}
+
+.demo-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+  padding: var(--space-md);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-canvas);
+}
+
+@media (max-width: 768px) {
+  .doc-nav {
+    padding: 0 var(--space-md);
+  }
+  .doc-nav-links {
+    gap: var(--space-md);
+  }
+  .doc-nav-links a:nth-child(n + 3) {
+    display: none;
+  }
+  .spec-note {
+    width: 100%;
+  }
+}

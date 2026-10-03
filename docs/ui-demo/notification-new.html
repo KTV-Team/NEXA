@@ -1,0 +1,26 @@
+<!doctype html>
+<!--
+  F1 + F3 · New notification — mobile composer.
+  Three steps (content → card actions → recipients) over one draft object, with a
+  live notifCard preview and a success sheet on submit. Built on shellMobile with
+  the app-bar back arrow to the inbox and no bottom tab bar, because the composer
+  is a focused task rather than a destination.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NEXA · New notification</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body class="mobile" data-page="notification-new">
+    <template id="page-template">
+      <div data-slot="shell"></div>
+    </template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/notification-new.js"></script>
+  </body>
+</html>

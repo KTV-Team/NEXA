@@ -1,0 +1,24 @@
+<!doctype html>
+<!--
+  Web screen · account & workspace settings.
+  A vertical section nav switches five panels client-side (Profile, Notifications,
+  Calendar, Workspace, Danger zone). Every field writes into a local draft, the
+  Save / Cancel bar only appears while the draft differs from the saved snapshot,
+  and destructive actions go through confirmDialog.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Settings</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="settings">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/settings.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<!--
+  Web feature screen · F3 team roster.
+  Composition: member table (avatar, email, role, job title, reach) + a stats side
+  panel (members by role, most-targeted members, recent activity derived from the
+  seeded responses) + a targeting preview that mounts the real recipient picker
+  and prints the RecipientTarget payload the composers would POST.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Team</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="team">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/team.js"></script>
+  </body>
+</html>

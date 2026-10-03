@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  Web feature screen · F2 event management.
+  Composition: KPI row (upcoming / responses / attendance rate / awaiting reply)
+  → filter toolbar → full event table with an inline RSVP segmented control per
+  row → attendance panel with EventStats and the per-person response list. The
+  RSVP buttons are wired by the global handler in ui.js, so a response updates
+  the row, the panel, and the KPI tiles through NEXA.live.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Events</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="events">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/events.js"></script>
+  </body>
+</html>

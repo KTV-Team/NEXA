@@ -1,0 +1,25 @@
+<!doctype html>
+<!--
+  Prototype entry point — gallery of every screen.
+  Thumbnails are the PNGs written by tools/cdp-check.mjs into .shots/, framed as
+  phone or browser chrome. Everything links straight to the live HTML page, so
+  this doubles as the review index.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · UI/UX prototype</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+    <link rel="stylesheet" href="assets/gallery.css" />
+  </head>
+  <body class="gallery" data-page="index">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/screens.js"></script>
+    <script src="assets/gallery.js"></script>
+  </body>
+</html>

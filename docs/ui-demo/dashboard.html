@@ -1,0 +1,24 @@
+<!doctype html>
+<!--
+  Web reference screen · Dashboard overview.
+  Composition: hero band (cream, sticky topbar) → KPI row → live countdowns →
+  recent notifications → upcoming events → today's todos. Every card links into
+  the feature it summarises, which is the information architecture the real
+  Next.js dashboard will mirror.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Dashboard</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="dashboard">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/dashboard.js"></script>
+  </body>
+</html>

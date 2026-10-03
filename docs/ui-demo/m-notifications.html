@@ -1,0 +1,24 @@
+<!doctype html>
+<!--
+  F1 · Interactive notifications — recipient inbox (mobile reference screen).
+  This is the canonical mobile layout: shellMobile() + notifCard() rendered from
+  window.NEXA.state. Confirm / Snooze / Dismiss are handled globally in ui.js.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>NEXA · Inbox</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body class="mobile" data-page="m-notifications">
+    <template id="page-template">
+      <div data-slot="shell"></div>
+    </template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/m-notifications.js"></script>
+  </body>
+</html>

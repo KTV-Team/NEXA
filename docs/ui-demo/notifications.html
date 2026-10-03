@@ -1,0 +1,24 @@
+<!doctype html>
+<!--
+  Web · Notifications — F1 notification management.
+  Composition: KPI row → filter bar (pills + search + primary create) → dense
+  action table → detail panel for the selected row. Confirm / Snooze / Dismiss
+  are delegated to the global handler in ui.js; this page owns the filters, the
+  search query, and the selected row, and re-renders through NEXA.live.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NEXA · Notifications</title>
+    <link rel="stylesheet" href="assets/tokens.css" />
+    <link rel="stylesheet" href="assets/components.css" />
+  </head>
+  <body data-page="notifications">
+    <template id="page-template"><div data-slot="shell"></div></template>
+    <script src="assets/icons.js"></script>
+    <script src="assets/data.js"></script>
+    <script src="assets/ui.js"></script>
+    <script src="assets/notifications.js"></script>
+  </body>
+</html>
