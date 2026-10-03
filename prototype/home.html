@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEXA - Không gian làm việc</title>
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile-framework.css">
+  <style>
+    .workspace-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-xs) 0 var(--space-sm);
+    }
+
+    .workspace-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .workspace-avatar {
+      width: 32px;
+      height: 32px;
+      background: var(--color-primary);
+      color: var(--color-brand-yellow);
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+      margin: var(--space-md) 0;
+    }
+
+    .quick-action-card {
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-xl);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--color-ink);
+      transition: all 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-action-card:active {
+      transform: scale(0.97);
+      background-color: var(--color-surface);
+    }
+
+    .quick-action-card.featured-ai {
+      background: linear-gradient(135deg, var(--color-surface-pricing-featured) 0%, #ffffff 100%);
+      border: 1.5px solid var(--color-brand-blue);
+    }
+
+    .section-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: var(--space-lg) 0 var(--space-sm);
+    }
+
+    .section-title-row h2 {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--color-ink);
+      letter-spacing: -0.3px;
+    }
+
+    /* Board Card Component */
+    .board-card {
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: var(--space-md);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: var(--color-ink);
+      display: block;
+    }
+    .board-card:active {
+      transform: scale(0.98);
+      border-color: var(--color-brand-blue);
+    }
+
+    .board-card-thumb {
+      height: 120px;
+      background-color: var(--color-surface);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--color-hairline-soft);
+    }
+
+    /* Miniature mockup elements inside card thumbnail */
+    .mini-sticky {
+      position: absolute;
+      width: 54px;
+      height: 48px;
+      border-radius: 4px;
+      padding: 4px;
+      font-size: 7px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    .board-card-body {
+      padding: var(--space-md);
+    }
+
+    .board-card-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .board-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--color-slate);
+      margin-top: var(--space-xs);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="prototype-helper-pill">📱 Prototype Portal</a>
+
+  <div class="mobile-screen">
+    <!-- Status Bar -->
+    <div class="mobile-status-bar">
+      <span>9:41</span>
+      <div class="status-bar-notch"></div>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="app-header-left">
+        <div class="workspace-info" onclick="showToast('Chuyển Workspace: NEXA Design Team')">
+          <div class="workspace-avatar">N</div>
+          <div>
+            <div style="font-size: 14px; font-weight: 700; display:flex; align-items:center; gap:4px;">
+              NEXA Core Team
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div style="font-size: 11px; color: var(--color-slate);">14 thành viên</div>
+          </div>
+        </div>
+      </div>
+      <div class="app-header-right">
+        <a href="notifications.html" class="btn-icon" style="position:relative;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span style="position:absolute; top:8px; right:8px; width:7px; height:7px; background:var(--color-brand-blue); border-radius:50%;"></span>
+        </a>
+        <a href="profile.html" class="avatar avatar-online" style="background:#4262ff; width:34px; height:34px;">
+          A
+        </a>
+      </div>
+    </div>
+
+    <!-- Screen Body -->
+    <div class="screen-body screen-body-has-bottom-nav">
+      <!-- Search Bar -->
+      <div class="search-pill-container" style="margin-bottom: var(--space-md);">
+        <svg class="search-pill-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="search-pill" placeholder="Tìm kiếm bảng trắng, thẻ ý tưởng, tài liệu..." oninput="filterBoards(this.value)">
+      </div>
+
+      <!-- Quick Action Shortcuts -->
+      <div class="quick-actions-grid">
+        <div class="quick-action-card" onclick="openSheet('createBoardSheet')">
+          <div style="width:36px; height:36px; border-radius:var(--radius-full); background:var(--color-primary); color:#fff; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          </div>
+          <div>
+            <strong style="font-size:14px;">Bảng vẽ mới</strong>
+            <p style="font-size:11px; color:var(--color-slate); margin-top:2px;">Bắt đầu từ trang trắng</p>
+          </div>
+        </div>
+
+        <a href="ai-assistant.html" class="quick-action-card featured-ai">
+          <span class="badge badge-tag-purple" style="position:absolute; top:8px; right:8px; font-size:9px; padding:2px 6px;">AI PRO</span>
+          <div style="width:36px; height:36px; border-radius:var(--radius-full); background:var(--color-brand-blue); color:#fff; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <div>
+            <strong style="font-size:14px; color:var(--color-brand-blue);">AI Generator</strong>
+            <p style="font-size:11px; color:var(--color-slate); margin-top:2px;">Nhập prompt tạo sơ đồ</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Pill Filter Tabs -->
+      <div class="pill-tab-group" style="margin-bottom: var(--space-md);">
+        <button class="pill-tab active" onclick="filterTab('all', this)">Tất cả bảng</button>
+        <button class="pill-tab" onclick="filterTab('recent', this)">Gần đây</button>
+        <button class="pill-tab" onclick="filterTab('starred', this)">Đã gắn sao ⭐</button>
+        <button class="pill-tab" onclick="filterTab('shared', this)">Chia sẻ với tôi</button>
+      </div>
+
+      <!-- Section: Pinned Active Board -->
+      <div class="section-title-row">
+        <h2>Bảng đang cộng tác trực tiếp 🔥</h2>
+        <span class="badge badge-success">3 người online</span>
+      </div>
+
+      <!-- Featured Live Board -->
+      <a href="board-canvas.html" class="board-card" style="border: 1.5px solid var(--color-brand-yellow); background: #fffdf7;">
+        <div class="board-card-thumb" style="background: var(--color-yellow-light);">
+          <!-- Mini preview -->
+          <div class="mini-sticky" style="background:var(--color-brand-yellow); top:15px; left:25px;">Sprint 42 Goals</div>
+          <div class="mini-sticky" style="background:var(--color-brand-rose); top:45px; left:95px;">Mobile UX Draft</div>
+          <div class="mini-sticky" style="background:var(--color-brand-teal); top:20px; right:40px;">AI Integration</div>
+          <span class="badge badge-tag-yellow" style="position:absolute; bottom:8px; left:12px; font-size:10px;">🔴 LIVE CANVAS</span>
+        </div>
+        <div class="board-card-body">
+          <div class="board-card-title">
+            <span>Sprint 42 - Ideation & Retrospective</span>
+            <span>⭐</span>
+          </div>
+          <p style="font-size:13px; color:var(--color-slate); margin-bottom:8px;">Bảng thảo luận tính năng quý 4 và chốt prototype mobile.</p>
+          <div class="board-card-meta">
+            <div class="avatar-stack">
+              <div class="avatar" style="background:#4262ff;">A</div>
+              <div class="avatar" style="background:#0fbcb0;">B</div>
+              <div class="avatar" style="background:#ff9999;">S</div>
+              <div class="avatar" style="background:#1c1c1e; font-size:9px;">+3</div>
+            </div>
+            <span>Vừa sửa 2 phút trước</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Other Boards -->
+      <div class="section-title-row">
+        <h2>Bảng gần đây</h2>
+        <a href="templates.html" style="font-size:13px; color:var(--color-brand-blue); text-decoration:none; font-weight:600;">Xem mẫu →</a>
+      </div>
+
+      <!-- Board Item 2 -->
+      <a href="board-canvas.html" class="board-card">
+        <div class="board-card-thumb">
+          <div class="mini-sticky" style="background:var(--color-teal-light); top:30px; left:60px;">User Research</div>
+          <div class="mini-sticky" style="background:var(--color-brand-orange-light); top:25px; right:70px;">Personas</div>
+        </div>
+        <div class="board-card-body">
+          <div class="board-card-title">
+            <span>User Persona & Customer Journey</span>
+          </div>
+          <div class="board-card-meta">
+            <div class="avatar-stack">
+              <div class="avatar" style="background:#4262ff;">A</div>
+              <div class="avatar" style="background:#ff9999;">L</div>
+            </div>
+            <span>Hôm qua, 16:30</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Board Item 3 -->
+      <a href="board-canvas.html" class="board-card">
+        <div class="board-card-thumb" style="background:var(--color-surface-pricing-featured);">
+          <div class="mini-sticky" style="background:#b8a4ed; top:35px; left:80px; color:#fff;">NestJS API</div>
+          <div class="mini-sticky" style="background:var(--color-brand-teal); top:30px; right:80px;">Fastify Engine</div>
+        </div>
+        <div class="board-card-body">
+          <div class="board-card-title">
+            <span>NEXA Monorepo System Architecture</span>
+          </div>
+          <div class="board-card-meta">
+            <div class="avatar-stack">
+              <div class="avatar" style="background:#1c1c1e;">T</div>
+              <div class="avatar" style="background:#0fbcb0;">B</div>
+            </div>
+            <span>3 ngày trước</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Bottom Navigation Bar (Active: Home) -->
+    <div class="bottom-nav">
+      <a href="home.html" class="bottom-nav-item active">
+        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Trang chủ</span>
+      </a>
+      <a href="board-canvas.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        <span>Bảng vẽ</span>
+      </a>
+      <a href="templates.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Mẫu</span>
+      </a>
+      <a href="notifications.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="bottom-nav-badge"></span>
+        <span>Thông báo</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Cá nhân</span>
+      </a>
+    </div>
+
+    <!-- Create Board Bottom Sheet Modal -->
+    <div id="createBoardSheet" class="bottom-sheet">
+      <div class="sheet-handle"></div>
+      <h3 style="font-size:18px; font-weight:600; margin-bottom:var(--space-sm);">Tạo bảng vẽ mới</h3>
+      <p style="font-size:13px; color:var(--color-slate); margin-bottom:var(--space-md);">Chọn cách bạn muốn bắt đầu làm việc:</p>
+
+      <div style="display:flex; flex-direction:column; gap:var(--space-sm);">
+        <a href="board-canvas.html" class="card-base" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--color-ink);">
+          <div style="width:40px; height:40px; border-radius:var(--radius-md); background:var(--color-surface); display:flex; align-items:center; justify-content:center; font-size:20px;">📄</div>
+          <div>
+            <div style="font-weight:600; font-size:14px;">Bảng trắng trống</div>
+            <div style="font-size:12px; color:var(--color-slate);">Vẽ tự do, dán sticky note từ đầu</div>
+          </div>
+        </a>
+
+        <a href="ai-assistant.html" class="card-base" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--color-ink); border-color:var(--color-brand-blue); background:var(--color-surface-pricing-featured);">
+          <div style="width:40px; height:40px; border-radius:var(--radius-md); background:var(--color-brand-blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:18px;">✨</div>
+          <div>
+            <div style="font-weight:600; font-size:14px; color:var(--color-brand-blue);">Tạo tự động bằng AI</div>
+            <div style="font-size:12px; color:var(--color-slate);">Tạo sơ đồ hoặc sprint từ văn bản</div>
+          </div>
+        </a>
+
+        <a href="templates.html" class="card-base" style="display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--color-ink);">
+          <div style="width:40px; height:40px; border-radius:var(--radius-md); background:var(--color-surface); display:flex; align-items:center; justify-content:center; font-size:20px;">📚</div>
+          <div>
+            <div style="font-weight:600; font-size:14px;">Chọn từ thư viện mẫu</div>
+            <div style="font-size:12px; color:var(--color-slate);">Kanban, Sprint Retro, Mindmap</div>
+          </div>
+        </a>
+      </div>
+
+      <button class="btn btn-secondary" onclick="closeSheet('createBoardSheet')" style="width:100%; margin-top:var(--space-md);">Đóng</button>
+    </div>
+  </div>
+
+  <script src="js/mobile-app.js"></script>
+  <script>
+    function filterTab(tab, el) {
+      document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      showToast(`Đang lọc: ${el.innerText}`);
+    }
+
+    function filterBoards(query) {
+      if (!query) return;
+      console.log('Searching for:', query);
+    }
+  </script>
+</body>
+</html>

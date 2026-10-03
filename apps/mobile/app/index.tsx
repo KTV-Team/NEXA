@@ -57,8 +57,8 @@ export default function HomeScreen() {
       <View style={styles.card}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardTitle}>API Status</Text>
-          <View style={styles.badge}>
-            <Text style={[styles.badgeText, { color: isOk ? colors.success : colors.error }]}>
+          <View style={[styles.statusBadge, { backgroundColor: isOk ? colors['success-accent'] : colors['brand-red'] }]}>
+            <Text style={[styles.badgeText, { color: isOk ? colors['on-primary'] : colors['coral-dark'] }]}>
               {isOk ? 'Live' : 'Offline'}
             </Text>
           </View>
@@ -74,7 +74,7 @@ export default function HomeScreen() {
                 style={[
                   styles.value,
                   {
-                    color: isOk ? colors.success : colors.error,
+                    color: isOk ? colors['success-accent'] : colors['coral-dark'],
                     fontWeight: '600',
                   },
                 ]}
@@ -117,7 +117,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  // Cream canvas floor — non-negotiable per DESIGN.md.
+  // White canvas floor per DESIGN.md — Miro-style clean workspace.
   container: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -125,33 +125,40 @@ const styles = StyleSheet.create({
     backgroundColor: colors.canvas,
     gap: spacing.md,
   },
+  // {component.badge-tag-yellow} — yellow-tinted pill badge.
   badge: {
     alignSelf: 'flex-start',
-    backgroundColor: colors['surface-card'],
-    borderRadius: rounded.pill,
+    backgroundColor: colors['surface-yellow'],
+    borderRadius: rounded.full,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xxs,
+  },
+  statusBadge: {
+    alignSelf: 'flex-start',
+    borderRadius: rounded.full,
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xxs,
   },
   badgeText: {
-    ...mobileTypography('caption-uppercase'),
-    color: colors.ink,
+    ...mobileTypography('micro-uppercase'),
+    color: colors['yellow-dark'],
   },
   title: {
-    ...mobileTypography('display-sm'),
+    ...mobileTypography('heading-2'),
     color: colors.ink,
   },
   subtitle: {
-    ...mobileTypography('body-md'),
-    color: colors.body,
+    ...mobileTypography('subtitle'),
+    color: colors.slate,
   },
-  // {component.product-mockup-card} — canvas fill, hairline border, rounded.lg.
+  // {component.card-base} — canvas fill, hairline-soft border, rounded.xl.
   card: {
     marginTop: spacing.sm,
     backgroundColor: colors.canvas,
     borderWidth: 1,
-    borderColor: colors.hairline,
-    borderRadius: rounded.lg,
-    padding: spacing.lg,
+    borderColor: colors['hairline-soft'],
+    borderRadius: rounded.xl,
+    padding: spacing.xl,
     gap: spacing.md,
   },
   cardHeader: {
@@ -161,7 +168,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   cardTitle: {
-    ...mobileTypography('title-md'),
+    ...mobileTypography('heading-5'),
     color: colors.ink,
   },
   loader: {
@@ -186,33 +193,33 @@ const styles = StyleSheet.create({
   },
   errorText: {
     ...mobileTypography('body-sm'),
-    color: colors.warning,
+    color: colors.stone,
   },
   errorHint: {
     ...mobileTypography('caption'),
     color: colors.muted,
   },
-  // {component.button-primary} — 44px tall, rounded.md, ink fill.
+  // {component.button-primary} — black pill, 44px tall, {rounded.full} per DESIGN.md.
   button: {
     minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.primary,
-    borderRadius: rounded.md,
-    paddingHorizontal: spacing.xl,
+    borderRadius: rounded.full,
+    paddingHorizontal: spacing.xxl,
     paddingVertical: spacing.sm,
     marginTop: spacing.xs,
   },
-  // {component.button-primary-active}
+  // {component.button-primary-pressed} — lifts to charcoal.
   buttonPressed: {
-    backgroundColor: colors['primary-active'],
+    backgroundColor: colors.charcoal,
   },
   buttonText: {
-    ...mobileTypography('button'),
+    ...mobileTypography('button-md'),
     color: colors['on-primary'],
   },
   footnote: {
     ...mobileTypography('caption'),
-    color: colors['muted-soft'],
+    color: colors.stone,
   },
 });

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEXA - Live Mobile Whiteboard Canvas</title>
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile-framework.css">
+  <style>
+    /* Fullscreen canvas mode */
+    .canvas-screen-container {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      background-color: #fafbfc;
+    }
+
+    /* Grid background */
+    .canvas-board-viewport-outer {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      touch-action: none;
+      background-size: 24px 24px;
+      background-image: 
+        radial-gradient(circle, #d0d3dc 1px, transparent 1px);
+    }
+    .canvas-board-viewport-outer:active {
+      cursor: grabbing;
+    }
+
+    .canvas-viewport {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2000px;
+      height: 2000px;
+      transform-origin: 0 0;
+      transition: transform 0.05s ease-out;
+    }
+
+    /* Column Frames on Whiteboard */
+    .canvas-column-frame {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px dashed var(--color-hairline-strong);
+      border-radius: var(--radius-xl);
+      padding: var(--space-md);
+      box-shadow: 0 4px 16px rgba(5,0,56,0.03);
+    }
+
+    .frame-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Sticky notes inside canvas */
+    .sticky-note-card {
+      position: absolute;
+      width: 145px;
+      min-height: 120px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 12px rgba(5, 0, 56, 0.08);
+      font-size: 13px;
+      line-height: 1.4;
+      cursor: move;
+      user-select: none;
+      transition: box-shadow 0.15s ease, border 0.15s ease;
+      box-sizing: border-box;
+    }
+
+    .sticky-note-card.selected {
+      box-shadow: 0 0 0 2px var(--color-brand-blue), 0 8px 24px rgba(66, 98, 255, 0.25);
+    }
+
+    /* Simulated Collaborator Cursors */
+    .live-cursor {
+      position: absolute;
+      pointer-events: none;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: transform 0.1s linear;
+    }
+    .cursor-pointer-svg {
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    .cursor-tag {
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    /* Floating Canvas Toolbar (Dock) */
+    .canvas-floating-dock {
+      position: absolute;
+      bottom: calc(var(--space-md) + var(--safe-area-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-modal);
+      z-index: 80;
+    }
+
+    .tool-dock-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--color-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .tool-dock-btn:active, .tool-dock-btn.active {
+      background: var(--color-surface);
+      color: var(--color-brand-blue);
+    }
+
+    .tool-dock-btn.ai-btn {
+      background: var(--color-brand-blue);
+      color: #fff;
+      width: auto;
+      padding: 0 14px;
+      font-size: 12px;
+      font-weight: 600;
+      gap: 4px;
+    }
+
+    /* Canvas Zoom Controller */
+    .zoom-controls {
+      position: absolute;
+      top: 60px;
+      right: 14px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 70;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      background: transparent;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-ink);
+    }
+    .zoom-btn:active {
+      background: var(--color-surface);
+    }
+
+    /* Sticky Color Palette Picker Popover */
+    .color-picker-popover {
+      position: absolute;
+      bottom: calc(var(--space-md) + 64px + var(--safe-area-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-xl);
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-modal);
+      z-index: 85;
+    }
+    .color-picker-popover.open {
+      display: flex;
+    }
+
+    .color-dot-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="prototype-helper-pill">📱 Prototype Portal</a>
+
+  <div class="mobile-screen">
+    <!-- Status Bar -->
+    <div class="mobile-status-bar" style="background: rgba(255,255,255,0.9);">
+      <span>9:41</span>
+      <div class="status-bar-notch"></div>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- Canvas Header Bar -->
+    <div class="app-header" style="top:44px;">
+      <div class="app-header-left">
+        <a href="home.html" class="btn-icon" style="width:34px; height:34px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <div>
+          <div class="app-header-title" style="font-size:14px;">
+            Sprint 42 Ideation
+          </div>
+          <span style="font-size:10px; color:var(--color-success-accent); font-weight:600;">● Đã đồng bộ cloud</span>
+        </div>
+      </div>
+
+      <div class="app-header-right">
+        <!-- Live Collaborators -->
+        <div class="avatar-stack" style="margin-right:4px;">
+          <div class="avatar" style="background:#5b76fe; width:28px; height:28px; font-size:11px;" title="Alex">A</div>
+          <div class="avatar" style="background:#ff9999; width:28px; height:28px; font-size:11px;" title="Sarah">S</div>
+        </div>
+
+        <a href="board-share.html" class="btn btn-yellow" style="min-height:32px; padding:4px 12px; font-size:12px;">Chia sẻ</a>
+      </div>
+    </div>
+
+    <!-- Canvas Container -->
+    <div class="canvas-screen-container">
+      <div id="whiteboard" class="canvas-board-viewport-outer">
+        <div class="canvas-viewport">
+          <!-- Frame 1: KEEP -->
+          <div class="canvas-column-frame" style="left: 100px; top: 120px; width: 220px; height: 420px;">
+            <div class="frame-title">
+              <span>🌟 KEEP (Phát huy)</span>
+              <span class="badge badge-tag-yellow">3 thẻ</span>
+            </div>
+          </div>
+
+          <!-- Sticky Note 1 in KEEP -->
+          <div class="sticky-note-card sticky-note-yellow" style="left: 120px; top: 180px;">
+            <div style="font-size:10px; font-weight:700; color:var(--color-yellow-dark); margin-bottom:4px;">ALICE (LEAD)</div>
+            <div contenteditable="true" style="outline:none;">Daily Standup 10 phút rất tập trung và giải quyết vướng mắc nhanh.</div>
+            <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:10px; color:var(--color-yellow-dark);">
+              <span>👍 4 votes</span>
+              <span>10:15</span>
+            </div>
+          </div>
+
+          <!-- Sticky Note 2 in KEEP -->
+          <div class="sticky-note-card sticky-note-rose" style="left: 120px; top: 320px;">
+            <div style="font-size:10px; font-weight:700; color:var(--color-coral-dark); margin-bottom:4px;">SARAH (UX)</div>
+            <div contenteditable="true" style="outline:none;">Design Tokens chuẩn theo DESIGN.md giúp dev code cực kỳ mượt!</div>
+            <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:10px; color:var(--color-coral-dark);">
+              <span>❤️ 6 votes</span>
+              <span>10:20</span>
+            </div>
+          </div>
+
+          <!-- Frame 2: TRY / NEW IDEAS -->
+          <div class="canvas-column-frame" style="left: 360px; top: 120px; width: 240px; height: 420px;">
+            <div class="frame-title">
+              <span>💡 TRY / NEW IDEAS</span>
+              <span class="badge badge-tag-teal">2 thẻ</span>
+            </div>
+          </div>
+
+          <!-- Sticky Note 3 in TRY -->
+          <div class="sticky-note-card sticky-note-teal" style="left: 380px; top: 180px;">
+            <div style="font-size:10px; font-weight:700; color:var(--color-moss-dark); margin-bottom:4px;">BOB (DEV)</div>
+            <div contenteditable="true" style="outline:none;">Tích hợp AI workflow sinh nhánh Mindmap tự động cho màn hình Mobile.</div>
+            <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:10px; color:var(--color-moss-dark);">
+              <span>🔥 5 votes</span>
+              <span>10:25</span>
+            </div>
+          </div>
+
+          <!-- Sticky Note 4 in TRY -->
+          <div class="sticky-note-card sticky-note-coral" style="left: 380px; top: 320px;">
+            <div style="font-size:10px; font-weight:700; color:var(--color-coral-dark); margin-bottom:4px;">MINH (QA)</div>
+            <div contenteditable="true" style="outline:none;">Bổ sung dark mode & haptic feedback khi chạm kéo sticky notes trên app.</div>
+            <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:10px; color:var(--color-coral-dark);">
+              <span>✨ 2 votes</span>
+              <span>10:30</span>
+            </div>
+          </div>
+
+          <!-- Simulated Live Collaborator Cursors -->
+          <div id="cursor-alex" class="live-cursor" style="transform: translate(280px, 240px);">
+            <svg class="cursor-pointer-svg" width="16" height="16" viewBox="0 0 24 24" fill="#4262ff"><path d="M3 3l7 18 3-7 7-3L3 3z"/></svg>
+            <span class="cursor-tag" style="background:#4262ff;">Alex (đang gõ...)</span>
+          </div>
+
+          <div id="cursor-sarah" class="live-cursor" style="transform: translate(440px, 350px);">
+            <svg class="cursor-pointer-svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff4d8b"><path d="M3 3l7 18 3-7 7-3L3 3z"/></svg>
+            <span class="cursor-tag" style="background:#ff4d8b;">Sarah (UX)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zoom Controls -->
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="canvasEngine.zoomIn()">+</button>
+        <button class="zoom-btn" onclick="canvasEngine.resetZoom()" style="font-size:10px;">100%</button>
+        <button class="zoom-btn" onclick="canvasEngine.zoomOut()">−</button>
+      </div>
+
+      <!-- Color Picker Popover for Sticky notes -->
+      <div id="colorPicker" class="color-picker-popover">
+        <button class="color-dot-btn" style="background:#ffd02f;" onclick="addNoteWithColor('sticky-note-yellow')"></button>
+        <button class="color-dot-btn" style="background:#ffd8f4;" onclick="addNoteWithColor('sticky-note-rose')"></button>
+        <button class="color-dot-btn" style="background:#c3faf5;" onclick="addNoteWithColor('sticky-note-teal')"></button>
+        <button class="color-dot-btn" style="background:#ffc6c6;" onclick="addNoteWithColor('sticky-note-coral')"></button>
+        <button class="color-dot-btn" style="background:#ffe6cd;" onclick="addNoteWithColor('sticky-note-orange')"></button>
+      </div>
+
+      <!-- Canvas Floating Bottom Dock -->
+      <div class="canvas-floating-dock">
+        <!-- Select Tool -->
+        <button class="tool-dock-btn active" title="Chọn & Di chuyển">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7 18 3-7 7-3L3 3z"/></svg>
+        </button>
+
+        <!-- Sticky Note Tool -->
+        <button class="tool-dock-btn" onclick="toggleColorPicker()" title="Thêm Thẻ Ghi Chú">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+        </button>
+
+        <!-- Shape Tool -->
+        <button class="tool-dock-btn" onclick="showToast('Đã chọn công cụ Hình khối (Hình chữ nhật, Tròn)')" title="Hình học">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>
+        </button>
+
+        <!-- Draw / Pen Tool -->
+        <button class="tool-dock-btn" onclick="showToast('Đã chọn Bút vẽ tay')" title="Bút vẽ tự do">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>
+        </button>
+
+        <!-- AI Assistant Generator Button -->
+        <a href="ai-assistant.html" class="tool-dock-btn ai-btn" title="Trợ lý AI">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>AI Assist</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/mobile-app.js"></script>
+  <script src="js/canvas-engine.js"></script>
+  <script>
+    let canvasEngine;
+    document.addEventListener('DOMContentLoaded', () => {
+      canvasEngine = new WhiteboardCanvas('whiteboard');
+    });
+
+    function toggleColorPicker() {
+      const picker = document.getElementById('colorPicker');
+      picker.classList.toggle('open');
+    }
+
+    function addNoteWithColor(colorClass) {
+      canvasEngine.addNewSticky(colorClass, 'Nội dung ý tưởng mới...');
+      document.getElementById('colorPicker').classList.remove('open');
+    }
+  </script>
+</body>
+</html>
