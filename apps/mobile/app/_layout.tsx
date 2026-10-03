@@ -7,13 +7,13 @@ export default function RootLayout() {
     <>
       <Stack
         screenOptions={{
-          // {component.top-nav} — cream 64px bar, ink type, no shadow or hairline.
+          // {component.top-nav} — white canvas 64px bar, ink type, no shadow.
           headerStyle: {
             backgroundColor: colors.canvas,
           },
           headerTintColor: colors.ink,
           headerShadowVisible: false,
-          headerTitleStyle: mobileTypography('title-md'),
+          headerTitleStyle: mobileTypography('heading-5'),
           contentStyle: {
             backgroundColor: colors.canvas,
           },

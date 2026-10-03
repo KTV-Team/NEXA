@@ -16,10 +16,10 @@ async function getHealth(): Promise<HealthStatus | null> {
 
 const navLinks = ['Product', 'Solutions', 'Resources', 'Pricing', 'Customers'] as const;
 
-/** Narrows the component union to the six saturated feature-card variants. */
-type FeatureCardName = Extract<ComponentName, `feature-card-${string}`>;
+/** Narrows the component union to the pastel feature-card variants. */
+type FeatureCardName = Extract<ComponentName, `card-feature-${string}`>;
 
-// Saturated feature cards cycle pink → teal → lavender (never the same colour twice in a row).
+// Pastel feature cards cycle yellow → coral → teal (echoing sticky-note palette).
 const featureCards: ReadonlyArray<{
   variant: FeatureCardName;
   kicker: string;
@@ -28,21 +28,21 @@ const featureCards: ReadonlyArray<{
   snippet: string;
 }> = [
   {
-    variant: 'feature-card-pink',
+    variant: 'card-feature-yellow',
     kicker: 'Tokens',
     title: 'One source of truth',
     body: 'Every colour, radius, and type ramp from DESIGN.md ships as a typed token.',
-    snippet: "colors['brand-pink'] → #ff4d8b",
+    snippet: "colors['brand-yellow'] → #ffd02f",
   },
   {
-    variant: 'feature-card-teal',
+    variant: 'card-feature-coral',
     kicker: 'Platforms',
     title: 'Web and native',
     body: 'The same token package drives CSS-in-JS on web and StyleSheet on React Native.',
-    snippet: 'mobileTypography(\'display-lg\')',
+    snippet: "mobileTypography('heading-1')",
   },
   {
-    variant: 'feature-card-lavender',
+    variant: 'card-feature-teal',
     kicker: 'Components',
     title: 'Recipes, not guesses',
     body: 'Buttons, cards, inputs, and pills carry the spec values straight from the design doc.',
@@ -76,7 +76,7 @@ const footerColumns: ReadonlyArray<{ heading: string; links: ReadonlyArray<{ lab
   },
   {
     heading: 'Design',
-    links: [{ label: 'DESIGN.md', href: 'https://clay.com' }],
+    links: [{ label: 'DESIGN.md', href: 'https://miro.com' }],
   },
 ];
 
@@ -88,13 +88,23 @@ function TopNav() {
         position: 'sticky',
         top: 0,
         zIndex: 10,
+        borderBottom: `1px solid ${colors.hairline}`,
       }}
     >
       <div
         className="nx-container"
         style={{ display: 'flex', alignItems: 'center', gap: spacing.lg, height: '100%' }}
       >
-        <span style={{ ...typography['title-md'], color: colors.ink }}>NEXA</span>
+        {/* Miro-style: wordmark in brand-yellow */}
+        <span
+          style={{
+            ...typography['heading-5'],
+            color: colors['brand-yellow'],
+            fontWeight: '700',
+          }}
+        >
+          NEXA
+        </span>
 
         <nav
           style={{
@@ -109,7 +119,7 @@ function TopNav() {
             <a
               key={link}
               href="#status"
-              style={{ ...typography['nav-link'], color: colors.ink, textDecoration: 'none' }}
+              style={{ ...typography['body-sm'], color: colors.ink, textDecoration: 'none' }}
             >
               {link}
             </a>
@@ -118,7 +128,7 @@ function TopNav() {
 
         <a
           href="#status"
-          style={{ ...typography.button, color: colors.ink, textDecoration: 'none' }}
+          style={{ ...typography['button-md'], color: colors.ink, textDecoration: 'none' }}
         >
           Sign in
         </a>
@@ -134,9 +144,10 @@ function StatusPill({ ok, label }: { ok: boolean; label: string }) {
   return (
     <span
       style={{
-        ...componentStyle('badge-pill'),
-        ...typography['caption-uppercase'],
-        color: ok ? colors.success : colors.error,
+        ...componentStyle('badge-success'),
+        ...typography['caption-bold'],
+        backgroundColor: ok ? colors['success-accent'] : colors['brand-red'],
+        color: ok ? colors['on-primary'] : colors['coral-dark'],
       }}
     >
       {label}
@@ -151,14 +162,14 @@ function HealthCard({ health }: { health: HealthStatus | null }) {
     <div
       id="status"
       style={{
-        ...componentStyle('product-mockup-card'),
+        ...componentStyle('card-base'),
         display: 'flex',
         flexDirection: 'column',
         gap: spacing.md,
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h2 style={{ ...typography['title-md'], color: colors.ink }}>API Status</h2>
+        <h2 style={{ ...typography['heading-5'], color: colors.ink }}>API Status</h2>
         <StatusPill ok={ok} label={ok ? 'Live' : 'Offline'} />
       </div>
 
@@ -169,7 +180,7 @@ function HealthCard({ health }: { health: HealthStatus | null }) {
             <dd
               style={{
                 ...typography['body-sm'],
-                color: ok ? colors.success : colors.error,
+                color: ok ? colors['success-accent'] : colors['coral-dark'],
                 fontWeight: '600',
               }}
             >
@@ -188,12 +199,12 @@ function HealthCard({ health }: { health: HealthStatus | null }) {
           </div>
         </dl>
       ) : (
-        <p style={{ ...typography['body-sm'], color: colors.warning }}>
+        <p style={{ ...typography['body-sm'], color: colors.stone }}>
           API not reachable — start it with <code>pnpm dev</code>
         </p>
       )}
 
-      <p style={{ ...typography.caption, color: colors['muted-soft'] }}>
+      <p style={{ ...typography.caption, color: colors.stone }}>
         GET http://localhost:4000/api/v1/health
       </p>
     </div>
@@ -225,10 +236,10 @@ function FeatureCard({
         minHeight: 240,
       }}
     >
-      <span style={{ ...typography['caption-uppercase'], color: card.color, opacity: 0.7 }}>
+      <span style={{ ...typography['micro-uppercase'], color: card.color, opacity: 0.7 }}>
         {kicker}
       </span>
-      <h3 style={{ ...typography['title-md'], color: card.color }}>{title}</h3>
+      <h3 style={{ ...typography['heading-4'], color: card.color }}>{title}</h3>
       <p style={{ ...typography['body-sm'], color: card.color, opacity: 0.85 }}>{body}</p>
       <code
         style={{
@@ -251,15 +262,14 @@ export default async function HomePage() {
   const health = await getHealth();
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: colors.canvas, color: colors.body }}>
+    <div style={{ minHeight: '100vh', backgroundColor: colors.canvas, color: colors.ink }}>
       <TopNav />
 
       <main>
-        {/* Hero band — {component.hero-band} on the cream canvas. The band padding is
-            left to .nx-section so the 96px rhythm collapses to 48px on mobile. */}
+        {/* Hero band — white canvas with centered display headline. */}
         <section
           className="nx-section"
-          style={{ ...componentStyle('hero-band'), padding: undefined }}
+          style={{ ...componentStyle('hero-band-marketing'), padding: undefined }}
         >
           <div
             className="nx-container"
@@ -278,26 +288,21 @@ export default async function HomePage() {
                 gap: spacing.lg,
               }}
             >
-              <span
-                style={{
-                  ...componentStyle('badge-pill'),
-                  ...typography['caption-uppercase'],
-                }}
-              >
+              <span style={componentStyle('badge-tag-yellow')}>
                 Monorepo starter
               </span>
               <h1
                 style={{
-                  ...typography['display-xl'],
-                  fontSize: 'clamp(36px, 6vw, 72px)',
+                  ...typography['hero-display'],
+                  fontSize: 'clamp(36px, 6vw, 80px)',
                   color: colors.ink,
                 }}
               >
                 NEXA
               </h1>
-              <p style={{ ...typography['body-md'], color: colors.body, maxWidth: 520 }}>
-                Next.js, Expo, and NestJS sharing one typed design-token package — a warm cream
-                canvas with saturated feature cards and no dark footer.
+              <p style={{ ...typography.subtitle, color: colors.slate, maxWidth: 520 }}>
+                Next.js, Expo, and NestJS sharing one typed design-token package — a clean white
+                canvas with pastel feature cards and black-pill CTAs.
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: spacing.sm }}>
                 <a
@@ -320,9 +325,9 @@ export default async function HomePage() {
         </section>
 
         {/* Feature grid — 3-up on desktop, 2-up on tablet, 1-up on mobile. */}
-        <section className="nx-section" style={{ backgroundColor: colors.canvas }}>
+        <section className="nx-section" style={{ backgroundColor: colors.surface }}>
           <div className="nx-container" style={{ display: 'flex', flexDirection: 'column', gap: spacing.xl }}>
-            <h2 style={{ ...typography['display-md'], color: colors.ink }}>
+            <h2 style={{ ...typography['heading-2'], color: colors.ink }}>
               Built on one design system
             </h2>
             <div
@@ -339,30 +344,30 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* CTA band — stays warm-light, rounded xl, display-md head. */}
+        {/* CTA band — dark primary background with white pill CTA. */}
         <section style={{ backgroundColor: colors.canvas, paddingBottom: spacing.section }}>
           <div className="nx-container">
             <div
               style={{
-                ...componentStyle('cta-band-illustrated'),
+                ...componentStyle('cta-banner-dark'),
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 textAlign: 'center',
                 gap: spacing.lg,
-                padding: 'clamp(40px, 8vw, 80px)',
+                padding: 'clamp(40px, 8vw, 64px)',
               }}
             >
-              <h2 style={{ ...typography['display-md'], color: colors.ink }}>
+              <h2 style={{ ...typography['heading-2'], color: colors['on-primary'] }}>
                 Turn your growth ideas into reality today
               </h2>
-              <p style={{ ...typography['body-md'], color: colors.body, maxWidth: 620 }}>
+              <p style={{ ...typography.subtitle, color: colors['on-dark-muted'], maxWidth: 620 }}>
                 Tokens, types, and validation are already wired across web, mobile, and API. Start
                 the workspace and build the next screen on-system.
               </p>
               <a
                 href="#status"
-                style={{ ...componentStyle('button-primary'), textDecoration: 'none' }}
+                style={{ ...componentStyle('button-on-dark'), textDecoration: 'none' }}
               >
                 Check API status
               </a>
@@ -371,8 +376,8 @@ export default async function HomePage() {
         </section>
       </main>
 
-      {/* Footer — cream-tinted by design, never dark. */}
-      <footer style={componentStyle('footer')}>
+      {/* Footer — dark with multi-column links ({component.footer-region}). */}
+      <footer style={componentStyle('footer-region')}>
         <div className="nx-container">
           <div
             style={{
@@ -383,14 +388,14 @@ export default async function HomePage() {
           >
             {footerColumns.map((column) => (
               <div key={column.heading} style={{ display: 'flex', flexDirection: 'column', gap: spacing.sm }}>
-                <span style={{ ...typography['caption-uppercase'], color: colors.muted }}>
+                <span style={{ ...typography['body-md-medium'], color: colors['on-dark'] }}>
                   {column.heading}
                 </span>
                 {column.links.map((link) => (
                   <a
                     key={link.label}
                     href={link.href}
-                    style={{ ...typography['body-sm'], color: colors.body, textDecoration: 'none' }}
+                    style={{ ...typography['body-sm'], color: colors['on-dark-muted'], textDecoration: 'none' }}
                   >
                     {link.label}
                   </a>
@@ -399,7 +404,7 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <p style={{ ...typography['body-sm'], color: colors.muted, marginTop: spacing.xxl }}>
+          <p style={{ ...typography['body-sm'], color: colors['on-dark-muted'], marginTop: spacing.xxl }}>
             NEXA — built with Turborepo, Next.js, Expo, and NestJS.
           </p>
         </div>

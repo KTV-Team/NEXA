@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEXA - Tài khoản cá nhân & Cài đặt</title>
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile-framework.css">
+  <style>
+    .profile-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: var(--space-lg) 0 var(--space-md);
+      border-bottom: 1px solid var(--color-hairline-soft);
+      margin-bottom: var(--space-md);
+    }
+
+    .profile-avatar-large {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-full);
+      background: var(--color-brand-blue);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-sm);
+      border: 3px solid #fff;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .profile-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-xs);
+      margin: var(--space-md) 0;
+    }
+
+    .stat-tile {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: 10px 8px;
+      text-align: center;
+    }
+    .stat-tile strong {
+      font-size: 18px;
+      color: var(--color-ink);
+      display: block;
+    }
+    .stat-tile span {
+      font-size: 11px;
+      color: var(--color-slate);
+    }
+
+    /* Upgrade Banner */
+    .upgrade-banner-card {
+      background: var(--color-surface-pricing-featured);
+      border: 1.5px solid var(--color-brand-blue);
+      border-radius: var(--radius-xl);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .settings-group {
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: var(--space-md);
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px var(--space-md);
+      border-bottom: 1px solid var(--color-hairline-soft);
+      cursor: pointer;
+      color: var(--color-ink);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .settings-item:last-child {
+      border-bottom: none;
+    }
+    .settings-item:active {
+      background-color: var(--color-surface);
+    }
+
+    /* Toggle switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: var(--color-hairline-strong);
+      transition: .2s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--color-success-accent);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="prototype-helper-pill">📱 Prototype Portal</a>
+
+  <div class="mobile-screen">
+    <!-- Status Bar -->
+    <div class="mobile-status-bar">
+      <span>9:41</span>
+      <div class="status-bar-notch"></div>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="app-header-left">
+        <a href="home.html" class="btn-icon" style="width:36px; height:36px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <span class="app-header-title">Cá nhân & Cài đặt</span>
+      </div>
+      <div class="app-header-right">
+        <button class="btn btn-ghost" style="font-size:12px;" onclick="showToast('Đã lưu hồ sơ cá nhân')">Chỉnh sửa</button>
+      </div>
+    </div>
+
+    <!-- Screen Body -->
+    <div class="screen-body screen-body-has-bottom-nav">
+      <!-- Profile Hero Card -->
+      <div class="profile-hero">
+        <div class="profile-avatar-large">
+          A
+          <div style="position:absolute; bottom:2px; right:2px; width:14px; height:14px; background:var(--color-success-accent); border-radius:50%; border:2px solid #fff;"></div>
+        </div>
+        <h2 style="font-size:18px; font-weight:700; margin-bottom:2px;">Alice Nguyen</h2>
+        <p style="font-size:13px; color:var(--color-slate); margin-bottom:8px;">alice@company.com</p>
+        <span class="badge badge-tag-yellow">Lead Product Designer • Workspace Admin</span>
+      </div>
+
+      <!-- User Stats Grid -->
+      <div class="profile-stats-grid">
+        <div class="stat-tile">
+          <strong>16</strong>
+          <span>Bảng vẽ</span>
+        </div>
+        <div class="stat-tile">
+          <strong>142</strong>
+          <span>Thẻ ý tưởng</span>
+        </div>
+        <div class="stat-tile">
+          <strong>4</strong>
+          <span>Không gian</span>
+        </div>
+      </div>
+
+      <!-- Upgrade Promo Banner -->
+      <div class="upgrade-banner-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span class="badge badge-tag-purple">GÓI STARTER</span>
+          <span class="badge badge-discount">Tiết kiệm 20%</span>
+        </div>
+        <h3 style="font-size:15px; font-weight:600; margin-bottom:4px;">Nâng cấp lên NEXA Business</h3>
+        <p style="font-size:12px; color:var(--color-slate); margin-bottom:12px;">Mở khóa không giới hạn AI Copilot Workflows, số lượng bảng vẽ và quyền bảo mật cấp doanh nghiệp.</p>
+        <button class="btn btn-primary" style="width:100%; min-height:38px; font-size:13px;" onclick="showToast('Mở cổng thanh toán gói Business...')">
+          Nâng cấp ngay ($16/tháng)
+        </button>
+      </div>
+
+      <!-- Settings Section 1: Tuỳ chọn ứng dụng -->
+      <div class="settings-group">
+        <div class="settings-item">
+          <span>Thông báo đẩy tức thì</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked onchange="showToast('Đã lưu cài đặt thông báo')">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-item">
+          <span>Đồng bộ ngoại tuyến (Offline)</span>
+          <label class="toggle-switch">
+            <input type="checkbox" checked onchange="showToast('Đã kích hoạt chế độ Offline')">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="settings-item" onclick="showToast('Ngôn ngữ hiện tại: Tiếng Việt')">
+          <span>Ngôn ngữ hiển thị</span>
+          <span style="font-size:13px; color:var(--color-slate);">Tiếng Việt ›</span>
+        </div>
+      </div>
+
+      <!-- Settings Section 2: Tài khoản & Hệ thống -->
+      <div class="settings-group">
+        <div class="settings-item" onclick="showToast('Chuyển tới trang đổi mật khẩu')">
+          <span>Bảo mật & Mật khẩu</span>
+          <span style="color:var(--color-steel);">›</span>
+        </div>
+
+        <div class="settings-item" onclick="showToast('Mở tài liệu hỗ trợ người dùng')">
+          <span>Trung tâm trợ giúp & FAQ</span>
+          <span style="color:var(--color-steel);">›</span>
+        </div>
+
+        <div class="settings-item" onclick="showToast('NEXA Mobile Prototype v1.0.0 (Miro-Design System)')">
+          <span>Phiên bản nguyên mẫu</span>
+          <span style="font-size:12px; color:var(--color-muted);">v1.0.0</span>
+        </div>
+      </div>
+
+      <!-- Logout Button -->
+      <a href="login.html" class="btn btn-secondary" style="width:100%; color:var(--color-error); border-color:var(--color-hairline-strong); margin-top:var(--space-sm);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        <span>Đăng xuất tài khoản</span>
+      </a>
+    </div>
+
+    <!-- Bottom Navigation Bar (Active: Profile) -->
+    <div class="bottom-nav">
+      <a href="home.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Trang chủ</span>
+      </a>
+      <a href="board-canvas.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        <span>Bảng vẽ</span>
+      </a>
+      <a href="templates.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Mẫu</span>
+      </a>
+      <a href="notifications.html" class="bottom-nav-item">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="bottom-nav-badge"></span>
+        <span>Thông báo</span>
+      </a>
+      <a href="profile.html" class="bottom-nav-item active">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Cá nhân</span>
+      </a>
+    </div>
+  </div>
+
+  <script src="js/mobile-app.js"></script>
+</body>
+</html>

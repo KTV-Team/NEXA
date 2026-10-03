@@ -1,21 +1,22 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // NEXA Design Tokens
 //
-// Single source of truth for the claymation-meets-data interface described in
-// /DESIGN.md ("Clay-design-analysis"). Every token here maps 1:1 to a key in
-// that document, using the same names, so a `{colors.brand-pink}` reference in
-// the spec resolves to `colors['brand-pink']` in code.
+// Single source of truth for the Miro-inspired visual workspace interface
+// described in /DESIGN.md ("Miro-design-analysis"). Every token here maps 1:1
+// to a key in that document, using the same names, so a `{colors.brand-yellow}`
+// reference in the spec resolves to `colors['brand-yellow']` in code.
 //
 // Platform-agnostic: hex/number values only. Web consumers use them directly in
 // CSS-in-JS or via `cssVariables`; React Native consumers use `mobileTypography`
 // and the spacing/rounded scales in StyleSheet.
 //
 // System contracts (see DESIGN.md → Do's and Don'ts):
-//   · Cream canvas everywhere — never a cool gray floor, never a dark footer.
-//   · Display type stays weight 500 with negative letter-spacing, never bolder.
-//   · Six saturated feature-card colors, never a seventh, never twice in a row.
-//   · Generous radii: 12px buttons/inputs, 16px cards, 24px feature cards.
-//   · No heavy shadows — depth comes from saturated color on cream.
+//   · White canvas everywhere — the signature clean whiteboard surface.
+//   · Black-pill primary CTAs ({rounded.full}) as the dominant interactive element.
+//   · Brand yellow reserved for wordmark, promo banner, and yellow-tag chips only.
+//   · Pastel feature cards (yellow, rose, coral, teal) echo sticky-note palette.
+//   · Roobert PRO across every UI surface; no weight above 600.
+//   · No heavy shadows — predominantly flat with strategic depth on hero mockups.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -23,48 +24,66 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const colors = {
-  // Primary — near-black with slight warmth. All primary CTAs, h1/h2 ink type.
-  primary: '#0a0a0a',
-  'primary-active': '#1f1f1f',
-  'primary-disabled': '#e5e5e5',
+  // Primary — near-black. All primary CTAs, h1/h2 ink type, footer background.
+  primary: '#1c1c1e',
+  'on-primary': '#ffffff',
 
-  // Text
-  ink: '#0a0a0a', //           headlines + primary text
-  'body-strong': '#1a1a1a', // emphasized body, lead paragraphs
-  body: '#3a3a3a', //          default running text
-  muted: '#6a6a6a', //         sub-headings, breadcrumbs, footer body
-  'muted-soft': '#9a9a9a', //  captions, fine-print
+  // Brand accent colors
+  'brand-yellow': '#ffd02f',       // wordmark, top promo banner, "yellow tag" pills
+  'brand-yellow-deep': '#fcb900',  // hover states and emphasis
+  'yellow-light': '#fff4c4',       // pale yellow background tint for tag chips
+  'yellow-dark': '#746019',        // yellow-tag text color (dark olive)
+
+  'brand-blue': '#4262ff',         // action blue for inline links and featured-pricing border
+  'blue-450': '#5b76fe',           // mid-tint blue
+  'blue-pressed': '#2a41b6',       // pressed-state blue
+
+  'brand-coral': '#ff9999',        // coral accent for warm callouts
+  'coral-light': '#ffc6c6',        // pale coral for feature card backgrounds
+  'coral-dark': '#600000',         // coral-tag text color (deep wine)
+
+  'brand-rose': '#ffd8f4',         // soft rose-pink for feature card variants
+  'rose-light': '#fde0f0',         // rose feature card bg / tag chip bg
+  'brand-pink': '#fde0f0',         // alias — pale pink for soft callouts
+
+  'brand-teal': '#0fbcb0',         // brand teal
+  'teal-light': '#c3faf5',         // pale teal for feature card backgrounds
+  'moss-dark': '#187574',          // deep teal-green text color
+
+  'brand-orange-light': '#ffe6cd', // soft orange for feature card backgrounds
+
+  'brand-red': '#fbd4d4',          // soft red for error backgrounds
+  'brand-red-dark': '#e3c5c5',     // stronger red for error borders
+
+  'success-accent': '#00b473',     // confirmation/success indicator green
+
+  // Surface — the white canvas and its variants
+  canvas: '#ffffff',                       // page background and primary card surface
+  surface: '#f7f8fa',                      // subtle section backgrounds, search-pill rest
+  'surface-soft': '#fafbfc',              // quieter section divisions
+  'surface-yellow': '#fff8e0',            // pale yellow-tinted surface for tag chip
+  'surface-pricing-featured': '#f5f3ff',  // pale lavender for featured pricing tier
 
   // Hairlines
-  hairline: '#e5e5e5', //      1px borders on cards and inputs
-  'hairline-soft': '#f0f0f0',
+  hairline: '#e0e2e8',         // 1px borders and primary dividers
+  'hairline-soft': '#eef0f3',  // quieter table-row dividers
+  'hairline-strong': '#c7cad5', // stronger 1px border for inputs
 
-  // Surface — the cream floor and its warm siblings
-  canvas: '#fffaf0', //              default page floor (cream-tinted white)
-  'surface-soft': '#faf5e8', //      footer + CTA band
-  'surface-card': '#f5f0e0', //      cream feature / testimonial cards
-  'surface-strong': '#ebe6d6', //    emphasized cream bands
-  'surface-dark': '#0a1a1a', //      rare dark teal-tinted near-black card
-  'surface-dark-elevated': '#1a2a2a',
+  // Text
+  'ink-deep': '#050038',  // headlines on lighter feature cards
+  ink: '#1c1c1e',         // primary headlines and body text
+  charcoal: '#2c2c34',    // body emphasis text
+  slate: '#555a6a',       // secondary text, metadata
+  steel: '#6b6f7e',       // tertiary text, footer links
+  stone: '#8e91a0',       // captions, muted labels
+  muted: '#a5a8b5',       // disabled labels, input placeholders
 
-  // On-color text
-  'on-primary': '#ffffff', // text on primary buttons + pink/teal feature cards
+  // On-dark
   'on-dark': '#ffffff',
-  'on-dark-soft': '#a0a0a0',
+  'on-dark-muted': '#a5a8b5',
 
-  // Brand — the six-card palette plus illustration accents
-  'brand-pink': '#ff4d8b', //     sequencer / outbound feature card
-  'brand-teal': '#1a3a3a', //     enterprise + featured pricing tier
-  'brand-lavender': '#b8a4ed', // AI-agent products
-  'brand-peach': '#ffb084', //    general SaaS warmth
-  'brand-ochre': '#e8b94a', //    community / experts
-  'brand-mint': '#a4d4c5', //     illustration + badge accent
-  'brand-coral': '#ff6b5a', //    highlight accent
-
-  // Semantic
-  success: '#22c55e',
-  warning: '#f59e0b',
-  error: '#ef4444',
+  // Footer
+  'footer-bg': '#1c1c1e',
 
   // Base
   white: '#ffffff',
@@ -75,37 +94,35 @@ export const colors = {
 export type ColorName = keyof typeof colors;
 export type ColorValue = (typeof colors)[ColorName];
 
-/** The six feature-card surfaces, in DESIGN.md's recommended cycle order. */
+/** The pastel feature-card surfaces in DESIGN.md cycle order. */
 export const featureCardCycle = [
-  'brand-pink',
-  'brand-teal',
-  'brand-lavender',
-  'brand-peach',
-  'brand-ochre',
-  'surface-card',
+  'brand-yellow',
+  'coral-light',
+  'teal-light',
+  'rose-light',
+  'brand-orange-light',
+  'canvas',
 ] as const satisfies readonly ColorName[];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Typography
 //
-// Display voice is Plain Black (custom rounded display face) at weight 500 with
-// negative letter-spacing; everything else is Inter. Mixing the two is a system
-// violation — display tokens are the only ones that use the display stack.
+// Roobert PRO is Miro's custom geometric sans-serif. It is used across every
+// UI surface. Fallbacks: Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif.
+// Weight scale: 400 (body) · 500 (medium emphasis + headings) · 600 (badges/uppercase).
+// Display sizes use negative letter-spacing; body sizes relax to 0.
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Font family stacks as ordered arrays (React Native friendly). */
 export const fontFamily = {
   display: [
-    'Plain Black',
-    'Inter',
+    'Roobert PRO',
+    'Noto Sans',
     '-apple-system',
     'BlinkMacSystemFont',
-    'Segoe UI',
-    'Roboto',
     'sans-serif',
   ],
-  sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
-  mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+  sans: ['Roobert PRO', 'Noto Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
 } as const;
 
 const cssFontStack = (families: readonly string[]): string =>
@@ -115,112 +132,161 @@ const cssFontStack = (families: readonly string[]): string =>
 export const fontStacks = {
   display: cssFontStack(fontFamily.display),
   sans: cssFontStack(fontFamily.sans),
-  mono: cssFontStack(fontFamily.mono),
 } as const;
 
 /**
- * Plain Black is licensed to Clay and has no public web or native build
- * (DESIGN.md → Known Gaps). Inter at weight 500 with negative letter-spacing is
- * the documented substitute; browsers get it for free via the fallback stack,
- * native platforms are resolved explicitly by `mobileTypography`.
+ * Roobert PRO is a licensed custom typeface. If unavailable, Noto Sans at
+ * weight 500 with negative letter-spacing is the documented substitute.
  */
 export const fontSubstitutes = {
-  display: 'Inter',
-  sans: 'Inter',
-  mono: 'JetBrains Mono',
+  display: 'Noto Sans',
+  sans: 'Noto Sans',
 } as const;
 
 export const typography = {
-  'display-xl': {
+  /** 80px — Marketing hero ("See how teams get great done with Miro") */
+  'hero-display': {
     fontFamily: fontStacks.display,
-    fontSize: 72,
-    fontWeight: '500',
-    lineHeight: 1,
-    letterSpacing: -2.5,
-  },
-  'display-lg': {
-    fontFamily: fontStacks.display,
-    fontSize: 56,
-    fontWeight: '500',
+    fontSize: 80,
+    fontWeight: '500' as const,
     lineHeight: 1.05,
     letterSpacing: -2,
   },
-  'display-md': {
+  /** 60px — Major section openers */
+  'display-lg': {
     fontFamily: fontStacks.display,
-    fontSize: 40,
-    fontWeight: '500',
+    fontSize: 60,
+    fontWeight: '500' as const,
     lineHeight: 1.1,
+    letterSpacing: -1.5,
+  },
+  /** 48px — Page-level headlines */
+  'heading-1': {
+    fontFamily: fontStacks.display,
+    fontSize: 48,
+    fontWeight: '500' as const,
+    lineHeight: 1.15,
     letterSpacing: -1,
   },
-  'display-sm': {
+  /** 36px — Subsection headlines */
+  'heading-2': {
     fontFamily: fontStacks.display,
-    fontSize: 32,
-    fontWeight: '500',
-    lineHeight: 1.15,
+    fontSize: 36,
+    fontWeight: '500' as const,
+    lineHeight: 1.2,
     letterSpacing: -0.5,
   },
-  'title-lg': {
-    fontFamily: fontStacks.sans,
-    fontSize: 24,
-    fontWeight: '600',
-    lineHeight: 1.3,
-    letterSpacing: -0.3,
+  /** 28px — Card titles */
+  'heading-3': {
+    fontFamily: fontStacks.display,
+    fontSize: 28,
+    fontWeight: '500' as const,
+    lineHeight: 1.25,
+    letterSpacing: 0,
   },
-  'title-md': {
+  /** 22px — Feature tile titles */
+  'heading-4': {
+    fontFamily: fontStacks.display,
+    fontSize: 22,
+    fontWeight: '500' as const,
+    lineHeight: 1.3,
+    letterSpacing: 0,
+  },
+  /** 18px — FAQ questions, smaller cards */
+  'heading-5': {
+    fontFamily: fontStacks.display,
+    fontSize: 18,
+    fontWeight: '500' as const,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  /** 18px — Hero subtitle */
+  subtitle: {
     fontFamily: fontStacks.sans,
     fontSize: 18,
-    fontWeight: '600',
-    lineHeight: 1.4,
+    fontWeight: '400' as const,
+    lineHeight: 1.5,
     letterSpacing: 0,
   },
-  'title-sm': {
-    fontFamily: fontStacks.sans,
-    fontSize: 16,
-    fontWeight: '600',
-    lineHeight: 1.4,
-    letterSpacing: 0,
-  },
+  /** 16px / 400 — Primary body text */
   'body-md': {
     fontFamily: fontStacks.sans,
     fontSize: 16,
-    fontWeight: '400',
-    lineHeight: 1.55,
+    fontWeight: '400' as const,
+    lineHeight: 1.5,
     letterSpacing: 0,
   },
+  /** 16px / 500 — Logo wall labels */
+  'body-md-medium': {
+    fontFamily: fontStacks.sans,
+    fontSize: 16,
+    fontWeight: '500' as const,
+    lineHeight: 1.5,
+    letterSpacing: 0,
+  },
+  /** 14px / 400 — Secondary body, table cells */
   'body-sm': {
     fontFamily: fontStacks.sans,
     fontSize: 14,
-    fontWeight: '400',
-    lineHeight: 1.55,
+    fontWeight: '400' as const,
+    lineHeight: 1.5,
     letterSpacing: 0,
   },
+  /** 14px / 500 — Filter dropdowns, button labels */
+  'body-sm-medium': {
+    fontFamily: fontStacks.sans,
+    fontSize: 14,
+    fontWeight: '500' as const,
+    lineHeight: 1.5,
+    letterSpacing: 0,
+  },
+  /** 13px / 400 — Helper text */
   caption: {
     fontFamily: fontStacks.sans,
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '400' as const,
     lineHeight: 1.4,
     letterSpacing: 0,
   },
-  'caption-uppercase': {
+  /** 13px / 600 — Badge labels, tag chips */
+  'caption-bold': {
+    fontFamily: fontStacks.sans,
+    fontSize: 13,
+    fontWeight: '600' as const,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  /** 12px / 500 — Footer microcopy */
+  micro: {
     fontFamily: fontStacks.sans,
     fontSize: 12,
-    fontWeight: '600',
-    lineHeight: 1.4,
-    letterSpacing: 1.5,
-  },
-  button: {
-    fontFamily: fontStacks.sans,
-    fontSize: 14,
-    fontWeight: '600',
-    lineHeight: 1,
-    letterSpacing: 0,
-  },
-  'nav-link': {
-    fontFamily: fontStacks.sans,
-    fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '500' as const,
     lineHeight: 1.4,
     letterSpacing: 0,
+  },
+  /** 11px / 600 — Section dividers in tables */
+  'micro-uppercase': {
+    fontFamily: fontStacks.sans,
+    fontSize: 11,
+    fontWeight: '600' as const,
+    lineHeight: 1.4,
+    letterSpacing: 0.5,
+  },
+  /** 14px / 500 — Pill button labels */
+  'button-md': {
+    fontFamily: fontStacks.sans,
+    fontSize: 14,
+    fontWeight: '500' as const,
+    lineHeight: 1.3,
+    letterSpacing: 0,
+  },
+  /** 64px / 500 — "100M+ users" stat callouts */
+  'stat-display': {
+    fontFamily: fontStacks.display,
+    fontSize: 64,
+    fontWeight: '500' as const,
+    lineHeight: 1.1,
+    letterSpacing: -1.5,
   },
 } as const;
 
@@ -257,19 +323,21 @@ export function mobileTypography(name: TypographyName): MobileTypography {
 
 /** Border radius scale (px). */
 export const rounded = {
-  xs: 6, //     small badges, dropdown items
-  sm: 8, //     small buttons, hairline-border accent
-  md: 12, //    standard CTA buttons, text inputs
-  lg: 16, //    content cards, testimonials, pricing tiers
-  xl: 24, //    saturated feature cards
-  pill: 9999, // category tabs, badge pills
-  full: 9999, // avatars, icon buttons
+  xs: 4,      // small chips, micro-controls
+  sm: 6,      // discount badges
+  md: 8,      // inputs, search-pill
+  lg: 12,     // standard cards, table containers
+  xl: 16,     // pricing cards, feature panels
+  xxl: 20,    // larger feature cards
+  xxxl: 28,   // pastel feature cards (yellow, rose, coral, teal)
+  feature: 32, // hero CTA banner cards
+  full: 9999,  // all buttons, pill tabs, badges
 } as const;
 
 export type RoundedName = keyof typeof rounded;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Spacing — base unit 4px
+// Spacing — base unit 4px (8px primary increment)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const spacing = {
@@ -277,10 +345,14 @@ export const spacing = {
   xs: 8,
   sm: 12,
   md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 48,
-  section: 96, // vertical rhythm between major editorial bands
+  lg: 20,
+  xl: 24,
+  xxl: 32,
+  xxxl: 40,
+  'section-sm': 48,
+  section: 64,
+  'section-lg': 96,
+  hero: 120,
 } as const;
 
 export type SpacingName = keyof typeof spacing;
@@ -292,36 +364,38 @@ export type SpacingName = keyof typeof spacing;
 export const layout = {
   /** Max content width (~1280px centered) at every breakpoint. */
   maxContentWidth: 1280,
-  columns: 12,
-  gridGutter: spacing.lg,
-  /** Vertical padding between major bands. */
+  /** Horizontal gutter (32px). */
+  gridGutter: spacing.xxl,
+  /** Vertical padding between major editorial bands. */
   sectionPadding: spacing.section,
-  /** Internal card padding: feature cards / pricing tiers vs. content cards. */
+  /** Internal card padding: feature cards vs. compact cards. */
   cardPadding: {
-    feature: spacing.xl,
-    content: spacing.lg,
+    feature: spacing.xxl,  // 32px — feature panels, pricing tiers
+    content: spacing.xl,   // 24px — compact content cards
   },
 } as const;
 
 export const breakpoints = {
-  /** < 768px — hamburger nav, 1-up grids, hero stacks. */
-  mobile: 0,
-  /** 768–1024px — tightened nav, 2-up feature + pricing grids. */
+  /** < 480px — single column, hero 36px, pill nav → hamburger, pricing 1-up. */
+  mobileSm: 0,
+  /** 480–767px — feature tiles 2-up, hero 48px. */
+  mobileLg: 480,
+  /** 768–1023px — 2-column grids, pill-tab nav returns. */
   tablet: 768,
-  /** 1024–1440px — full nav, 3-up feature + pricing grids. */
+  /** 1024–1279px — 4-tier pricing row, customer story 2-up, hero 64px. */
   desktop: 1024,
-  /** > 1440px — same as desktop with more breathing room. */
-  wide: 1440,
+  /** ≥ 1280px — full hero at 80px. */
+  wide: 1280,
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Elevation & depth
 //
-// The system uses no heavy shadows. Depth comes from the saturated color
-// contrast between the cream canvas and the bright feature cards.
+// The system runs predominantly flat with strategic depth on hero mockups.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const shadows = {
+  /** No shadow — default cards, table rows, form inputs. */
   none: {
     offsetX: 0,
     offsetY: 0,
@@ -330,23 +404,41 @@ export const shadows = {
     color: 'transparent',
     css: 'none',
   },
-  /** Faint shadow for hover-elevated states (rare). */
+  /** Subtle hover-elevated tiles. */
   subtle: {
     offsetX: 0,
     offsetY: 1,
     blurRadius: 2,
     spreadRadius: 0,
-    color: 'rgba(10, 10, 10, 0.06)',
-    css: '0 1px 2px rgba(10, 10, 10, 0.06)',
+    color: 'rgba(5, 0, 56, 0.04)',
+    css: 'rgba(5, 0, 56, 0.04) 0px 1px 2px 0px',
   },
-  /** Slightly deeper variant of the same faint treatment. */
-  hover: {
+  /** Standard feature cards. */
+  card: {
     offsetX: 0,
     offsetY: 4,
     blurRadius: 12,
-    spreadRadius: -2,
-    color: 'rgba(10, 10, 10, 0.08)',
-    css: '0 4px 12px -2px rgba(10, 10, 10, 0.08)',
+    spreadRadius: 0,
+    color: 'rgba(5, 0, 56, 0.06)',
+    css: 'rgba(5, 0, 56, 0.06) 0px 4px 12px 0px',
+  },
+  /** Hero whiteboard mockup framing. */
+  mockup: {
+    offsetX: 0,
+    offsetY: 12,
+    blurRadius: 32,
+    spreadRadius: -4,
+    color: 'rgba(5, 0, 56, 0.08)',
+    css: 'rgba(5, 0, 56, 0.08) 0px 12px 32px -4px',
+  },
+  /** Modals, dropdowns. */
+  modal: {
+    offsetX: 0,
+    offsetY: 16,
+    blurRadius: 48,
+    spreadRadius: -8,
+    color: 'rgba(5, 0, 56, 0.12)',
+    css: 'rgba(5, 0, 56, 0.12) 0px 16px 48px -8px',
   },
 } as const;
 
@@ -355,14 +447,16 @@ export type ShadowName = keyof typeof shadows;
 export const elevation = {
   /** No shadow, no border — body sections, top nav, hero. */
   flat: { boxShadow: shadows.none.css, borderWidth: 0, shadow: shadows.none },
-  /** 1px hairline border — inputs, small content cards. */
+  /** 1px hairline border — default cards, table rows, form inputs. */
   hairline: { boxShadow: shadows.none.css, borderWidth: 1, shadow: shadows.none },
-  /** Brand pink/teal/lavender/peach/ochre fill — no shadow. */
-  saturated: { boxShadow: shadows.none.css, borderWidth: 0, shadow: shadows.none },
-  /** surface-card background — no shadow. */
-  cream: { boxShadow: shadows.none.css, borderWidth: 0, shadow: shadows.none },
-  /** Faint drop shadow — hover-elevated states (rare). */
+  /** Subtle shadow — hover-elevated tiles. */
   subtle: { boxShadow: shadows.subtle.css, borderWidth: 0, shadow: shadows.subtle },
+  /** Card shadow — standard feature cards. */
+  card: { boxShadow: shadows.card.css, borderWidth: 0, shadow: shadows.card },
+  /** Mockup shadow — hero whiteboard mockup framing. */
+  mockup: { boxShadow: shadows.mockup.css, borderWidth: 0, shadow: shadows.mockup },
+  /** Modal shadow — modals, dropdowns. */
+  modal: { boxShadow: shadows.modal.css, borderWidth: 0, shadow: shadows.modal },
 } as const;
 
 export type ElevationName = keyof typeof elevation;
@@ -370,9 +464,9 @@ export type ElevationName = keyof typeof elevation;
 // ─────────────────────────────────────────────────────────────────────────────
 // Components
 //
-// Component recipes exactly as specified in DESIGN.md. Variants (`-active`,
-// `-disabled`) are separate entries that only carry the properties they change;
-// merge them over their base entry.
+// Component recipes exactly as specified in DESIGN.md. Variants (`-pressed`,
+// `-disabled`, `-active`) are separate entries that only carry the properties
+// they change; merge them over their base entry.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type ComponentToken = {
@@ -383,208 +477,458 @@ export type ComponentToken = {
   /** CSS-ready padding shorthand. */
   readonly padding?: string;
   readonly height?: number;
+  readonly size?: number;
   readonly borderWidth?: number;
   readonly borderColor?: ColorValue;
+  readonly shadow?: string;
   readonly textDecoration?: string;
 };
 
 export const components = {
+  // ── Buttons ────────────────────────────────────────────────────────────────
+
+  /** Black pill primary CTA — "Get started free". */
   'button-primary': {
     backgroundColor: colors.primary,
     textColor: colors['on-primary'],
-    typography: typography.button,
-    rounded: rounded.md,
-    padding: '12px 20px',
-    height: 44,
+    typography: typography['button-md'],
+    rounded: rounded.full,
+    padding: '12px 24px',
   },
-  'button-primary-active': {
-    backgroundColor: colors['primary-active'],
+  /** Pressed state — lifts to charcoal. */
+  'button-primary-pressed': {
+    backgroundColor: colors.charcoal,
     textColor: colors['on-primary'],
-    rounded: rounded.md,
   },
+  /** Disabled state. */
   'button-primary-disabled': {
-    backgroundColor: colors['primary-disabled'],
+    backgroundColor: colors.hairline,
     textColor: colors.muted,
-    rounded: rounded.md,
   },
-  'button-secondary': {
-    backgroundColor: colors.canvas,
-    textColor: colors.ink,
-    typography: typography.button,
-    rounded: rounded.md,
-    padding: '12px 20px',
-    height: 44,
-    borderWidth: 1,
-    borderColor: colors.hairline,
+
+  /** Brand-yellow pill for moments of brand emphasis. */
+  'button-yellow': {
+    backgroundColor: colors['brand-yellow'],
+    textColor: colors.primary,
+    typography: typography['button-md'],
+    rounded: rounded.full,
+    padding: '12px 24px',
   },
-  'button-on-color': {
-    backgroundColor: colors.canvas,
-    textColor: colors.ink,
-    typography: typography.button,
-    rounded: rounded.md,
-    padding: '12px 20px',
-    height: 44,
-  },
-  'button-text-link': {
-    backgroundColor: colors.transparent,
-    textColor: colors.ink,
-    typography: typography.button,
-  },
-  'text-link': {
-    backgroundColor: colors.transparent,
-    textColor: colors.ink,
-    typography: typography['body-md'],
-    textDecoration: 'underline',
-  },
-  'top-nav': {
-    backgroundColor: colors.canvas,
-    textColor: colors.ink,
-    typography: typography['nav-link'],
-    height: 64,
-  },
-  'hero-band': {
-    backgroundColor: colors.canvas,
-    textColor: colors.ink,
-    typography: typography['display-xl'],
-    padding: '96px',
-  },
-  'hero-illustration-card': {
-    backgroundColor: colors['surface-soft'],
-    textColor: colors.ink,
-    rounded: rounded.xl,
-  },
-  'feature-card-pink': {
-    backgroundColor: colors['brand-pink'],
+
+  /** Brand-blue pill for inline action callouts. */
+  'button-blue': {
+    backgroundColor: colors['brand-blue'],
     textColor: colors['on-primary'],
-    typography: typography['title-md'],
-    rounded: rounded.xl,
-    padding: '32px',
+    typography: typography['button-md'],
+    rounded: rounded.full,
+    padding: '12px 24px',
   },
-  'feature-card-teal': {
-    backgroundColor: colors['brand-teal'],
-    textColor: colors['on-dark'],
-    typography: typography['title-md'],
-    rounded: rounded.xl,
-    padding: '32px',
-  },
-  'feature-card-lavender': {
-    backgroundColor: colors['brand-lavender'],
+
+  /** Outlined pill for secondary actions — "Book a demo". */
+  'button-secondary': {
+    backgroundColor: colors.transparent,
     textColor: colors.ink,
-    typography: typography['title-md'],
-    rounded: rounded.xl,
-    padding: '32px',
+    typography: typography['button-md'],
+    rounded: rounded.full,
+    padding: '12px 24px',
+    borderWidth: 1,
+    borderColor: colors['hairline-strong'],
   },
-  'feature-card-peach': {
-    backgroundColor: colors['brand-peach'],
+
+  /** White pill for dark CTA banners. */
+  'button-on-dark': {
+    backgroundColor: colors['on-dark'],
+    textColor: colors.primary,
+    typography: typography['button-md'],
+    rounded: rounded.full,
+    padding: '12px 24px',
+  },
+
+  /** Quieter rectangular ghost button. */
+  'button-ghost': {
+    backgroundColor: colors.transparent,
     textColor: colors.ink,
-    typography: typography['title-md'],
-    rounded: rounded.xl,
-    padding: '32px',
+    typography: typography['button-md'],
+    rounded: rounded.md,
+    padding: '8px 12px',
   },
-  'feature-card-ochre': {
-    backgroundColor: colors['brand-ochre'],
-    textColor: colors.ink,
-    typography: typography['title-md'],
-    rounded: rounded.xl,
-    padding: '32px',
+
+  /** Inline text link. */
+  'button-link': {
+    backgroundColor: colors.transparent,
+    textColor: colors['brand-blue'],
+    typography: typography['body-sm-medium'],
+    padding: '0',
   },
-  'feature-card-cream': {
-    backgroundColor: colors['surface-card'],
-    textColor: colors.ink,
-    typography: typography['title-md'],
-    rounded: rounded.xl,
-    padding: '32px',
-  },
-  'product-mockup-card': {
+
+  /** 36×36px circular utility button. */
+  'button-icon-circular': {
     backgroundColor: colors.canvas,
     textColor: colors.ink,
-    typography: typography['title-md'],
-    rounded: rounded.lg,
-    padding: '24px',
+    rounded: rounded.full,
+    size: 36,
     borderWidth: 1,
     borderColor: colors.hairline,
   },
-  'testimonial-card': {
-    backgroundColor: colors['surface-card'],
-    textColor: colors.ink,
-    typography: typography['body-md'],
-    rounded: rounded.lg,
-    padding: '24px',
-  },
-  'pricing-tier-card': {
+
+  // ── Cards & Containers ────────────────────────────────────────────────────
+
+  /** Standard content card. */
+  'card-base': {
     backgroundColor: colors.canvas,
+    rounded: rounded.xl,
+    padding: `${spacing.xl}px`,
+    borderWidth: 1,
+    borderColor: colors['hairline-soft'],
+  },
+
+  /** White feature card with larger 28px corners. */
+  'card-feature': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.xxxl,
+    padding: `${spacing.xxl}px`,
+    borderWidth: 1,
+    borderColor: colors['hairline-soft'],
+  },
+
+  /** Pastel-yellow feature card. */
+  'card-feature-yellow': {
+    backgroundColor: colors['brand-yellow'],
+    textColor: colors.primary,
+    rounded: rounded.xxxl,
+    padding: `${spacing.xxl}px`,
+  },
+
+  /** Pastel-coral feature card variant. */
+  'card-feature-coral': {
+    backgroundColor: colors['coral-light'],
+    textColor: colors.primary,
+    rounded: rounded.xxxl,
+    padding: `${spacing.xxl}px`,
+  },
+
+  /** Pastel-teal feature card variant. */
+  'card-feature-teal': {
+    backgroundColor: colors['teal-light'],
+    textColor: colors.primary,
+    rounded: rounded.xxxl,
+    padding: `${spacing.xxl}px`,
+  },
+
+  /** Pastel-rose feature card variant. */
+  'card-feature-rose': {
+    backgroundColor: colors['rose-light'],
+    textColor: colors.primary,
+    rounded: rounded.xxxl,
+    padding: `${spacing.xxl}px`,
+  },
+
+  /** Customer story card — image fills the card. */
+  'card-customer-story': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.xxxl,
+    padding: '0',
+    borderWidth: 1,
+    borderColor: colors['hairline-soft'],
+  },
+
+  /** Stat-row cell for "100M+ users". */
+  'card-stat': {
+    backgroundColor: colors.transparent,
     textColor: colors.ink,
-    typography: typography['title-lg'],
-    rounded: rounded.lg,
-    padding: '32px',
+    typography: typography['stat-display'],
+    padding: `${spacing.lg}px`,
+  },
+
+  /** Standard pricing tier card. */
+  'pricing-card': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.xl,
+    padding: `${spacing.xxl}px`,
     borderWidth: 1,
     borderColor: colors.hairline,
   },
-  'pricing-tier-card-featured': {
-    backgroundColor: colors['brand-teal'],
-    textColor: colors['on-dark'],
-    typography: typography['title-lg'],
-    rounded: rounded.lg,
-    padding: '32px',
+
+  /** Featured pricing tier — lavender background + blue border. */
+  'pricing-card-featured': {
+    backgroundColor: colors['surface-pricing-featured'],
+    rounded: rounded.xl,
+    padding: `${spacing.xxl}px`,
+    borderWidth: 2,
+    borderColor: colors['brand-blue'],
   },
+
+  /** Dark-canvas enterprise tier card. */
+  'pricing-card-enterprise': {
+    backgroundColor: colors.primary,
+    textColor: colors['on-primary'],
+    rounded: rounded.xl,
+    padding: `${spacing.xxl}px`,
+  },
+
+  // ── Inputs & Forms ────────────────────────────────────────────────────────
+
+  /** Standard text field. */
   'text-input': {
     backgroundColor: colors.canvas,
     textColor: colors.ink,
     typography: typography['body-md'],
     rounded: rounded.md,
-    padding: '12px 16px',
+    padding: `${spacing.sm}px ${spacing.md}px`,
     height: 44,
     borderWidth: 1,
-    borderColor: colors.hairline,
+    borderColor: colors['hairline-strong'],
   },
+
+  /** Activated (focused) state — border switches to 2px brand-blue. */
   'text-input-focused': {
     backgroundColor: colors.canvas,
     textColor: colors.ink,
+    borderWidth: 2,
+    borderColor: colors['brand-blue'],
+  },
+
+  /** Search bar. */
+  'search-pill': {
+    backgroundColor: colors.surface,
+    textColor: colors.steel,
+    typography: typography['body-sm'],
     rounded: rounded.md,
-    borderWidth: 1,
-    borderColor: colors.ink,
-  },
-  'category-tab': {
-    backgroundColor: colors.transparent,
-    textColor: colors.muted,
-    typography: typography['nav-link'],
-    rounded: rounded.pill,
-    padding: '8px 16px',
-  },
-  'category-tab-active': {
-    backgroundColor: colors['surface-card'],
-    textColor: colors.ink,
-    typography: typography['nav-link'],
-    rounded: rounded.pill,
-  },
-  'badge-pill': {
-    backgroundColor: colors['surface-card'],
-    textColor: colors.ink,
-    typography: typography.caption,
-    rounded: rounded.pill,
-    padding: '4px 12px',
-  },
-  'expert-card': {
-    backgroundColor: colors.canvas,
-    textColor: colors.ink,
-    typography: typography['title-md'],
-    rounded: rounded.lg,
-    padding: '24px',
+    height: 40,
     borderWidth: 1,
     borderColor: colors.hairline,
   },
-  'cta-band-illustrated': {
-    backgroundColor: colors['surface-soft'],
+
+  /** Pill-shaped filter dropdown — "Company use" / "Industry" / "Use case". */
+  'filter-dropdown': {
+    backgroundColor: colors.canvas,
     textColor: colors.ink,
-    typography: typography['display-md'],
-    rounded: rounded.xl,
-    padding: '80px',
+    typography: typography['body-sm-medium'],
+    rounded: rounded.full,
+    padding: `${spacing.xs}px ${spacing.md}px`,
+    borderWidth: 1,
+    borderColor: colors['hairline-strong'],
   },
-  footer: {
-    backgroundColor: colors['surface-soft'],
-    textColor: colors.body,
+
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+
+  /** Pill-style tab nav — inactive state. */
+  'pill-tab': {
+    backgroundColor: colors.canvas,
+    textColor: colors.steel,
+    typography: typography['body-sm-medium'],
+    rounded: rounded.full,
+    padding: `${spacing.xs}px ${spacing.md}px`,
+    borderWidth: 1,
+    borderColor: colors.hairline,
+  },
+
+  /** Pill-style tab nav — active state. */
+  'pill-tab-active': {
+    backgroundColor: colors.primary,
+    textColor: colors['on-primary'],
+    rounded: rounded.full,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+
+  /** Two-state pill toggle — Monthly / Annual on pricing. */
+  'toggle-monthly-yearly': {
+    backgroundColor: colors.surface,
+    textColor: colors.ink,
+    rounded: rounded.full,
+    padding: '4px',
+  },
+
+  // ── Badges & Status ───────────────────────────────────────────────────────
+
+  /** Yellow promo banner badge. */
+  'badge-promo': {
+    backgroundColor: colors['brand-yellow'],
+    textColor: colors.primary,
+    typography: typography['caption-bold'],
+    rounded: rounded.full,
+    padding: '4px 10px',
+  },
+
+  /** Soft-yellow feature tag chip. */
+  'badge-tag-yellow': {
+    backgroundColor: colors['surface-yellow'],
+    textColor: colors['yellow-dark'],
+    typography: typography['caption-bold'],
+    rounded: rounded.full,
+    padding: '4px 10px',
+  },
+
+  /** Lavender feature tag chip — "AI agent" tag. */
+  'badge-tag-purple': {
+    backgroundColor: colors['surface-pricing-featured'],
+    textColor: colors['brand-blue'],
+    typography: typography['caption-bold'],
+    rounded: rounded.full,
+    padding: '4px 10px',
+  },
+
+  /** Coral feature tag chip variant. */
+  'badge-tag-coral': {
+    backgroundColor: colors['coral-light'],
+    textColor: colors['coral-dark'],
+    typography: typography['caption-bold'],
+    rounded: rounded.full,
+    padding: '4px 10px',
+  },
+
+  /** Green success indicator. */
+  'badge-success': {
+    backgroundColor: colors['success-accent'],
+    textColor: colors['on-primary'],
+    typography: typography['caption-bold'],
+    rounded: rounded.full,
+    padding: '4px 10px',
+  },
+
+  /** Yellow rectangular discount pill — "Save 15%". */
+  'badge-discount': {
+    backgroundColor: colors['brand-yellow'],
+    textColor: colors.primary,
+    typography: typography['caption-bold'],
+    rounded: rounded.sm,
+    padding: '2px 6px',
+  },
+
+  /** Sticky black promo strip ABOVE the top nav. */
+  'promo-banner': {
+    backgroundColor: colors.primary,
+    textColor: colors['on-primary'],
+    typography: typography['body-sm-medium'],
+    padding: `${spacing.sm}px ${spacing.md}px`,
+  },
+
+  // ── Tables ────────────────────────────────────────────────────────────────
+
+  /** Pricing feature comparison table. */
+  'comparison-table': {
+    backgroundColor: colors.canvas,
+    textColor: colors.ink,
     typography: typography['body-sm'],
-    padding: '80px',
+    rounded: rounded.md,
+    borderWidth: 1,
+    borderColor: colors.hairline,
+  },
+
+  /** Individual feature row. */
+  'comparison-row': {
+    backgroundColor: colors.canvas,
+    textColor: colors.ink,
+    padding: `${spacing.md}px ${spacing.lg}px`,
+  },
+
+  // ── Signature Sections ────────────────────────────────────────────────────
+
+  /** Marketing hero band. */
+  'hero-band-marketing': {
+    backgroundColor: colors.canvas,
+    textColor: colors.ink,
+    typography: typography['hero-display'],
+    rounded: 0,
+    padding: `${spacing.hero}px`,
+  },
+
+  /** Dark CTA banner at the bottom of feature pages. */
+  'cta-banner-dark': {
+    backgroundColor: colors.primary,
+    textColor: colors['on-primary'],
+    rounded: rounded.feature,
+    padding: `${spacing.section}px`,
+  },
+
+  /** Real Miro-board UI rendered as feature illustration. */
+  'whiteboard-mockup': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.xl,
+    borderWidth: 1,
+    borderColor: colors['hairline-soft'],
+    shadow: shadows.mockup.css,
+  },
+
+  /** Template thumbnail card. */
+  'template-card': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.xl,
+    padding: `${spacing.md}px`,
+    borderWidth: 1,
+    borderColor: colors.hairline,
+  },
+
+  /** FAQ panel item. */
+  'faq-accordion-item': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.md,
+    padding: `${spacing.xl}px`,
+    borderWidth: 1,
+    borderColor: colors.hairline,
+  },
+
+  /** Customer logo wordmark cell. */
+  'logo-wall-item': {
+    backgroundColor: colors.transparent,
+    textColor: colors.steel,
+    typography: typography['body-md-medium'],
+    padding: `${spacing.lg}px`,
+  },
+
+  /** Industry-vertical tile. */
+  'industry-tile': {
+    backgroundColor: colors.canvas,
+    rounded: rounded.xl,
+    padding: `${spacing.xl}px`,
+    borderWidth: 1,
+    borderColor: colors['hairline-soft'],
+  },
+
+  /** Review/rating badge in the footer. */
+  'capterra-badge': {
+    backgroundColor: colors.canvas,
+    textColor: colors.ink,
+    typography: typography.caption,
+    rounded: rounded.md,
+    padding: `${spacing.sm}px ${spacing.md}px`,
+    borderWidth: 1,
+    borderColor: colors.hairline,
+  },
+
+  /** App store / Google Play download pill. */
+  'app-store-badge': {
+    backgroundColor: colors.canvas,
+    textColor: colors.primary,
+    typography: typography['caption-bold'],
+    rounded: rounded.md,
+    padding: `${spacing.sm}px ${spacing.md}px`,
+  },
+
+  // ── Navigation & Footer ───────────────────────────────────────────────────
+
+  /** Sticky white top nav — height ~64px. */
+  'top-nav': {
+    backgroundColor: colors.canvas,
+    textColor: colors.ink,
+    height: 64,
+  },
+
+  /** Multi-column dark footer. */
+  'footer-region': {
+    backgroundColor: colors['footer-bg'],
+    textColor: colors['on-dark'],
+    typography: typography['body-sm'],
+    padding: `${spacing.section}px ${spacing.xxl}px`,
+  },
+
+  /** Individual link in the footer. */
+  'footer-link': {
+    backgroundColor: colors.transparent,
+    textColor: colors['on-dark-muted'],
+    typography: typography['body-sm'],
+    padding: `${spacing.xxs}px 0`,
   },
 } satisfies Record<string, ComponentToken>;
 
@@ -606,6 +950,7 @@ export type WebComponentStyle = {
   padding?: string;
   height?: number;
   border?: string;
+  boxShadow?: string;
   textDecoration?: string;
 };
 
@@ -633,6 +978,7 @@ export function componentStyle(name: ComponentName): WebComponentStyle {
   if (token.borderWidth) {
     style.border = `${token.borderWidth}px solid ${token.borderColor ?? colors.hairline}`;
   }
+  if (token.shadow !== undefined) style.boxShadow = token.shadow;
   if (token.textDecoration !== undefined) style.textDecoration = token.textDecoration;
 
   return style;
@@ -642,22 +988,28 @@ export function componentStyle(name: ComponentName): WebComponentStyle {
 // CSS custom properties
 //
 // Mirrored by apps/web/src/app/globals.css so plain CSS can reach the same
-// values. Naming: `--color-*`, `--space-*`, `--radius-*`, `--font-*`, `--shadow-*`.
+// values. Naming: `--color-*`, `--space-*`, `--radius-*`, `--text-*`,
+// `--font-*`, `--shadow-*`.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const cssVariables: Record<string, string> = {
   ...Object.fromEntries(Object.entries(colors).map(([name, value]) => [`--color-${name}`, value])),
-  ...Object.fromEntries(Object.entries(spacing).map(([name, value]) => [`--space-${name}`, `${value}px`])),
-  ...Object.fromEntries(Object.entries(rounded).map(([name, value]) => [`--radius-${name}`, `${value}px`])),
+  ...Object.fromEntries(
+    Object.entries(spacing).map(([name, value]) => [`--space-${name}`, `${value}px`]),
+  ),
+  ...Object.fromEntries(
+    Object.entries(rounded).map(([name, value]) => [`--radius-${name}`, `${value}px`]),
+  ),
   ...Object.fromEntries(
     Object.entries(typography).map(([name, value]) => [`--text-${name}-size`, `${value.fontSize}px`]),
   ),
   '--font-display': fontStacks.display,
   '--font-sans': fontStacks.sans,
-  '--font-mono': fontStacks.mono,
   '--shadow-none': shadows.none.css,
   '--shadow-subtle': shadows.subtle.css,
-  '--shadow-hover': shadows.hover.css,
+  '--shadow-card': shadows.card.css,
+  '--shadow-mockup': shadows.mockup.css,
+  '--shadow-modal': shadows.modal.css,
   '--layout-max-width': `${layout.maxContentWidth}px`,
 };
 
@@ -678,6 +1030,8 @@ export const tokens = {
   shadows,
   elevation,
   components,
+  featureCardCycle,
+  cssVariables,
 } as const;
 
 export type Tokens = typeof tokens;

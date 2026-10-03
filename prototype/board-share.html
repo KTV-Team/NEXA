@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NEXA - Chia sẻ Bảng vẽ</title>
+  <link rel="stylesheet" href="css/design-tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mobile-framework.css">
+  <style>
+    .share-container {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 44px);
+      padding: var(--space-md);
+      background-color: var(--color-canvas);
+    }
+
+    .share-board-card {
+      background: var(--color-surface);
+      border-radius: var(--radius-xl);
+      padding: var(--space-md);
+      border: 1px solid var(--color-hairline);
+      margin-bottom: var(--space-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .link-copy-box {
+      background: var(--color-surface-soft);
+      border: 1px solid var(--color-hairline-strong);
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: var(--space-md) 0;
+    }
+
+    .member-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--color-hairline-soft);
+    }
+
+    .role-select {
+      background: var(--color-canvas);
+      border: 1px solid var(--color-hairline-strong);
+      border-radius: var(--radius-full);
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-ink);
+      outline: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="prototype-helper-pill">📱 Prototype Portal</a>
+
+  <div class="mobile-screen">
+    <!-- Status Bar -->
+    <div class="mobile-status-bar">
+      <span>9:41</span>
+      <div class="status-bar-notch"></div>
+      <div class="status-bar-icons">
+        <span>5G</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- App Header -->
+    <div class="app-header">
+      <div class="app-header-left">
+        <a href="board-canvas.html" class="btn-icon" style="width:36px; height:36px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+        <span class="app-header-title">Cộng tác & Chia sẻ</span>
+      </div>
+      <div class="app-header-right">
+        <span class="badge badge-success">Riêng tư</span>
+      </div>
+    </div>
+
+    <div class="share-container">
+      <!-- Target Board Overview -->
+      <div class="share-board-card">
+        <div style="width:40px; height:40px; border-radius:var(--radius-md); background:var(--color-brand-yellow); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;">
+          📋
+        </div>
+        <div>
+          <h3 style="font-size:15px; font-weight:600;">Sprint 42 Ideation</h3>
+          <p style="font-size:12px; color:var(--color-slate);">Được chia sẻ trong NEXA Core Team</p>
+        </div>
+      </div>
+
+      <!-- Invite Form -->
+      <div class="form-group">
+        <label class="form-label">Mời thành viên mới qua Email</label>
+        <div style="display:flex; gap:8px;">
+          <input type="email" id="inviteEmail" class="text-input" placeholder="colleague@company.com" style="flex:1;">
+          <select id="inviteRole" class="role-select" style="height:44px; padding:0 12px;">
+            <option value="edit">Chỉnh sửa</option>
+            <option value="comment">Nhận xét</option>
+            <option value="view">Chỉ xem</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" style="margin-top:8px; width:100%;" onclick="sendInvite()">
+          Gửi lời mời tham gia
+        </button>
+      </div>
+
+      <!-- Copy Link Section -->
+      <div style="margin-top:var(--space-md);">
+        <label class="form-label">Liên kết truy cập nhanh</label>
+        <div class="link-copy-box">
+          <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            <span style="font-size:12px; color:var(--color-slate); white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">https://nexa.workspace/b/sprint-42-xyz</span>
+          </div>
+          <button class="btn btn-secondary" style="min-height:32px; padding:4px 12px; font-size:12px;" onclick="copyLink()">
+            Sao chép
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Members List -->
+      <div style="margin-top:var(--space-lg);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h4 style="font-size:14px; font-weight:600; color:var(--color-charcoal);">Người đang có quyền truy cập (4)</h4>
+        </div>
+
+        <!-- Member 1 -->
+        <div class="member-item">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="avatar" style="background:#4262ff;">A</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Alice (Bạn)</div>
+              <div style="font-size:11px; color:var(--color-slate);">alice@company.com</div>
+            </div>
+          </div>
+          <span class="badge badge-tag-yellow">Chủ sở hữu</span>
+        </div>
+
+        <!-- Member 2 -->
+        <div class="member-item">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="avatar" style="background:#ff9999;">S</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Sarah Chen</div>
+              <div style="font-size:11px; color:var(--color-slate);">sarah.ux@company.com</div>
+            </div>
+          </div>
+          <select class="role-select" onchange="showToast('Đã cập nhật quyền của Sarah')">
+            <option selected>Chỉnh sửa</option>
+            <option>Nhận xét</option>
+            <option>Chỉ xem</option>
+          </select>
+        </div>
+
+        <!-- Member 3 -->
+        <div class="member-item">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="avatar" style="background:#5b76fe;">A</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Alex Wong</div>
+              <div style="font-size:11px; color:var(--color-slate);">alex.dev@company.com</div>
+            </div>
+          </div>
+          <select class="role-select" onchange="showToast('Đã cập nhật quyền của Alex')">
+            <option selected>Chỉnh sửa</option>
+            <option>Nhận xét</option>
+            <option>Chỉ xem</option>
+          </select>
+        </div>
+
+        <!-- Member 4 -->
+        <div class="member-item">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="avatar" style="background:#0fbcb0;">B</div>
+            <div>
+              <div style="font-size:13px; font-weight:600;">Bob Dylan</div>
+              <div style="font-size:11px; color:var(--color-slate);">bob@company.com</div>
+            </div>
+          </div>
+          <select class="role-select" onchange="showToast('Đã cập nhật quyền của Bob')">
+            <option>Chỉnh sửa</option>
+            <option selected>Nhận xét</option>
+            <option>Chỉ xem</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Done -->
+      <a href="board-canvas.html" class="btn btn-secondary" style="width:100%; margin-top:auto; padding:12px;">
+        Quay lại bảng vẽ
+      </a>
+    </div>
+  </div>
+
+  <script src="js/mobile-app.js"></script>
+  <script>
+    function copyLink() {
+      showToast('Đã sao chép liên kết bảng vẽ vào bộ nhớ tạm!');
+    }
+
+    function sendInvite() {
+      const email = document.getElementById('inviteEmail').value;
+      if (!email) {
+        showToast('Vui lòng nhập địa chỉ email');
+        return;
+      }
+      showToast(`Đã gửi lời mời cộng tác tới: ${email}`);
+      document.getElementById('inviteEmail').value = '';
+    }
+  </script>
+</body>
+</html>
