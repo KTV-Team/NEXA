@@ -7,6 +7,7 @@ import type {
   PaginatedResponse,
   UpdateUserDto,
   User,
+  DevDemoData,
 } from '@nexa/types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -75,17 +76,31 @@ export class ApiClient {
       this.onUnauthorized?.();
     }
 
-    const json = (await response.json()) as ApiResponse<T>;
+    if (response.status === 204) return undefined as T;
 
-    if (!response.ok || !json.success) {
+    let json: ApiResponse<T> | undefined;
+    try {
+      json = (await response.json()) as ApiResponse<T>;
+    } catch {
       throw new ApiClientError(
         response.status,
-        json.error?.code ?? 'UNKNOWN_ERROR',
-        json.error?.message ?? 'An unexpected error occurred',
-        json.error?.details,
+        response.ok ? 'INVALID_API_RESPONSE' : `HTTP_${response.status}`,
+        response.ok ? 'The server returned an invalid response' : response.statusText || 'Request failed',
       );
     }
 
+    if (!response.ok || !json?.success) {
+      throw new ApiClientError(
+        response.status,
+        json?.error?.code ?? `HTTP_${response.status}`,
+        json?.error?.message ?? response.statusText ?? 'An unexpected error occurred',
+        json?.error?.details,
+      );
+    }
+
+    if (!('data' in json)) {
+      throw new ApiClientError(response.status, 'INVALID_API_RESPONSE', 'The server response did not include data');
+    }
     return json.data as T;
   }
 
@@ -127,6 +142,12 @@ export class ApiClient {
 
   health = {
     check: (): Promise<HealthStatus> => this.request('GET', '/health'),
+  };
+
+  // ── Development demo ─────────────────────────────────────────────────────
+
+  dev = {
+    demo: (): Promise<DevDemoData> => this.request('GET', '/dev/demo'),
   };
 }
 

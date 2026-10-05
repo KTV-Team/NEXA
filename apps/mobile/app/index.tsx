@@ -14,16 +14,19 @@ import {
   spacing,
 } from '@nexa/design-tokens';
 import { createApiClient } from '@nexa/api-client';
-import type { HealthStatus } from '@nexa/types';
+import type { DevDemoData, HealthStatus } from '@nexa/types';
 
 const apiClient = createApiClient({
-  baseUrl: process.env['EXPO_PUBLIC_API_URL'] ?? 'http://localhost:4000/api/v1',
+  baseUrl: process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1',
 });
 
 export default function HomeScreen() {
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [demo, setDemo] = useState<DevDemoData | null>(null);
+  const [demoLoading, setDemoLoading] = useState(false);
+  const [demoError, setDemoError] = useState<string | null>(null);
 
   const checkHealth = async () => {
     setLoading(true);
@@ -38,8 +41,21 @@ export default function HomeScreen() {
     }
   };
 
+  const checkDemo = async () => {
+    setDemoLoading(true);
+    setDemoError(null);
+    try {
+      setDemo(await apiClient.dev.demo());
+    } catch (err) {
+      setDemoError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setDemoLoading(false);
+    }
+  };
+
   useEffect(() => {
     void checkHealth();
+    if (__DEV__) void checkDemo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -110,6 +126,40 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Refresh</Text>
         </Pressable>
       </View>
+
+      {__DEV__ && (
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Database demo</Text>
+          {demoLoading && <ActivityIndicator color={colors.primary} />}
+          {!demoLoading && demoError && (
+            <Text style={styles.errorText}>Database unavailable: {demoError}</Text>
+          )}
+          {!demoLoading && demo && (
+            <View style={styles.statusContainer}>
+              <Text style={styles.value}>PostgreSQL: {demo.database}</Text>
+              {demo.users.length === 0 && <Text style={styles.label}>No demo data yet</Text>}
+              {demo.users.map((user) => (
+                <Text key={user.id} style={styles.value}>{user.name} / {user.systemRole}</Text>
+              ))}
+              {demo.teams.map((team) => (
+                <Text key={team.id} style={styles.value}>
+                  {team.name} / {team.members.length} members
+                </Text>
+              ))}
+              <Text style={styles.label}>
+                {demo.counts.todoItems} todos / {demo.counts.events} events / {demo.counts.notifications} notifications
+              </Text>
+            </View>
+          )}
+          <Pressable
+            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+            onPress={() => void checkDemo()}
+            disabled={demoLoading}
+          >
+            <Text style={styles.buttonText}>Refresh database demo</Text>
+          </Pressable>
+        </View>
+      )}
 
       <Text style={styles.footnote}>GET http://localhost:4000/api/v1/health</Text>
     </ScrollView>

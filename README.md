@@ -7,7 +7,7 @@ A scalable monorepo built with **Turborepo**, **pnpm workspaces**, and **TypeScr
 | App / Package | Technology |
 |---|---|
 | `apps/web` | Next.js 15 + React 19 |
-| `apps/mobile` | Expo 53 + React Native 0.79 |
+| `apps/mobile` | Expo 57 + React Native 0.86 |
 | `apps/api` | NestJS 11 + Fastify |
 | `packages/types` | Shared TypeScript types |
 | `packages/api-client` | Shared fetch-based API client |
@@ -229,6 +229,35 @@ npx turbo link
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `4000` | API server port |
-| `CORS_ORIGIN` | `http://localhost:3000` | Allowed CORS origin |
-| `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api/v1` | API URL for web |
-| `EXPO_PUBLIC_API_URL` | `http://localhost:4000/api/v1` | API URL for mobile |
+| `CORS_ORIGIN` | `http://localhost:3000` | Comma-separated allowed web origins |
+| `DB_HOST` | `127.0.0.1` | PostgreSQL host |
+| `DB_PORT` | `5432` | PostgreSQL port |
+| `DB_NAME` | `nexa_dev` | Local database name |
+| `DB_USER` / `DB_PASSWORD` | Set locally | Local database credentials |
+| `DB_SSL` | `false` | Enable verified TLS for remote PostgreSQL |
+| `NEXT_PUBLIC_API_URL` | `http://localhost:4000/api/v1` | Web API URL |
+| `EXPO_PUBLIC_API_URL` | `http://localhost:4000/api/v1` | Mobile API URL; Android emulator uses `10.0.2.2` |
+
+## PostgreSQL foundation (development)
+
+1. Copy `apps/api/.env.example` to `apps/api/.env` and set a local `DB_PASSWORD`.
+2. Start PostgreSQL from the repository root:
+
+   ```powershell
+   rtk docker compose --env-file apps/api/.env up -d postgres
+   ```
+
+3. Apply the reviewed TypeORM migrations and seed local data:
+
+   ```powershell
+   rtk pnpm.cmd --filter @nexa/api db:migration:run
+   rtk pnpm.cmd --filter @nexa/api db:seed
+   ```
+
+   Set `ALLOW_DEV_SEED=true` and `DEV_SEED_PASSWORD` only in the local API env file before seeding. The seed command rejects production and databases other than local `nexa_dev`/`nexa_test`.
+
+4. Start the API with `rtk pnpm.cmd --filter @nexa/api dev`. The database demo is at `http://localhost:4000/api/v1/dev/demo`; the web view is `/dev/demo`. The mobile home screen displays the same API result in development.
+
+Migration changes are reviewed before applying them. Production uses the compiled `db:migration:run:prod` command as a deployment step; TypeORM schema synchronization and startup migrations stay disabled.
+
+For integration tests, copy `apps/api/.env.test.example` to the ignored `apps/api/.env.test`, set a test password, create a dedicated local `nexa_test` database, then run `rtk pnpm.cmd --filter @nexa/api test:db`. Never point this test configuration at a development or production database.

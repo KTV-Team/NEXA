@@ -32,13 +32,14 @@ export interface ApiError {
 // User
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type UserRole = 'admin' | 'user' | 'guest';
+export type SystemRole = 'USER' | 'ADMIN' | 'SUPER_ADMIN';
+export type TeamRole = 'OWNER' | 'ADMIN' | 'MEMBER';
 
 export interface User {
   id: ID;
   email: string;
   name: string;
-  role: UserRole;
+  systemRole: SystemRole;
   avatarUrl?: string;
   createdAt: string; // ISO 8601
   updatedAt: string; // ISO 8601
@@ -48,7 +49,17 @@ export interface CreateUserDto {
   email: string;
   name: string;
   password: string;
-  role?: UserRole;
+}
+
+export interface DevDemoData {
+  database: 'connected';
+  users: Array<{ id: ID; name: string; systemRole: SystemRole }>;
+  teams: Array<{
+    id: ID;
+    name: string;
+    members: Array<{ userId: ID; role: TeamRole }>;
+  }>;
+  counts: { todoItems: number; events: number; notifications: number };
 }
 
 export interface UpdateUserDto {
