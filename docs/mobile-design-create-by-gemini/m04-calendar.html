@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M04: Lịch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-today.html" class="showcase-nav-item">M03: Hôm nay</a>
+        <a href="m04-calendar.html" class="showcase-nav-item active">M04: Lịch</a>
+        <a href="m05-todos.html" class="showcase-nav-item">M05: Công việc</a>
+        <a href="m06-todo-form.html" class="showcase-nav-item">M06: Tạo/sửa Todo</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M04</span>
+          <span class="badge-tag-yellow">F04 · Lịch tháng &amp; Agenda</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Header: Ngữ cảnh + Chuông (M09) + Avatar (M14) -->
+          <div class="header-context-bar">
+            <!-- Context selector control -->
+            <button type="button" class="context-selector-btn" title="Chọn không gian làm việc">
+              <span style="font-size: 14px;">🏢</span>
+              <span>Tất cả ngữ cảnh</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+
+            <!-- Action buttons: Notification Bell & Avatar -->
+            <div class="header-action-group">
+              <!-- Bell (M09 Entrypoint) -->
+              <a href="#m09-notifications" class="header-icon-btn" aria-label="Thông báo" title="Hộp thư thông báo">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="notification-badge-dot"></span>
+              </a>
+
+              <!-- Avatar (M14 Entrypoint) -->
+              <a href="#m14-account" class="header-avatar-btn" aria-label="Hồ sơ tài khoản" title="Tài khoản">
+                <span>HT</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- 3. Screen Scrollable Content -->
+          <div class="mobile-screen-content" style="padding-bottom: 24px;">
+            <!-- Screen Title & Top Action -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-md);">
+              <div>
+                <h1 class="heading-3">Lịch</h1>
+                <p class="body-sm" style="color: var(--color-slate); margin-top: 2px;">
+                  Xem toàn diện lịch trình, sự kiện và ngày lễ
+                </p>
+              </div>
+
+              <!-- Quick create event button -> M08 -->
+              <a href="#m08-create-event" class="button-primary" style="padding: 8px 16px; font-size: 13px; min-height: 36px; border-radius: var(--radius-full);" title="Tạo lịch hoặc sự kiện mới (M08)">
+                + Thêm
+              </a>
+            </div>
+
+            <!-- Compact Filter Pills Row (Section 3: Bộ lọc loại/nhóm gọn) -->
+            <div class="filter-pills-row">
+              <span class="pill-tab-active" style="padding: 4px 12px; font-size: 13px;">Tất cả</span>
+              <span class="pill-tab" style="padding: 4px 12px; font-size: 13px;">Sự kiện (2)</span>
+              <span class="pill-tab" style="padding: 4px 12px; font-size: 13px;">Lịch hẹn (1)</span>
+              <span class="pill-tab" style="padding: 4px 12px; font-size: 13px;">Ngày lễ (1)</span>
+            </div>
+
+            <!-- MONTH VIEW CALENDAR CARD (Tháng 10/2026) -->
+            <div class="calendar-card">
+              <!-- Calendar Month Bar -->
+              <div class="calendar-month-bar">
+                <div class="calendar-month-title">Tháng 10, 2026</div>
+                <div class="cal-nav-group">
+                  <button type="button" class="cal-nav-btn" aria-label="Tháng trước">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                  </button>
+                  <button type="button" class="cal-nav-btn" aria-label="Tháng sau">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Weekday Headers -->
+              <div class="calendar-weekdays">
+                <span class="calendar-weekday">T2</span>
+                <span class="calendar-weekday">T3</span>
+                <span class="calendar-weekday">T4</span>
+                <span class="calendar-weekday">T5</span>
+                <span class="calendar-weekday">T6</span>
+                <span class="calendar-weekday">T7</span>
+                <span class="calendar-weekday" style="color: #ef4444;">CN</span>
+              </div>
+
+              <!-- Days Grid (Tháng 10 bắt đầu từ Thứ Năm 01/10) -->
+              <div class="calendar-grid">
+                <!-- Tuần 1: Ngày cuối tháng 9 (outside) -->
+                <div class="calendar-day-cell outside">28</div>
+                <div class="calendar-day-cell outside">29</div>
+                <div class="calendar-day-cell outside">30</div>
+                <div class="calendar-day-cell">
+                  <span>1</span>
+                </div>
+                <div class="calendar-day-cell">
+                  <span>2</span>
+                  <div class="day-event-dots"><span class="event-dot"></span></div>
+                </div>
+                <div class="calendar-day-cell">
+                  <span>3</span>
+                </div>
+                <div class="calendar-day-cell">
+                  <span style="color: #ef4444;">4</span>
+                </div>
+
+                <!-- Tuần 2: 5 - 11 (Ngày 6 đang được chọn) -->
+                <div class="calendar-day-cell">
+                  <span>5</span>
+                  <div class="day-event-dots"><span class="event-dot"></span></div>
+                </div>
+                <!-- NGÀY 6: SELECTED DATE (Nền primary #1c1c1e, chữ trắng) -->
+                <div class="calendar-day-cell selected" title="Ngày đang chọn: 06/10/2026">
+                  <span>6</span>
+                  <div class="day-event-dots">
+                    <span class="event-dot" style="background:#ffffff;"></span>
+                    <span class="event-dot dot-yellow"></span>
+                  </div>
+                </div>
+                <div class="calendar-day-cell">
+                  <span>7</span>
+                </div>
+                <div class="calendar-day-cell">
+                  <span>8</span>
+                  <div class="day-event-dots"><span class="event-dot"></span></div>
+                </div>
+                <div class="calendar-day-cell">
+                  <span>9</span>
+                </div>
+                <!-- Ngày 10: Ngày đặc biệt (Kỷ niệm Giải phóng Thủ đô) -->
+                <div class="calendar-day-cell">
+                  <span>10</span>
+                  <div class="day-event-dots"><span class="event-dot dot-coral"></span></div>
+                </div>
+                <div class="calendar-day-cell">
+                  <span style="color: #ef4444;">11</span>
+                </div>
+
+                <!-- Tuần 3: 12 - 18 -->
+                <div class="calendar-day-cell">12</div>
+                <div class="calendar-day-cell">13</div>
+                <div class="calendar-day-cell">
+                  <span>14</span>
+                  <div class="day-event-dots"><span class="event-dot"></span></div>
+                </div>
+                <div class="calendar-day-cell">15</div>
+                <div class="calendar-day-cell">16</div>
+                <div class="calendar-day-cell">17</div>
+                <div class="calendar-day-cell">
+                  <span style="color: #ef4444;">18</span>
+                </div>
+
+                <!-- Tuần 4: 19 - 25 -->
+                <div class="calendar-day-cell">19</div>
+                <!-- Ngày 20: Phụ nữ Việt Nam -->
+                <div class="calendar-day-cell">
+                  <span>20</span>
+                  <div class="day-event-dots"><span class="event-dot dot-coral"></span></div>
+                </div>
+                <div class="calendar-day-cell">21</div>
+                <div class="calendar-day-cell">22</div>
+                <div class="calendar-day-cell">23</div>
+                <div class="calendar-day-cell">24</div>
+                <div class="calendar-day-cell">
+                  <span style="color: #ef4444;">25</span>
+                </div>
+
+                <!-- Tuần 5: 26 - 31 -->
+                <div class="calendar-day-cell">26</div>
+                <div class="calendar-day-cell">27</div>
+                <div class="calendar-day-cell">28</div>
+                <div class="calendar-day-cell">29</div>
+                <div class="calendar-day-cell">30</div>
+                <div class="calendar-day-cell">31</div>
+                <div class="calendar-day-cell outside">1</div>
+              </div>
+            </div>
+
+            <!-- AGENDA NGÀY CHỌN (06/10/2026) — LỐI VÀO M07 -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <h2 class="heading-5">Lịch trình ngày 6 tháng 10</h2>
+                  <span class="badge-tag-yellow" style="font-size: 11px; padding: 2px 8px;">3 mục</span>
+                </div>
+                <span class="caption" style="color: var(--color-steel);">Hôm nay</span>
+              </div>
+
+              <!-- Agenda Item 1: Sự kiện RSVP nhóm -> Lối vào M07 -->
+              <div class="event-card" style="margin-bottom: 8px;">
+                <div class="event-card-header">
+                  <div style="display: flex; gap: 6px; align-items: center;">
+                    <span class="badge-promo" style="font-size: 11px; padding: 2px 8px;">Sự kiện RSVP</span>
+                    <span class="badge-tag-purple">Nhóm Thiết kế</span>
+                  </div>
+                  <span class="event-time-badge">10:00 – 11:30</span>
+                </div>
+
+                <div class="event-title" style="font-weight: 600;">
+                  Họp kế hoạch Sprint Q4 &amp; Duyệt Mobile UI
+                </div>
+
+                <div class="event-meta-row">
+                  <div class="event-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <span>Google Meet (Phòng họp ảo)</span>
+                  </div>
+                  <div class="event-meta-item">
+                    <span class="badge-success" style="font-size: 11px; padding: 2px 8px;">✓ Đã nhận: Tham gia</span>
+                  </div>
+                </div>
+
+                <!-- Link vào M07 (Chi tiết lịch/sự kiện) -->
+                <div style="padding-top: 6px; border-top: 1px dashed var(--color-hairline-soft); display: flex; justify-content: flex-end;">
+                  <a href="#m07-event-detail" class="button-link" style="font-size: 13px;" title="Xem chi tiết sự kiện & danh sách RSVP (M07)">
+                    Chi tiết sự kiện &amp; RSVP &rarr;
+                  </a>
+                </div>
+              </div>
+
+              <!-- Agenda Item 2: Lịch cá nhân -->
+              <div class="event-card" style="margin-bottom: 8px;">
+                <div class="event-card-header">
+                  <div style="display: flex; gap: 6px; align-items: center;">
+                    <span class="badge-tag-yellow">Lịch cá nhân</span>
+                    <span class="caption" style="font-weight: 500; color: var(--color-steel);">Cá nhân</span>
+                  </div>
+                  <span class="event-time-badge">14:00 – 15:00</span>
+                </div>
+
+                <div class="event-title">Review bản thiết kế Figma &amp; Đối chiếu tokens</div>
+
+                <div class="event-meta-row">
+                  <div class="event-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <span>Nhắc trước 15 phút · Không có RSVP</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Agenda Item 3: Thông báo / Hạn chót -->
+              <div class="event-card">
+                <div class="event-card-header">
+                  <div style="display: flex; gap: 6px; align-items: center;">
+                    <span class="badge-tag-coral">Hạn chót / Thông báo</span>
+                    <span class="badge-tag-purple">Nhóm Core</span>
+                  </div>
+                  <span class="event-time-badge">17:00</span>
+                </div>
+
+                <div class="event-title">Hạn chót nộp báo cáo tuần 40</div>
+
+                <div class="event-meta-row">
+                  <div class="event-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span>Thông báo gửi đến toàn đội ngũ</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Mobile Bottom Navigation (Section 5) -->
+          <nav class="mobile-bottom-nav">
+            <!-- Tab 1: Hôm nay (M03) -->
+            <a href="m03-today.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <circle cx="12" cy="15" r="1.5" fill="currentColor"></circle>
+              </svg>
+              <span>Hôm nay</span>
+            </a>
+
+            <!-- Tab 2: Lịch (Active) -->
+            <a href="m04-calendar.html" class="bottom-nav-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Lịch</span>
+            </a>
+
+            <!-- Tab 3: Công việc (M05) -->
+            <a href="m05-todos.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4"></path>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+              <span>Công việc</span>
+            </a>
+
+            <!-- Tab 4: Nhóm (M12) -->
+            <a href="#m12-teams" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Nhóm</span>
+            </a>
+          </nav>
+
+          <!-- 5. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <!-- "Biến thể được ghi chú ngoài vùng UI" per mobile-ui-ux-plan.md -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M04</div>
+            <h2 class="spec-screen-name">Lịch (Calendar &amp; Agenda)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F04 · Calendar (Một phần)</span>
+            <span class="badge-success">Phạm vi giai đoạn 1</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Nội dung chính & Quy tắc UX (Theo plan)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Quy tắc gộp bố cục:</strong> M04 thay cho 3 trang calendar riêng biệt (tháng, tuần, ngày) và danh sách lịch; kết hợp <em>Tháng + Agenda ngày chọn</em> trong cùng màn hình có cuộn.</li>
+              <li><strong>Lối vào M07:</strong> Nhấp vào mục sự kiện trong Agenda là lối vào trực tiếp sang màn hình Chi tiết lịch/sự kiện (M07).</li>
+              <li><strong>Nhãn phân biệt rõ ràng:</strong> Nhãn loại (Sự kiện RSVP / Lịch cá nhân / Thông báo) và nhãn nhóm/cá nhân được ghi rõ bằng chữ kèm chip tag, <em>không chỉ phân biệt bằng màu sắc</em>.</li>
+              <li><strong>Bộ lọc gọn (Filter pills):</strong> Cho phép chuyển đổi nhanh giữa các loại item mà không làm vỡ bố cục di động.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Bảng phân loại mục trên Calendar & Agenda -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🏷️</span> 2. Phân loại mục Calendar (Theo mục 7 plan)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Loại mục</th>
+                  <th>Chấm chỉ báo (Dot)</th>
+                  <th>Nhãn hiển thị</th>
+                  <th>Đặc điểm hành vi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Sự kiện RSVP</strong></td>
+                  <td><span class="color-dot" style="background:#4262ff"></span>Xanh dương</td>
+                  <td><span class="badge-tag-purple">Tên nhóm</span></td>
+                  <td>Có phản hồi Tham gia/Không/Chưa chắc; mở M07 để xem danh sách phản hồi.</td>
+                </tr>
+                <tr>
+                  <td><strong>Lịch cá nhân</strong></td>
+                  <td><span class="color-dot" style="background:#ffd02f"></span>Vàng</td>
+                  <td><span class="badge-tag-yellow">Cá nhân</span></td>
+                  <td>Lịch cá nhân riêng tư, có nhắc nhở, không có RSVP.</td>
+                </tr>
+                <tr>
+                  <td><strong>Thông báo/Hạn chót</strong></td>
+                  <td><span class="color-dot" style="background:#ef4444"></span>Đỏ coral</td>
+                  <td><span class="badge-tag-coral">Hạn chót</span></td>
+                  <td>Thời điểm quan trọng do nhóm hoặc hệ thống phát hành.</td>
+                </tr>
+                <tr>
+                  <td><strong>Ngày lễ/Đặc biệt</strong></td>
+                  <td><span class="color-dot" style="background:#0fbcb0"></span>Teal</td>
+                  <td><span class="badge-success">Ngày lễ</span></td>
+                  <td>Ngày lễ quốc gia hoặc ngày kỷ niệm công ty.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái ngoài vùng UI -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Trạng thái biến thể & Tương tác mẫu (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- State 1: Ngày không có lịch trình nào (Empty Day) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Khi chọn ngày trống lịch</span>
+              <div style="margin-top: 6px; padding: 14px; background: #ffffff; border-radius: 8px; border: 1px dashed var(--color-hairline); text-align: center;">
+                <span style="font-size: 20px;">📅</span>
+                <div class="body-sm-medium" style="margin-top: 4px;">Không có lịch trình cho ngày này</div>
+                <span class="caption" style="color: var(--color-steel);">Nhấn nút "+ Thêm" ở góc trên để tạo lịch mới.</span>
+              </div>
+            </div>
+
+            <!-- State 2: Ví dụ về Ngày lễ đặc biệt trong Agenda -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Mục ngày lễ / ngày đặc biệt</span>
+              <div style="margin-top: 6px; padding: 10px; background: #ffffff; border-radius: 8px; border: 1px solid var(--color-hairline);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span class="badge-success" style="font-size: 11px;">Ngày lễ quốc gia</span>
+                  <span class="caption">10/10/2026</span>
+                </div>
+                <div class="body-sm-medium" style="margin-top: 4px;">Kỷ niệm Ngày Giải phóng Thủ đô</div>
+                <span class="caption" style="color: var(--color-steel);">Toàn đội ngũ được nghỉ theo quy định nhà nước.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ô ngày được chọn</td>
+                  <td><code class="spec-token-code">colors.primary / on-primary</code></td>
+                  <td>Nền #1c1c1e, chữ trắng #ffffff, bo tròn full</td>
+                </tr>
+                <tr>
+                  <td>Ô ngày hiện tại (Today)</td>
+                  <td><code class="spec-token-code">colors.brand-blue</code></td>
+                  <td>Viền 1.5px solid #4262ff, chữ #4262ff</td>
+                </tr>
+                <tr>
+                  <td>Card chứa lưới lịch</td>
+                  <td><code class="spec-token-code">card-base</code></td>
+                  <td>Bg #ffffff, radius xl (16px), border hairline-soft #eef0f3</td>
+                </tr>
+                <tr>
+                  <td>Nút thêm nhanh</td>
+                  <td><code class="spec-token-code">button-primary</code></td>
+                  <td>Pill đen, chữ trắng, min-height 36px</td>
+                </tr>
+                <tr>
+                  <td>Bộ lọc nhanh (Filter pills)</td>
+                  <td><code class="spec-token-code">pill-tab / pill-tab-active</code></td>
+                  <td>Active: bg primary, inactive: bg canvas viền hairline</td>
+                </tr>
+                <tr>
+                  <td>Bottom Navigation</td>
+                  <td><code class="spec-token-code">mobile-bottom-nav</code></td>
+                  <td>Tab "Lịch" active ở vị trí số 2, chiều cao 60px</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên kết -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m03-today.html" class="button-secondary" style="flex: 1; text-align: center;">
+              &larr; Quay lại M03: Hôm nay
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục &amp; Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

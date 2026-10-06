@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M02: Đăng ký</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item active">M02: Đăng ký</a>
+        <a href="m03-today.html" class="showcase-nav-item">M03: Hôm nay</a>
+        <a href="m04-calendar.html" class="showcase-nav-item">M04: Lịch</a>
+        <a href="m05-todos.html" class="showcase-nav-item">M05: Công việc</a>
+        <a href="m06-todo-form.html" class="showcase-nav-item">M06: Tạo/sửa Todo</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M02</span>
+          <span class="badge-tag-yellow">F08 · Xác thực</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header: Back button + Brand identity -->
+          <div class="mobile-app-header">
+            <!-- Circular back button (44x44px touch target) -->
+            <a href="m01-login.html" class="button-icon-circular" aria-label="Quay lại đăng nhập" title="Quay lại">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </a>
+
+            <div class="mobile-brand-mark">
+              <div class="mobile-brand-logo">N</div>
+              <span class="mobile-brand-name">NEXA</span>
+            </div>
+
+            <!-- Empty space for balanced layout -->
+            <div style="width: 44px;"></div>
+          </div>
+
+          <!-- 3. Screen Content: Form Đăng ký (Scrollable) -->
+          <div class="mobile-screen-content">
+            <!-- Screen Title Group -->
+            <div class="screen-title-group">
+              <h1 class="heading-3">Tạo tài khoản</h1>
+              <p class="body-md">Bắt đầu quản lý kế hoạch cá nhân và phối hợp hiệu quả cùng đội ngũ.</p>
+            </div>
+
+            <!-- Registration Form (F08) -->
+            <form action="#" method="POST" onsubmit="return false;">
+              <!-- Field 1: Họ và tên (name) -->
+              <div class="form-group">
+                <label for="name" class="form-label form-label-required">Họ và tên</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    class="text-input"
+                    placeholder="Ví dụ: Hoàng Minh Trí"
+                    value="Hoàng Minh Trí"
+                    autocomplete="name"
+                    required
+                  >
+                </div>
+                <span class="form-helper">Tối thiểu 2 ký tự, tối đa 100 ký tự.</span>
+              </div>
+
+              <!-- Field 2: Email (email) -->
+              <div class="form-group">
+                <label for="regEmail" class="form-label form-label-required">Email</label>
+                <div class="input-wrapper">
+                  <input
+                    type="email"
+                    id="regEmail"
+                    name="email"
+                    class="text-input"
+                    placeholder="name@company.com"
+                    value="tri.hoang@congty.com"
+                    autocomplete="email"
+                    required
+                  >
+                </div>
+                <span class="form-helper">Email dùng để kích hoạt tài khoản và nhận lịch làm việc.</span>
+              </div>
+
+              <!-- Field 3: Mật khẩu (password) -->
+              <div class="form-group">
+                <label for="regPassword" class="form-label form-label-required">Mật khẩu</label>
+                <div class="input-wrapper">
+                  <input
+                    type="password"
+                    id="regPassword"
+                    name="password"
+                    class="text-input"
+                    placeholder="Tối thiểu 8 ký tự"
+                    value="MatKhauMoi@2026"
+                    autocomplete="new-password"
+                    required
+                  >
+                  <!-- Eye toggle button -->
+                  <button type="button" class="input-addon-right" aria-label="Hiện mật khẩu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Password checklist per registerSchema regex -->
+                <div class="password-requirements">
+                  <div class="requirement-item valid">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Tối thiểu 8 ký tự (tối đa 128)
+                  </div>
+                  <div class="requirement-item valid">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Ít nhất 1 chữ cái in hoa (A-Z)
+                  </div>
+                  <div class="requirement-item valid">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Ít nhất 1 chữ cái in thường (a-z)
+                  </div>
+                  <div class="requirement-item valid">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Ít nhất 1 chữ số (0-9)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 4: Xác nhận mật khẩu (confirmPassword) -->
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label form-label-required">Xác nhận mật khẩu</label>
+                <div class="input-wrapper">
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    class="text-input"
+                    placeholder="Nhập lại chính xác mật khẩu"
+                    value="MatKhauMoi@2026"
+                    autocomplete="new-password"
+                    required
+                  >
+                  <!-- Eye toggle button -->
+                  <button type="button" class="input-addon-right" aria-label="Hiện mật khẩu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+                <span class="form-helper">Đảm bảo mật khẩu xác nhận trùng khớp với mật khẩu đã nhập.</span>
+              </div>
+
+              <!-- Điều khoản & Cam kết quyền riêng tư -->
+              <div style="margin-bottom: 24px;">
+                <p class="caption" style="color: var(--color-steel); line-height: 1.45;">
+                  Bằng việc nhấn "Tạo tài khoản", bạn xác nhận đồng ý với
+                  <a href="#terms" class="button-link" style="font-size: 13px;">Điều khoản dịch vụ</a> và
+                  <a href="#privacy" class="button-link" style="font-size: 13px;">Chính sách bảo mật</a> của NEXA.
+                </p>
+              </div>
+
+              <!-- Primary CTA: Black Pill Button (DESIGN.md button-primary) -->
+              <div style="margin-bottom: 24px;">
+                <button type="submit" class="button-primary button-full">
+                  Tạo tài khoản
+                </button>
+              </div>
+
+              <!-- Lối vào đăng nhập (Login entrypoint) -->
+              <div style="text-align: center; padding-top: 8px; border-top: 1px solid var(--color-hairline-soft);">
+                <p class="body-sm" style="color: var(--color-slate);">
+                  Đã có tài khoản NEXA?
+                  <a href="m01-login.html" class="button-link" style="margin-left: 4px; font-weight: 600;">Đăng nhập ngay</a>
+                </p>
+              </div>
+            </form>
+          </div>
+
+          <!-- 4. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <!-- "Biến thể được ghi chú ngoài vùng UI" per mobile-ui-ux-plan.md -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M02</div>
+            <h2 class="spec-screen-name">Đăng ký (Sign Up)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F08 · Authentication</span>
+            <span class="badge-success">Phạm vi giai đoạn 1</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Nội dung chính & Quy tắc UX (Theo plan)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Phạm vi màn hình:</strong> Nhập Tên, Email, Mật khẩu, Xác nhận mật khẩu; hỗ trợ CTA Tạo tài khoản và lối vào Đăng nhập (M01).</li>
+              <li><strong>Đơn nhất bố cục:</strong> Sử dụng form đại diện đầy đủ, nội dung tự động cuộn mượt mà trên khung máy 390px. Không chia tách hay giấu thêm màn overlay.</li>
+              <li><strong>Nút Quay lại:</strong> Sử dụng <code class="spec-token-code">button-icon-circular</code> (44×44px trên mobile) ở góc trái trên để người dùng dễ dàng trở về M01.</li>
+              <li><strong>Phạm vi hoãn thiết kế:</strong> Luồng kích hoạt email OTP, xác minh 2 lớp chuyển sang giai đoạn sau (mục 4 trong plan).</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Quy tắc Validation (Zod Schema Mapping) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🛡️</span> 2. Ràng buộc Validation (packages/validation registerSchema)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Trường dữ liệu</th>
+                  <th>Kiểu & Ràng buộc Zod</th>
+                  <th>Thông báo lỗi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>name</strong></td>
+                  <td><code class="spec-token-code">z.string().min(2).max(100)</code></td>
+                  <td>"Tên phải có từ 2 đến 100 ký tự"</td>
+                </tr>
+                <tr>
+                  <td><strong>email</strong></td>
+                  <td><code class="spec-token-code">z.string().email().toLowerCase()</code></td>
+                  <td>"Email không đúng định dạng"</td>
+                </tr>
+                <tr>
+                  <td><strong>password</strong></td>
+                  <td><code class="spec-token-code">min(8).max(128).regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)</code></td>
+                  <td>"Mật khẩu phải chứa ít nhất 1 chữ hoa, 1 chữ thường và 1 số"</td>
+                </tr>
+                <tr>
+                  <td><strong>confirmPassword</strong></td>
+                  <td>Khớp chính xác với <code class="spec-token-code">password</code></td>
+                  <td>"Mật khẩu xác nhận không trùng khớp"</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái Validation ngoài vùng UI -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Trạng thái lỗi & Tương tác mẫu (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- Error State 1: Họ tên quá ngắn -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Tên dưới 2 ký tự</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Họ và tên</label>
+                <input type="text" class="text-input has-error" value="A" readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Họ và tên phải có tối thiểu 2 ký tự.
+                </div>
+              </div>
+            </div>
+
+            <!-- Error State 2: Mật khẩu thiếu số hoặc chữ hoa -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Mật khẩu thiếu chữ hoa hoặc chữ số</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Mật khẩu</label>
+                <input type="password" class="text-input has-error" value="matkhauthuong" readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Mật khẩu cần ít nhất một chữ in hoa (A-Z) và một chữ số (0-9).
+                </div>
+              </div>
+            </div>
+
+            <!-- Error State 3: Xác nhận mật khẩu không khớp -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 3: Xác nhận mật khẩu không khớp</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Xác nhận mật khẩu</label>
+                <input type="password" class="text-input has-error" value="MatKhauKhac@123" readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Mật khẩu xác nhận không trùng khớp. Vui lòng nhập lại.
+                </div>
+              </div>
+            </div>
+
+            <!-- Disabled Button State -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 4: Nút Tạo tài khoản khi dữ liệu chưa đủ</span>
+              <div style="margin-top: 6px;">
+                <button type="button" class="button-primary button-primary-disabled button-full" disabled>
+                  Tạo tài khoản
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nút Quay lại (Back)</td>
+                  <td><code class="spec-token-code">button-icon-circular</code></td>
+                  <td>Kích thước 44×44px (mobile standard), border 1px solid hairline</td>
+                </tr>
+                <tr>
+                  <td>CTA chính</td>
+                  <td><code class="spec-token-code">button-primary</code></td>
+                  <td><span class="color-dot" style="background:#1c1c1e"></span>#1c1c1e, pill full (9999px), 14px 500, min-height 44px</td>
+                </tr>
+                <tr>
+                  <td>Nhận diện Brand</td>
+                  <td><code class="spec-token-code">colors.brand-yellow</code></td>
+                  <td><span class="color-dot" style="background:#ffd02f"></span>#ffd02f (Canary yellow wordmark/icon)</td>
+                </tr>
+                <tr>
+                  <td>Ô nhập (Input)</td>
+                  <td><code class="spec-token-code">text-input</code></td>
+                  <td>Cao 44px, radius 8px, viền hairline-strong #c7cad5</td>
+                </tr>
+                <tr>
+                  <td>Trạng thái Focus</td>
+                  <td><code class="spec-token-code">text-input-focused</code></td>
+                  <td><span class="color-dot" style="background:#4262ff"></span>Viền 2px solid brand-blue #4262ff</td>
+                </tr>
+                <tr>
+                  <td>Checklist mật khẩu</td>
+                  <td><code class="spec-token-code">badge-success / steel</code></td>
+                  <td><span class="color-dot" style="background:#00b473"></span>#00b473 khi thỏa mãn, #6b6f7e khi chưa đạt</td>
+                </tr>
+                <tr>
+                  <td>Tiêu đề màn</td>
+                  <td><code class="spec-token-code">typography.heading-3</code></td>
+                  <td>28px / weight 500 / line-height 1.25</td>
+                </tr>
+                <tr>
+                  <td>Safe Area</td>
+                  <td><code class="spec-token-code">iOS / Android spec</code></td>
+                  <td>Top 44px (status bar), Bottom 34px (home bar)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên kết -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m01-login.html" class="button-secondary" style="flex: 1; text-align: center;">
+              &larr; Quay lại M01: Đăng nhập
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục & Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

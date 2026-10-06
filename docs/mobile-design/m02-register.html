@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="M02 — Bản thiết kế màn hình đăng ký NEXA trên mobile." />
+    <title>M02 · Đăng ký · NEXA</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="mobile-screen" aria-labelledby="screen-title">
+      <header class="app-header">
+        <a class="icon-button" href="m01-login.html" aria-label="Quay lại đăng nhập"
+          ><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path
+              d="M16 10H4M9 5L4 10L9 15"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            /></svg
+        ></a>
+        <div class="brand" aria-label="NEXA">
+          <span class="brand-mark" aria-hidden="true"
+            ><svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M4 16V4L16 16V4"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              /></svg
+          ></span>
+          <span class="brand-name" aria-hidden="true">NEXA</span>
+        </div>
+      </header>
+
+      <section class="intro intro-rose">
+        <h1 id="screen-title">Tạo tài khoản</h1>
+        <p class="secondary">Bắt đầu kế hoạch của riêng bạn. Kết nối với nhóm khi sẵn sàng.</p>
+      </section>
+
+      <form class="auth-form" aria-label="Đăng ký">
+        <div class="field">
+          <label for="name">Họ và tên</label>
+          <input
+            class="text-input"
+            id="name"
+            type="text"
+            autocomplete="name"
+            placeholder="Tên bạn muốn hiển thị"
+            minlength="2"
+            maxlength="100"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            class="text-input"
+            id="email"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="ban@example.com"
+            required
+          />
+        </div>
+        <div class="field">
+          <label for="password">Mật khẩu</label>
+          <input
+            class="text-input"
+            id="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Tạo mật khẩu"
+            minlength="8"
+            maxlength="128"
+            pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,128}"
+            aria-describedby="password-help"
+            required
+          />
+          <p class="caption secondary" id="password-help">
+            8–128 ký tự, gồm chữ hoa, chữ thường và số.
+          </p>
+        </div>
+        <div class="field">
+          <label for="confirm-password">Xác nhận mật khẩu</label>
+          <input
+            class="text-input"
+            id="confirm-password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Nhập lại mật khẩu"
+            minlength="8"
+            maxlength="128"
+            required
+          />
+        </div>
+        <div class="auth-actions">
+          <!-- Static review CTA: confirmation matching is illustrated in reference. -->
+          <button class="button button-primary" type="button">
+            Tạo tài khoản
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path
+                d="M4 10H16M11 5L16 10L11 15"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
+          <p class="auth-switch">
+            <span class="secondary">Đã có tài khoản?</span>
+            <a class="inline-link" href="m01-login.html">Đăng nhập</a>
+          </p>
+        </div>
+      </form>
+    </main>
+
+    <aside class="review-note" aria-label="Ghi chú thiết kế">
+      <p>M02 · Đăng ký · F08 · Bản thiết kế HTML/CSS tĩnh.</p>
+      <p>
+        CTA minh họa, chưa tạo tài khoản. Quy tắc tên/email/mật khẩu đối chiếu packages/validation;
+        lỗi xác nhận mật khẩu được minh họa ở <a href="index.html#validation">reference</a>.
+      </p>
+      <p><a href="index.html">← Mục lục &amp; component</a></p>
+    </aside>
+  </body>
+</html>

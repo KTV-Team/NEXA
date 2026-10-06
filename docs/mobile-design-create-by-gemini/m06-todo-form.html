@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M06: Tạo/sửa Todo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-today.html" class="showcase-nav-item">M03: Hôm nay</a>
+        <a href="m04-calendar.html" class="showcase-nav-item">M04: Lịch</a>
+        <a href="m05-todos.html" class="showcase-nav-item">M05: Công việc</a>
+        <a href="m06-todo-form.html" class="showcase-nav-item active">M06: Tạo/sửa Todo</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M06</span>
+          <span class="badge-tag-yellow">F12 · Chi tiết &amp; Sửa Todo</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Header Bar: Nút Back 44px + Tiêu đề + Nút Xóa (Bottom nav ẩn theo mục 5) -->
+          <div class="mobile-app-header" style="border-bottom: 1px solid var(--color-hairline-soft); padding: 8px 16px 12px;">
+            <!-- Circular Back Button (44x44px) -->
+            <a href="m05-todos.html" class="button-icon-circular" aria-label="Quay lại danh sách công việc" title="Quay lại">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </a>
+
+            <!-- Screen Title -->
+            <div style="font-size: 17px; font-weight: 600; color: var(--color-ink);">
+              Chi tiết công việc
+            </div>
+
+            <!-- Delete Action Icon Button -->
+            <a href="#confirm-delete-dialog" class="button-icon-circular" style="color: var(--color-coral-dark);" aria-label="Xóa công việc" title="Xóa công việc">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </a>
+          </div>
+
+          <!-- 3. Form Content (Scrollable) -->
+          <div class="mobile-screen-content" style="padding-bottom: 32px;">
+            <form action="#" method="POST" onsubmit="return false;">
+              <!-- Quick Status Check Card -->
+              <div class="card-base" style="background-color: var(--color-surface); padding: 12px 16px; margin-bottom: var(--space-lg); display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="todo-checkbox" aria-label="Đánh dấu hoàn thành" style="background: #ffffff;"></div>
+                  <div>
+                    <div class="body-sm-medium">Trạng thái hoàn thành</div>
+                    <span class="caption" style="color: var(--color-steel);">Hiện tại: Đang thực hiện</span>
+                  </div>
+                </div>
+                <span class="badge-tag-purple" style="font-size: 11px;">Chưa xong</span>
+              </div>
+
+              <!-- Field 1: Tiêu đề công việc -->
+              <div class="form-group">
+                <label for="todoTitle" class="form-label form-label-required">Tiêu đề công việc</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="todoTitle"
+                    name="title"
+                    class="text-input"
+                    placeholder="Nhập việc cần làm..."
+                    value="Hoàn thiện bản thiết kế M05 và M06"
+                    required
+                  >
+                </div>
+                <span class="form-helper">Tối thiểu 1 ký tự, tối đa 200 ký tự.</span>
+              </div>
+
+              <!-- Field 2: Không gian / Ngữ cảnh làm việc -->
+              <div class="form-group">
+                <label class="form-label">Không gian làm việc</label>
+                <div class="context-pill-group">
+                  <button type="button" class="context-pill-btn">
+                    <span>👤</span> Cá nhân
+                  </button>
+                  <button type="button" class="context-pill-btn active">
+                    <span>👥</span> Nhóm Thiết kế
+                  </button>
+                  <button type="button" class="context-pill-btn">
+                    <span>🏢</span> Nhóm Core
+                  </button>
+                </div>
+                <span class="form-helper">Quyết định quyền xem và người phối hợp.</span>
+              </div>
+
+              <!-- Field 3: Hạn chót (Deadline) -->
+              <div class="form-group">
+                <label for="todoDeadline" class="form-label">Hạn chót hoàn thành</label>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="todoDeadline"
+                    name="deadline"
+                    class="text-input"
+                    value="06/10/2026, 18:00"
+                    placeholder="Chọn ngày và giờ..."
+                  >
+                  <div class="input-addon-right">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </div>
+                </div>
+                <!-- Quick date pickers -->
+                <div style="display: flex; gap: 6px; margin-top: 6px;">
+                  <button type="button" class="pill-tab-active" style="padding: 2px 10px; font-size: 11px;">Hôm nay</button>
+                  <button type="button" class="pill-tab" style="padding: 2px 10px; font-size: 11px;">Ngày mai</button>
+                  <button type="button" class="pill-tab" style="padding: 2px 10px; font-size: 11px;">Cuối tuần</button>
+                </div>
+              </div>
+
+              <!-- Field 4: Mức độ ưu tiên (Priority) -->
+              <div class="form-group">
+                <label class="form-label">Mức độ ưu tiên</label>
+                <div class="priority-selector-group">
+                  <!-- High (Selected) -->
+                  <div class="priority-choice-btn selected-high">
+                    <span>🔴</span> Cao
+                  </div>
+                  <!-- Medium -->
+                  <div class="priority-choice-btn">
+                    <span>🟡</span> T.bình
+                  </div>
+                  <!-- Low -->
+                  <div class="priority-choice-btn">
+                    <span>⚪</span> Thấp
+                  </div>
+                </div>
+              </div>
+
+              <!-- Field 5: Ghi chú chi tiết (Notes) -->
+              <div class="form-group">
+                <label for="todoNotes" class="form-label">Ghi chú &amp; Chi tiết</label>
+                <textarea
+                  id="todoNotes"
+                  name="notes"
+                  class="textarea-input"
+                  placeholder="Thêm mô tả hoặc hướng dẫn thực hiện..."
+                >Cần tuân thủ DESIGN.md: dùng black-pill CTA, form 44px, không hover effect, kiểm tra co giãn 360px và 430px.</textarea>
+                <span class="form-helper">Tối đa 1000 ký tự.</span>
+              </div>
+
+              <!-- CTA Actions Group -->
+              <div style="margin-top: var(--space-xl); display: flex; flex-direction: column; gap: 10px;">
+                <!-- Primary Save CTA -->
+                <button type="submit" class="button-primary button-full">
+                  Lưu thay đổi
+                </button>
+
+                <!-- Secondary Back/Cancel CTA -->
+                <a href="m05-todos.html" class="button-secondary button-full" style="text-decoration: none;">
+                  Quay lại danh sách
+                </a>
+              </div>
+
+              <!-- Danger zone link -->
+              <div style="text-align: center; margin-top: 16px;">
+                <a href="#confirm-delete-dialog" class="button-link" style="color: var(--color-coral-dark); font-size: 13px;">
+                  Xóa công việc này
+                </a>
+              </div>
+            </form>
+          </div>
+
+          <!-- 4. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <!-- "Biến thể được ghi chú ngoài vùng UI" per mobile-ui-ux-plan.md -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M06</div>
+            <h2 class="spec-screen-name">Tạo/sửa Todo (Shared Form)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F12 · Form dùng chung</span>
+            <span class="badge-success">Phạm vi giai đoạn 1</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Nội dung chính & Quy tắc UX (Theo plan)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Quy tắc gộp form:</strong> M06 là form dùng chung cho cả hai nghiệp vụ <em>Tạo mới</em> và <em>Xem/sửa chi tiết</em>; không nhân bản màn hình. Biến thể được ghi chú tại panel đặc tả ngoài UI.</li>
+              <li><strong>Trọn vẹn thông tin:</strong> Chứa đầy đủ tiêu đề, deadline, priority, không gian nhóm/cá nhân, ghi chú chi tiết và trạng thái hoàn thành.</li>
+              <li><strong>Ẩn Bottom Navigation:</strong> Theo mục 5 của plan, màn hình form chi tiết ẩn Bottom Navigation và cung cấp nút Quay lại (Back 44px) rõ ràng ở thanh trên cùng.</li>
+              <li><strong>Xóa có xác nhận:</strong> Nút Xóa trên header và cuối form kích hoạt dialog xác nhận tránh mất dữ liệu vô tình.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. So sánh Biến thể: Tạo mới vs. Chỉnh sửa -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔄</span> 2. So sánh Biến thể Form dùng chung
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần</th>
+                  <th>Biến thể Tạo mới (Create)</th>
+                  <th>Biến thể Xem/Sửa (Edit — Đang hiển thị)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tiêu đề Header</strong></td>
+                  <td>"Tạo công việc mới"</td>
+                  <td>"Chi tiết công việc"</td>
+                </tr>
+                <tr>
+                  <td><strong>Dữ liệu Form</strong></td>
+                  <td>Các ô nhập rỗng, ưu tiên mặc định "Trung bình"</td>
+                  <td>Tải sẵn dữ liệu của công việc đã chọn</td>
+                </tr>
+                <tr>
+                  <td><strong>Thao tác Xóa</strong></td>
+                  <td>Ẩn nút xóa trên header & cuối form</td>
+                  <td>Hiện icon thùng rác và link xóa nguy hiểm</td>
+                </tr>
+                <tr>
+                  <td><strong>CTA chính</strong></td>
+                  <td>"Tạo công việc"</td>
+                  <td>"Lưu thay đổi"</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái ngoài vùng UI -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Trạng thái biến thể & Tương tác mẫu (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- State 1: Lỗi khi để trống Tiêu đề -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Lỗi bỏ trống tiêu đề (Validation Error)</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Tiêu đề công việc</label>
+                <input type="text" class="text-input has-error" value="" placeholder="Nhập việc cần làm..." readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Vui lòng nhập tiêu đề cho công việc.
+                </div>
+              </div>
+            </div>
+
+            <!-- State 2: Dialog xác nhận xóa công việc -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Dialog xác nhận xóa (Confirm Delete Modal)</span>
+              <div style="margin-top: 6px; padding: 14px; background: #ffffff; border-radius: 12px; border: 1px solid var(--color-hairline); box-shadow: var(--shadow-card);">
+                <div class="body-sm-medium" style="color: var(--color-ink); font-weight: 600;">Xác nhận xóa công việc?</div>
+                <p class="caption" style="color: var(--color-steel); margin: 6px 0 12px;">
+                  Công việc "Hoàn thiện bản thiết kế M05 và M06" sẽ bị xóa khỏi hệ thống và không thể khôi phục.
+                </p>
+                <div style="display: flex; gap: 8px;">
+                  <button type="button" class="button-secondary" style="flex: 1; padding: 6px 12px; font-size: 12px; min-height: 36px;">Hủy bỏ</button>
+                  <button type="button" class="button-primary" style="flex: 1; padding: 6px 12px; font-size: 12px; min-height: 36px; background-color: #dc2626;">Xóa vĩnh viễn</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nút Quay lại (Back)</td>
+                  <td><code class="spec-token-code">button-icon-circular</code></td>
+                  <td>Kích thước 44×44px (mobile), border hairline #e0e2e8</td>
+                </tr>
+                <tr>
+                  <td>Ô nhập văn bản</td>
+                  <td><code class="spec-token-code">text-input</code></td>
+                  <td>Cao 44px, radius md (8px), border hairline-strong #c7cad5</td>
+                </tr>
+                <tr>
+                  <td>Ô ghi chú lớn</td>
+                  <td><code class="spec-token-code">textarea-input</code></td>
+                  <td>Radius md (8px), padding 12px 16px, min-height 96px</td>
+                </tr>
+                <tr>
+                  <td>Nút phân loại ưu tiên</td>
+                  <td><code class="spec-token-code">priority-choice-btn</code></td>
+                  <td>Radius full, pill viền mảnh, active đổi nền tương ứng</td>
+                </tr>
+                <tr>
+                  <td>CTA Lưu thay đổi</td>
+                  <td><code class="spec-token-code">button-primary</code></td>
+                  <td>Pill đen #1c1c1e, chữ trắng, min-height 44px, radius full</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên kết -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m05-todos.html" class="button-secondary" style="flex: 1; text-align: center;">
+              &larr; Quay lại M05: Công việc
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục &amp; Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

@@ -65,6 +65,10 @@ export interface LoginDto {
   password: string;
 }
 
+export interface RegisterDto extends LoginDto {
+  name: string;
+}
+
 export interface AuthTokens {
   accessToken: string;
   refreshToken: string;

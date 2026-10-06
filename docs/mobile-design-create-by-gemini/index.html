@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile Design — Bộ mẫu M01 - M06</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Design Showcase</span>
+          <span class="showcase-app-sub">docs/mobile-design-create-by-gemini</span>
+        </div>
+      </div>
+
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item active">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-today.html" class="showcase-nav-item">M03: Hôm nay</a>
+        <a href="m04-calendar.html" class="showcase-nav-item">M04: Lịch</a>
+        <a href="m05-todos.html" class="showcase-nav-item">M05: Công việc</a>
+        <a href="m06-todo-form.html" class="showcase-nav-item">M06: Tạo/sửa Todo</a>
+      </nav>
+    </header>
+
+    <!-- Content Container -->
+    <main style="max-width: 1100px; margin: 40px auto; padding: 0 24px; display: flex; flex-direction: column; gap: 32px; width: 100%;">
+      <!-- Hero Introduction Banner -->
+      <div class="card-base" style="border-radius: var(--radius-xxxl); padding: 32px; background: #ffffff;">
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap;">
+          <span class="badge-tag-yellow">Bản thiết kế UI/UX Mobile tinh gọn</span>
+          <span class="badge-success">Tuân thủ chuẩn DESIGN.md</span>
+          <span class="badge-tag-purple">M01 – M06 Đã hoàn thành</span>
+        </div>
+        <h1 class="heading-3" style="font-size: 32px; margin-bottom: 12px;">NEXA Mobile UI/UX — Màn hình M01 đến M06</h1>
+        <p class="body-md" style="color: var(--color-slate); max-width: 800px;">
+          Bộ giao diện tĩnh đại diện cho các tính năng cốt lõi: <strong>F08: Xác thực</strong>, <strong>F04: Lịch</strong>, <strong>F10: Hộp thư &amp; RSVP</strong>, <strong>F11: Sự kiện</strong>, và <strong>F12: Quản lý công việc (Todo)</strong>. Thiết kế theo quy chuẩn bắt buộc của <code>DESIGN.md</code>, kế thừa token từ <code>packages/design-tokens</code>, áp dụng cho cả Android và iOS với mốc chuẩn 390px (hỗ trợ kiểm tra 360px &amp; 430px).
+        </p>
+      </div>
+
+      <!-- Quick Screen Navigation Grid (6 Screens) -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <!-- Card M01 -->
+        <div class="card-base" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="micro" style="text-transform: uppercase; color: var(--color-steel); font-weight: 600;">Màn hình M01</span>
+              <h2 class="heading-4" style="margin-top: 2px;">Đăng nhập</h2>
+            </div>
+            <span class="badge-tag-yellow">F08</span>
+          </div>
+          <p class="body-sm">
+            Email, Mật khẩu có nút ẩn/hiện, duy trì đăng nhập, CTA pill đen, lối vào đăng ký và panel lỗi Zod validation.
+          </p>
+          <div style="margin-top: auto; padding-top: 12px;">
+            <a href="m01-login.html" class="button-primary button-full" style="text-decoration: none;">
+              Mở M01 &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Card M02 -->
+        <div class="card-base" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="micro" style="text-transform: uppercase; color: var(--color-steel); font-weight: 600;">Màn hình M02</span>
+              <h2 class="heading-4" style="margin-top: 2px;">Đăng ký</h2>
+            </div>
+            <span class="badge-tag-yellow">F08</span>
+          </div>
+          <p class="body-sm">
+            Họ tên, Email, Mật khẩu kèm checklist điều kiện regex, Xác nhận mật khẩu, nút Back 44px và điều khoản bảo mật.
+          </p>
+          <div style="margin-top: auto; padding-top: 12px;">
+            <a href="m02-register.html" class="button-primary button-full" style="text-decoration: none;">
+              Mở M02 &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Card M03 -->
+        <div class="card-base" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="micro" style="text-transform: uppercase; color: var(--color-steel); font-weight: 600;">Màn hình M03</span>
+              <h2 class="heading-4" style="margin-top: 2px;">Hôm nay</h2>
+            </div>
+            <span class="badge-tag-yellow">F04/10/11/12</span>
+          </div>
+          <p class="body-sm">
+            Hub trung tâm: Thông báo chờ phản hồi RSVP tương tác, Sự kiện trong ngày, Todo ưu tiên, Header chọn ngữ cảnh và Bottom Navigation 4 tab.
+          </p>
+          <div style="margin-top: auto; padding-top: 12px;">
+            <a href="m03-today.html" class="button-primary button-full" style="text-decoration: none;">
+              Mở M03 &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Card M04 -->
+        <div class="card-base" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="micro" style="text-transform: uppercase; color: var(--color-steel); font-weight: 600;">Màn hình M04</span>
+              <h2 class="heading-4" style="margin-top: 2px;">Lịch</h2>
+            </div>
+            <span class="badge-tag-yellow">F04</span>
+          </div>
+          <p class="body-sm">
+            Tháng + Agenda ngày chọn (lối vào M07), bộ lọc loại/nhóm gọn, nhãn phân biệt chữ và chip tag rõ ràng, chấm chỉ báo sự kiện.
+          </p>
+          <div style="margin-top: auto; padding-top: 12px;">
+            <a href="m04-calendar.html" class="button-primary button-full" style="text-decoration: none;">
+              Mở M04 &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Card M05 -->
+        <div class="card-base" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="micro" style="text-transform: uppercase; color: var(--color-steel); font-weight: 600;">Màn hình M05</span>
+              <h2 class="heading-4" style="margin-top: 2px;">Công việc</h2>
+            </div>
+            <span class="badge-tag-yellow">F12</span>
+          </div>
+          <p class="body-sm">
+            Danh sách việc cần làm &amp; đã hoàn thành, thanh tìm kiếm search-pill, bộ lọc trạng thái/ưu tiên, nhấp vào việc mở form M06.
+          </p>
+          <div style="margin-top: auto; padding-top: 12px;">
+            <a href="m05-todos.html" class="button-primary button-full" style="text-decoration: none;">
+              Mở M05 &rarr;
+            </a>
+          </div>
+        </div>
+
+        <!-- Card M06 -->
+        <div class="card-base" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <span class="micro" style="text-transform: uppercase; color: var(--color-steel); font-weight: 600;">Màn hình M06</span>
+              <h2 class="heading-4" style="margin-top: 2px;">Tạo/sửa Todo</h2>
+            </div>
+            <span class="badge-tag-yellow">F12</span>
+          </div>
+          <p class="body-sm">
+            Form dùng chung xem &amp; sửa chi tiết: tiêu đề, deadline, ưu tiên (Cao/T.bình/Thấp), không gian làm việc, ghi chú và xác nhận xóa.
+          </p>
+          <div style="margin-top: auto; padding-top: 12px;">
+            <a href="m06-todo-form.html" class="button-primary button-full" style="text-decoration: none;">
+              Mở M06 &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Design System Compliance & Principles -->
+      <div class="card-base">
+        <h2 class="heading-4" style="margin-bottom: 16px;">Nguyên tắc tuân thủ DESIGN.md &amp; mobile-ui-ux-plan.md</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          <div style="padding: 16px; background-color: var(--color-surface); border-radius: var(--radius-lg);">
+            <div style="font-weight: 600; margin-bottom: 6px; color: var(--color-ink);">✅ Stark White Canvas &amp; Nền phẳng</div>
+            <div class="body-sm">Sử dụng <code>colors.canvas (#ffffff)</code> và <code>colors.surface (#f7f8fa)</code>, viền mảnh hairline. Không áp dụng gradient, glassmorphism hay đổ bóng nặng.</div>
+          </div>
+          <div style="padding: 16px; background-color: var(--color-surface); border-radius: var(--radius-lg);">
+            <div style="font-weight: 600; margin-bottom: 6px; color: var(--color-ink);">✅ Black-pill Primary CTA</div>
+            <div class="body-sm">CTA chính sử dụng nút pill đen <code>#1c1c1e</code>, chữ trắng, bo góc <code>rounded.full (9999px)</code>, kích thước cảm ứng tối thiểu 44px.</div>
+          </div>
+          <div style="padding: 16px; background-color: var(--color-surface); border-radius: var(--radius-lg);">
+            <div style="font-weight: 600; margin-bottom: 6px; color: var(--color-ink);">✅ Quy tắc gộp Form &amp; Chi tiết</div>
+            <div class="body-sm">M05 hiển thị thông tin cơ bản; M06 chứa thông tin đầy đủ làm form dùng chung cho cả Tạo mới và Sửa (không thêm màn chi tiết riêng).</div>
+          </div>
+          <div style="padding: 16px; background-color: var(--color-surface); border-radius: var(--radius-lg);">
+            <div style="font-weight: 600; margin-bottom: 6px; color: var(--color-ink);">✅ Chuẩn Input 44px / Radius 8px</div>
+            <div class="body-sm">Các ô nhập chuẩn cao 44px, bo góc <code>radius.md (8px)</code>, viền hairline-strong <code>#c7cad5</code>, trạng thái focus viền 2px <code>#4262ff</code>.</div>
+          </div>
+          <div style="padding: 16px; background-color: var(--color-surface); border-radius: var(--radius-lg);">
+            <div style="font-weight: 600; margin-bottom: 6px; color: var(--color-ink);">✅ Bottom Navigation 4 Tab</div>
+            <div class="body-sm">Điều hướng đáy gồm 4 tab chuẩn: Hôm nay · Lịch · Công việc · Nhóm. Form chi tiết (M06) ẩn bottom nav và dùng nút Back 44px.</div>
+          </div>
+          <div style="padding: 16px; background-color: var(--color-surface); border-radius: var(--radius-lg);">
+            <div style="font-weight: 600; margin-bottom: 6px; color: var(--color-ink);">✅ Biến thể ghi chú ngoài UI</div>
+            <div class="body-sm">Mỗi màn hình chỉ có một bố cục đại diện duy nhất; các trường hợp lỗi, focus, disabled được minh họa cụ thể trong panel annotation bên cạnh.</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>M01–M02 · Reference mobile · NEXA</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="reference">
+      <header class="reference-header">
+        <span class="badge badge-yellow">NEXA · Mobile UI</span>
+        <h1>Đăng nhập &amp; đăng ký</h1>
+        <p class="secondary">
+          Hai màn hình M01/M02 theo mobile-ui-ux-plan.md. HTML/CSS tĩnh để duyệt thiết kế; chưa
+          triển khai tính năng xác thực F08.
+        </p>
+      </header>
+
+      <nav class="reference-grid" aria-label="Màn hình đã thiết kế">
+        <article class="card-base screen-card">
+          <span class="caption muted">M01 · F08</span>
+          <h2>Đăng nhập</h2>
+          <p class="body-sm secondary">
+            Email, mật khẩu và lối vào đăng ký. Mẫu toàn trang ở trạng thái ban đầu.
+          </p>
+          <a class="button button-primary" href="m01-login.html">Xem M01 →</a>
+        </article>
+        <article class="card-base screen-card">
+          <span class="caption muted">M02 · F08</span>
+          <h2>Đăng ký</h2>
+          <p class="body-sm secondary">
+            Họ tên, email, mật khẩu, xác nhận mật khẩu và lối về đăng nhập.
+          </p>
+          <a class="button button-secondary" href="m02-register.html">Xem M02 →</a>
+        </article>
+      </nav>
+
+      <section class="reference-section" id="validation" aria-labelledby="validation-title">
+        <h2 id="validation-title">Validation &amp; trạng thái</h2>
+        <div class="reference-grid">
+          <article class="card-base stack">
+            <h3>Lỗi tại trường nhập</h3>
+            <div class="field">
+              <label for="error-email">Email</label>
+              <input
+                class="text-input"
+                id="error-email"
+                type="email"
+                value="minhan@"
+                aria-invalid="true"
+                aria-describedby="email-error"
+              />
+              <p class="field-error" id="email-error">
+                Email chưa đúng định dạng. Ví dụ: ban@example.com.
+              </p>
+            </div>
+            <div class="field">
+              <label for="error-confirm">Xác nhận mật khẩu</label>
+              <input
+                class="text-input"
+                id="error-confirm"
+                type="password"
+                value="Example123"
+                aria-invalid="true"
+                aria-describedby="confirm-error"
+              />
+              <p class="field-error" id="confirm-error">
+                Mật khẩu xác nhận chưa khớp. Vui lòng nhập lại.
+              </p>
+            </div>
+            <p class="caption secondary">
+              Lỗi có chữ giải thích và liên kết aria-describedby, không chỉ thể hiện bằng màu. Đây
+              là mẫu cố định để duyệt, không tự cập nhật khi nhập.
+            </p>
+          </article>
+          <article class="card-base stack">
+            <h3>Lỗi đăng nhập &amp; đang xử lý</h3>
+            <div class="error-summary">
+              Không thể đăng nhập. Kiểm tra email và mật khẩu rồi thử lại.
+            </div>
+            <button class="button button-primary" type="button" disabled>Đang đăng nhập…</button>
+            <p class="caption secondary">
+              Minh họa component disabled trong lúc gửi yêu cầu. Khi triển khai, thông báo lỗi tổng
+              đặt trên form; giữ email, không lộ thông tin tài khoản.
+            </p>
+            <div class="small-stack body-sm secondary">
+              <p>Tên: 2–100 ký tự. Email: bắt buộc, đúng định dạng.</p>
+              <p>
+                Đăng nhập: mật khẩu ít nhất 8 ký tự. Đăng ký: 8–128 ký tự, có chữ hoa, chữ thường và
+                số.
+              </p>
+              <p>
+                Xác nhận: bắt buộc và trùng mật khẩu. Đây là yêu cầu UI cần xử lý khi triển khai,
+                chưa có logic so khớp trong mẫu tĩnh.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="reference-section" aria-labelledby="tokens-title">
+        <h2 id="tokens-title">Mapping DESIGN.md → giao diện</h2>
+        <div class="card-base">
+          <dl class="token-list">
+            <div>
+              <dt>Canvas &amp; chữ</dt>
+              <dd>
+                colors.canvas / surface / ink / slate / steel; font Roobert PRO → Noto Sans →
+                -apple-system → BlinkMacSystemFont → sans-serif. Chưa kèm font được cấp phép; dùng
+                fallback có sẵn trên thiết bị.
+              </dd>
+            </div>
+            <div>
+              <dt>Tiêu đề &amp; nội dung</dt>
+              <dd>
+                heading-3 28px/500/1.25; heading-4 22px/500/1.30; heading-5 18px/500/1.40; body-md
+                16px/400/1.50; body-sm 14px/400/1.50; caption 13px/400/1.40.
+              </dd>
+            </div>
+            <div>
+              <dt>CTA &amp; điều hướng</dt>
+              <dd>
+                button-primary: primary/on-primary, radius full, padding 12px 24px, button-md
+                14px/500/1.30. CTA phụ button-secondary. Link dùng button-link. Quay lại dùng
+                button-icon-circular 44×44px trên mobile.
+              </dd>
+            </div>
+            <div>
+              <dt>Input &amp; lỗi</dt>
+              <dd>
+                text-input: cao 44px, radius md 8px, padding 12px 16px, hairline-strong. Focus: viền
+                brand-blue 2px. Mẫu lỗi ghép brand-red / brand-red-dark với coral-dark từ palette,
+                dùng caption và aria-invalid; DESIGN.md chưa có component lỗi riêng.
+              </dd>
+            </div>
+            <div>
+              <dt>Card &amp; nhận diện</dt>
+              <dd>
+                M01 card-feature-teal; M02 card-feature-rose: radius xxxl 28px, padding xxl 32px.
+                Reference dùng card-base radius xl 16px/padding xl 24px. Logo dùng brand-yellow;
+                chip dùng badge-tag-yellow. Bề mặt phẳng, không shadow.
+              </dd>
+            </div>
+            <div>
+              <dt>Khoảng cách &amp; safe area</dt>
+              <dd>
+                Lề trang lg 20px; khoảng cách xxs/xs/sm/md/lg/xl/xxl. Canvas mobile 390px trên
+                desktop; dưới 480px dùng chiều rộng viewport. Safe area qua env(safe-area-inset-*),
+                nội dung cuộn tự nhiên; CTA nằm trong luồng nội dung.
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="reference-section" aria-labelledby="review-title">
+        <h2 id="review-title">Phạm vi &amp; hướng dẫn duyệt</h2>
+        <div class="card-base stack body-sm secondary">
+          <ul>
+            <li>
+              Mở M01 hoặc M02 và chuyển qua lại bằng liên kết. Mỗi tệp có đúng một bố cục màn hình;
+              mẫu lỗi chỉ là component nhỏ trên trang này.
+            </li>
+            <li>
+              Kiểm tra ở 360/390/430px, phóng to chữ và nhập họ tên dài. Input cuộn nội dung bên
+              trong; helper và CTA không bị cắt hay che bởi thanh cố định.
+            </li>
+            <li>
+              Chạm hoặc Tab vào input để xem focus 2px brand-blue. Mật khẩu được che; hỗ trợ
+              autocomplete đúng ngữ cảnh. Không có JavaScript hay API; CTA chính chỉ minh họa.
+            </li>
+            <li>
+              Ghi chú thiết kế nằm ngoài main.mobile-screen. Không vẽ thanh hệ thống giả hoặc bottom
+              navigation trong luồng xác thực.
+            </li>
+            <li>
+              M03–M14 chưa được thiết kế trong lần này. Quên/reset/đổi mật khẩu và onboarding riêng
+              để giai đoạn sau theo kế hoạch.
+            </li>
+          </ul>
+          <p>
+            Token đã đối chiếu với packages/design-tokens/src/index.ts, không có khác biệt ở các
+            token sử dụng. Ưu tiên giới hạn màu vàng trong Do's/Don'ts của DESIGN.md như kế hoạch
+            yêu cầu.
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
