@@ -6,7 +6,6 @@ import { loginSchema } from '@nexa/validation';
 import { AppText, ErrorNotice, Icon, PrimaryButton, TextLink } from '../../../components/ui';
 import { AuthScaffold } from '../components/auth-scaffold';
 import { FormField } from '../components/form-field';
-import { NoticeDialog } from '../components/notice-dialog';
 import { useAuth } from '../auth-provider';
 import { useAuthForm } from '../use-auth-form';
 import { authErrorMessage } from '../auth-errors';
@@ -20,7 +19,6 @@ export default function LoginScreen() {
   const [busy, setBusy] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [help, setHelp] = useState(false);
   const submit = async () => {
     if (submitting.current) return;
     const values = form.validate();
@@ -44,7 +42,7 @@ export default function LoginScreen() {
   return (
     <AuthScaffold
       title="Đăng nhập"
-      description="Quản lý kế hoạch cá nhân và phối hợp cùng đội ngũ trong một không gian."
+      description="Quản lý thông báo cá nhân và kết nối với bạn bè."
       footer={
         <View style={styles.note}>
           <Icon name="lock" color={colors.steel} />
@@ -75,7 +73,7 @@ export default function LoginScreen() {
         onBlur={() => form.blur('email')}
         onSubmitEditing={() => password.current?.focus()}
         error={form.errors.email}
-        helper="Dùng email cá nhân hoặc email tổ chức của bạn."
+        helper="Email dùng cho tài khoản NEXA của bạn."
         editable={!busy}
       />
       <FormField
@@ -96,9 +94,6 @@ export default function LoginScreen() {
         error={form.errors.password}
         helper="Mật khẩu phải có ít nhất 8 ký tự."
         editable={!busy}
-        labelAction={
-          <TextLink label="Quên mật khẩu?" disabled={busy} onPress={() => setHelp(true)} />
-        }
       />
       <Pressable
         accessibilityRole="checkbox"
@@ -124,13 +119,6 @@ export default function LoginScreen() {
         </AppText>
         <TextLink label="Đăng ký ngay" disabled={busy} onPress={() => router.push('./register')} />
       </View>
-      {help && (
-        <NoticeDialog
-          title="Quên mật khẩu"
-          message="Tính năng khôi phục mật khẩu chưa khả dụng. Bạn có thể thử lại với mật khẩu đã dùng khi đăng ký."
-          close={() => setHelp(false)}
-        />
-      )}
     </AuthScaffold>
   );
 }

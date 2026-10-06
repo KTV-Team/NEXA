@@ -65,7 +65,7 @@ export default function RegisterScreen() {
   return (
     <AuthScaffold
       title="Tạo tài khoản"
-      description="Bắt đầu quản lý kế hoạch cá nhân và phối hợp hiệu quả cùng đội ngũ."
+      description="Tạo tài khoản để quản lý thông báo cá nhân và kết nối với bạn bè."
       back={goBack}
     >
       {error && <ErrorNotice message={error} />}
@@ -89,7 +89,7 @@ export default function RegisterScreen() {
       <FormField
         ref={email}
         label="Email"
-        placeholder="name@company.com"
+        placeholder="tenban@example.com"
         autoComplete="email"
         textContentType="emailAddress"
         keyboardType="email-address"
@@ -99,7 +99,7 @@ export default function RegisterScreen() {
         onChangeText={(value) => change('email', value)}
         onBlur={() => form.blur('email')}
         onSubmitEditing={() => password.current?.focus()}
-        helper="Dùng email cá nhân hoặc email tổ chức của bạn."
+        helper="Email dùng cho tài khoản NEXA của bạn."
         error={form.errors.email}
         editable={!busy}
       />

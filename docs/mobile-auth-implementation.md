@@ -1,70 +1,46 @@
-# M01/M02 — bàn giao triển khai mobile
+# Xác thực mobile — hiện trạng triển khai và hợp đồng cần nối
 
-Ngày: 06/10/2026. Phạm vi: chuyển M01/M02 từ bộ HTML Gemini thành React Native trong `apps/mobile`. Backend để nối sau theo lựa chọn của người dùng.
+Ngày kiểm tra tài liệu: 06/10/2026. Tài liệu này mô tả bằng chứng từ mã nguồn; không lấy HTML hoặc mẫu UI làm yêu cầu sản phẩm. Nguồn nghiệp vụ là task brief người dùng cung cấp và các xác nhận bổ sung được ghi trong [PRD](product-requirements.md).
 
-## Giao diện và cách chuyển đổi
+## Hiện trạng mobile
 
-Giữ nền trắng, logo vàng, heading-3, body-md/body-sm/caption, CTA đen dạng pill, input radius 8px và đường viền focus brand-blue từ shared design tokens. Thay khung điện thoại, status bar/notch/home indicator giả bằng safe area và thanh hệ thống của thiết bị. Font dùng Noto Sans đóng gói theo fallback đã cho phép; không sửa DESIGN.md.
+Mã nguồn có màn đăng nhập/đăng ký native, validation qua packages/validation, session provider, protected routes và trang hiển thị thông tin phiên/đăng xuất. Đây là triển khai một phần của N01, chưa phải xác thực đầu cuối với backend thật.
 
-M01/M02 mở với trường trống, không dùng tên/email/mật khẩu điền sẵn của mockup. Checkbox và checklist phản ánh dữ liệu thật. Đường vào quên mật khẩu mở dialog nhỏ thông báo chưa khả dụng, phù hợp phần hoãn F14. Bản mẫu có liên kết `#terms`/`#privacy` nhưng chưa có tài liệu hay URL thực; phần đó dùng hướng dẫn nhập tài khoản, chưa hiển thị tuyên bố người dùng đã chấp thuận điều khoản. Khi có tài liệu chính thức, thêm liên kết và luồng chấp thuận theo chính sách đã chốt.
+- DTO đăng ký gửi tên/email/mật khẩu; xác nhận mật khẩu là dữ liệu form, không gửi role do client tự chọn.
+- AuthService dùng shared Fetch client, kiểm tra shape phản hồi, lưu phiên theo lựa chọn ghi nhớ và làm mới token trước request khi gần hết hạn.
+- Native lưu phiên bằng SecureStore; không lưu mật khẩu. Không ghi nhớ thì giữ phiên trong bộ nhớ. Browser preview dùng sessionStorage theo tab để phục vụ phát triển.
+- Khi restore, lấy user từ API; phiên hỏng/bị từ chối được xóa, lỗi mạng giữ dữ liệu đã lưu để người dùng thử lại.
+- Logout cố xóa phiên local kể cả khi request server thất bại; thu hồi phiên server vẫn cần backend thật.
+- Trang sau đăng nhập chỉ hiển thị thông tin tài khoản/đăng xuất; chưa có luồng inbox hoặc quản lý bạn bè.
 
-Ghi chú cuối M01 chỉ mô tả lưu phiên bảo mật trên thiết bị native, không khẳng định backend đã mã hóa/đồng bộ Web-Mobile. Landing sau xác thực là trang thông tin phiên tối thiểu; M03–M14 chưa được triển khai trong phạm vi này.
+Bằng chứng: [AuthService](../apps/mobile/src/features/auth/auth-service.ts), [AuthProvider](../apps/mobile/src/features/auth/auth-provider.tsx), [storage](../apps/mobile/src/features/auth/session-storage.ts), [routing](../apps/mobile/app/_layout.tsx), [session landing](../apps/mobile/app/index.tsx), [shared validation](../packages/validation/src/index.ts).
 
-## Hợp đồng API cần nối
+Các chức năng tài khoản bổ sung như recovery/reset phải được xác nhận riêng; một đường dẫn hoặc dialog trong UI không xác nhận tính năng backend.
 
-Base URL cấu hình bằng `EXPO_PUBLIC_API_URL`, gồm `/api/v1`. Header `Content-Type: application/json`; request cần xác thực thêm `Authorization: Bearer <accessToken>`.
+## Hợp đồng mà client hiện yêu cầu
 
-| Method / path         | Body                        | Data khi thành công                                |
-| --------------------- | --------------------------- | -------------------------------------------------- |
-| POST `/auth/login`    | `{ email, password }`       | `AuthResponse`                                     |
-| POST `/auth/register` | `{ name, email, password }` | `AuthResponse`                                     |
-| POST `/auth/refresh`  | `{ refreshToken }`          | `AuthTokens`                                       |
-| GET `/users/me`       | Không có                    | `User` của phiên hiện tại                          |
-| POST `/auth/logout`   | Không có; bearer token      | HTTP 204, hoặc envelope thành công có `data: null` |
+Base URL lấy từ EXPO_PUBLIC_API_URL, gồm /api/v1. Client gửi JSON và bearer token khi có phiên. Đây là kỳ vọng từ mã client, không phải các route server đã hoàn thiện.
 
-Success envelope:
+| Method/path         | Request                          | Data client cần                              | Hiện trạng server                                          |
+| ------------------- | -------------------------------- | -------------------------------------------- | ---------------------------------------------------------- |
+| POST /auth/login    | LoginDto: email/password         | AuthResponse                                 | Stub, không kiểm tra mật khẩu; raw response thiếu envelope |
+| POST /auth/register | RegisterDto: name/email/password | AuthResponse                                 | Chưa có controller                                         |
+| POST /auth/refresh  | refreshToken                     | AuthTokens                                   | Stub token cố định; không validate/rotation thật           |
+| GET /users/me       | Bearer khi có phiên              | User thuộc phiên                             | Stub luôn chọn sample user đầu tiên; chưa có ownership     |
+| POST /auth/logout   | Bearer khi có phiên              | HTTP 204 hoặc success envelope với data null | 204 nhưng chưa revoke token                                |
 
-```json
-{
-  "success": true,
-  "data": {
-    "user": {
-      "id": "user-id",
-      "email": "name@example.com",
-      "name": "Tên người dùng",
-      "role": "user",
-      "createdAt": "2026-10-06T00:00:00Z",
-      "updatedAt": "2026-10-06T00:00:00Z"
-    },
-    "tokens": {
-      "accessToken": "<access-token>",
-      "refreshToken": "<refresh-token>",
-      "expiresIn": 3600
-    }
-  }
-}
-```
+Shared client yêu cầu success envelope `{ success: true, data: T }`, hoặc lỗi `{ success: false, error: { code, message, details? } }`; HTTP 204 không parse JSON. Timeout mặc định 15 giây. Response 200 thiếu envelope bị từ chối thay vì coi là đăng nhập thành công.
 
-Lỗi trả HTTP status thích hợp, kèm:
+Các contract và gap được tách chi tiết trong [API contracts](api-contracts.md). Schema phía mobile không thay thế validation, authentication và authorization tại API.
 
-```json
-{ "success": false, "error": { "code": "INVALID_CREDENTIALS", "message": "Invalid credentials" } }
-```
+## Bằng chứng kiểm thử và giới hạn
 
-Mobile map 400/422, 401/403, 409, 429, lỗi server, timeout và mất mạng thành thông báo tiếng Việt. Endpoint đăng ký chưa tồn tại (404) báo dịch vụ chưa sẵn sàng. Request có timeout 15 giây. Phản hồi 200 thiếu envelope không được nhận là đăng nhập thành công.
+[auth-service.test.ts](../apps/mobile/src/features/auth/auth-service.test.ts) có test form/DTO, envelope và stub rejection, HTTP 204/timeout, lưu phiên không lưu mật khẩu, ghi nhớ bật/tắt, restore/refresh, dữ liệu phiên hỏng/bị từ chối, mất mạng và logout lỗi. Các test dùng transport/storage mock; đây là bằng chứng test code tồn tại, không phải chứng nhận runtime backend hoặc native.
 
-Khi mở app, phiên đã lưu được kiểm tra với `/users/me`; token sắp hết hạn được refresh trước. Token refresh được thay bằng token mới nếu server xoay vòng. Phiên bị thu hồi (401/403) được xóa. Lỗi mạng khi khôi phục đưa người dùng về màn đăng nhập với nút thử khôi phục, giữ dữ liệu đã lưu để thử lại. Khi bỏ chọn duy trì, phiên mới chỉ ở bộ nhớ. Đăng xuất luôn cố xóa phiên local, kể cả khi request server thất bại; thu hồi phiên phía server cần backend thật và kết nối thành công.
+Audit tài liệu này không chạy lại test/build. Browser preview không xác minh native SecureStore qua restart, bàn phím/accessibility native, signed binary hay push khi app nền/đóng. Những kiểm tra này phải hoàn thành khi tích hợp theo [roadmap](roadmap.md).
 
-Backend sau này phải tự validate schema, xác thực mật khẩu, cấp/thu hồi token và enforce ownership. Validation trên mobile không thay thế kiểm tra API. Controller stub hiện tại chưa đáp ứng các điều này; không ghi F08 là đã ship đầy đủ.
+## Tích hợp auth và native push cần làm
 
-## Kết quả kiểm tra
+Người dùng đã xác nhận thông báo phải hoạt động khi đang mở, chạy nền/khóa màn hình và đã đóng. Push native chưa được triển khai.
 
-- Typecheck mobile và các shared package đã sửa: đạt.
-- ESLint mobile: đạt, không có warning.
-- Unit tests: validation, confirmation, DTO, HTTP 204, timeout, từ chối stub response, lưu phiên không lưu mật khẩu, ghi nhớ bật/tắt, không kéo dài expiry khi restore, refresh/rotation, phiên hỏng/bị thu hồi, retry sau mất mạng, xóa phiên khi logout lỗi.
-- Expo export bundle Android, iOS và web: đạt. Không phải native binary/signing verification.
-- Playwright trên Expo web preview: M01/M02 ở 360/390/430px, không tràn ngang, CTA truy cập được bằng cuộn, label/checkbox ARIA, validation khi submit, checklist, hiện/ẩn mật khẩu, pending khóa form, 401/409/mất mạng và chuyển màn.
-- Phản hồi API được mock trong browser kiểm thử để xác minh register/login thành công, DTO chuẩn hóa, restore sau reload, logout và phiên chỉ giữ trong bộ nhớ. Mock không nằm trong app runtime.
-- Ảnh kiểm tra nằm trong `output/playwright/` (artifact local).
-
-Chưa kiểm tra runtime trên emulator/điện thoại thật, bàn phím native, VoiceOver/TalkBack, SecureStore qua restart native, APK/IPA hoặc backend thật. Cần kiểm tra các mục này khi tích hợp backend và chuẩn bị release.
+Khi triển khai cần bind token đúng tài khoản đã xác thực, xử lý rotation/token không hợp lệ và logout/đổi tài khoản. Tap push từ app nền/đóng phải restore hoặc yêu cầu đăng nhập rồi kiểm tra quyền với đích. Không coi test auth hiện có là bằng chứng đã kiểm tra vòng đời push token hoặc delivery ở ba trạng thái.

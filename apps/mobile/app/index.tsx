@@ -5,7 +5,7 @@ import { AppText, ErrorNotice, PrimaryButton } from '../src/components/ui';
 import { AuthScaffold } from '../src/features/auth/components/auth-scaffold';
 import { useAuth } from '../src/features/auth/auth-provider';
 
-/** Authenticated landing until M03 is implemented; contains no sample planning data. */
+/** Displays the active account session and its sign-out action. */
 export default function AccountSessionScreen() {
   const { session, logout } = useAuth();
   const [busy, setBusy] = useState(false);

@@ -45,15 +45,7 @@ export function AuthScaffold({
               NEXA
             </AppText>
           </View>
-          {back ? (
-            <View style={styles.balance} />
-          ) : (
-            <View style={styles.badge}>
-              <AppText variant="caption-bold" style={{ color: colors['yellow-dark'] }}>
-                v1.0
-              </AppText>
-            </View>
-          )}
+          <View style={styles.balance} />
         </View>
         <KeyboardAvoidingView
           style={styles.fill}
@@ -102,12 +94,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   brandName: { fontFamily: 'NotoSans_600SemiBold' },
-  badge: {
-    backgroundColor: colors['surface-yellow'],
-    borderRadius: rounded.full,
-    paddingVertical: spacing.xxs,
-    paddingHorizontal: spacing.sm,
-  },
   back: {
     width: 44,
     height: 44,
