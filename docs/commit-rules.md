@@ -37,16 +37,16 @@ Format:
 ```
 
 - `category`: `feature`, `fix`, `docs`, `refactor`, or `chore`.
-- `area`: `web`, `mobile`, or `api`.
+- `area`: `mobile`, `api`, or a relevant shared/documentation area. `web` is retained only for explicitly authorized maintenance of the historical scaffold, not current MVP feature development.
 - Use lowercase kebab-case.
 - Keep it short and specific.
 
 Examples:
 
 ```text
-feature/web/login-screen
 feature/mobile/login-screen
 feature/api/login-endpoint
+docs/project/product-scope
 ```
 
 ## 3. Commits by area

@@ -6,8 +6,8 @@
     "build": "nest build",
     "dev": "nest start --watch",
     "start": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
-    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json --noEmit",
     "test": "jest",
     "test:db": "jest --runInBand database/database.integration.spec.ts dev/dev.integration.spec.ts",
     "db:migration:generate": "typeorm-ts-node-commonjs migration:generate",
@@ -47,7 +47,10 @@
     "ts-jest": "^29.2.5",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "@typescript-eslint/eslint-plugin": "^8.71.1",
+    "@typescript-eslint/parser": "^8.71.1",
+    "eslint": "^9.39.5"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -55,12 +58,22 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "rootDir": ".",
+    "testMatch": [
+      "<rootDir>/tests/**/*.spec.ts"
+    ],
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": "<rootDir>/tsconfig.test.json"
+        }
+      ]
     },
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "<rootDir>/coverage",
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
     "testEnvironment": "node"
   }
 }

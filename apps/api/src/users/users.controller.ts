@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   NotImplementedException,
-  Param,
   Patch,
 } from '@nestjs/common';
 
@@ -19,7 +18,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') _id: string): never {
+  findOne(): never {
     throw new NotImplementedException('User management is not implemented yet');
   }
 

@@ -4,7 +4,6 @@ import type { DevDemoData } from '@nexa/types';
 import { IsNull, In, Repository } from 'typeorm';
 import { EventEntity } from '../events/entities/event.entity';
 import { NotificationEntity } from '../notifications/entities/notification.entity';
-import { NotificationRecipientEntity } from '../notifications/entities/notification-recipient.entity';
 import { TeamEntity } from '../teams/entities/team.entity';
 import { TeamMemberEntity } from '../teams/entities/team-member.entity';
 import { TodoItemEntity } from '../todos/entities/todo-item.entity';

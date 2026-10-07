@@ -1,0 +1,141 @@
+import { useRef, useState } from 'react';
+import { Keyboard, Pressable, TextInput, View } from 'react-native';
+import { router } from 'expo-router';
+import { colors } from '@nexa/design-tokens';
+import { loginSchema } from '@nexa/validation';
+import { AppText } from '@/components/app-text';
+import { ErrorNotice } from '@/components/error-notice';
+import { Icon } from '@/components/icon';
+import { PrimaryButton } from '@/components/primary-button';
+import { TextLink } from '@/components/text-link';
+import { AuthScaffold } from '../../components/auth-scaffold';
+import { FormField } from '../../components/form-field';
+import { useAuth } from '../../auth-provider';
+import { useAuthForm } from '../../hooks/use-auth-form';
+import { authErrorMessage } from '../../auth-errors';
+import { styles } from './login-screen.styles';
+
+export default function LoginScreen() {
+  const auth = useAuth();
+  const form = useAuthForm(loginSchema, { email: '', password: '' });
+  const email = useRef<TextInput>(null);
+  const password = useRef<TextInput>(null);
+  const submitting = useRef(false);
+  const [busy, setBusy] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const submit = async () => {
+    if (submitting.current) return;
+    const values = form.validate();
+    if (!values) {
+      (form.firstInvalid === 'email' ? email : password).current?.focus();
+      return;
+    }
+    Keyboard.dismiss();
+    submitting.current = true;
+    setBusy(true);
+    setError(null);
+    try {
+      await auth.login(values, remember);
+    } catch (cause) {
+      setError(authErrorMessage(cause));
+    } finally {
+      submitting.current = false;
+      setBusy(false);
+    }
+  };
+  return (
+    <AuthScaffold
+      title="Đăng nhập"
+      description="Quản lý thông báo cá nhân và kết nối với bạn bè."
+      footer={
+        <View style={styles.note}>
+          <Icon name="lock" color={colors.steel} />
+          <AppText variant="caption" style={styles.noteText}>
+            Phiên đăng nhập được lưu bảo mật trên thiết bị khi bạn chọn duy trì đăng nhập.
+          </AppText>
+        </View>
+      }
+    >
+      {auth.restorationError && (
+        <ErrorNotice
+          message={auth.restorationError}
+          action={{ label: 'Thử khôi phục phiên', onPress: () => void auth.retryRestore() }}
+        />
+      )}
+      {error && <ErrorNotice message={error} />}
+      <FormField
+        ref={email}
+        label="Email"
+        placeholder="name@company.com"
+        keyboardType="email-address"
+        autoComplete="email"
+        textContentType="emailAddress"
+        returnKeyType="next"
+        submitBehavior="submit"
+        value={form.values.email}
+        onChangeText={(value) => {
+          form.setValue('email', value);
+          setError(null);
+        }}
+        onBlur={() => form.blur('email')}
+        onSubmitEditing={() => password.current?.focus()}
+        error={form.errors.email}
+        helper="Email dùng cho tài khoản NEXA của bạn."
+        editable={!busy}
+      />
+      <FormField
+        ref={password}
+        label="Mật khẩu"
+        password
+        placeholder="Tối thiểu 8 ký tự"
+        autoComplete="current-password"
+        textContentType="password"
+        returnKeyType="go"
+        value={form.values.password}
+        onChangeText={(value) => {
+          form.setValue('password', value);
+          setError(null);
+        }}
+        onBlur={() => form.blur('password')}
+        onSubmitEditing={() => void submit()}
+        error={form.errors.password}
+        helper="Mật khẩu phải có ít nhất 8 ký tự."
+        editable={!busy}
+      />
+      <Pressable
+        accessibilityRole="checkbox"
+        accessibilityLabel="Duy trì trạng thái đăng nhập trên thiết bị này"
+        accessibilityState={{ checked: remember, disabled: busy }}
+        aria-checked={remember}
+        aria-disabled={busy}
+        disabled={busy}
+        onPress={() => setRemember(!remember)}
+        style={styles.remember}
+      >
+        <View style={[styles.checkbox, remember && styles.checked]}>
+          {remember && <Icon name="check" size={16} color={colors['on-primary']} />}
+        </View>
+        <AppText variant="body-sm" style={styles.rememberText}>
+          Duy trì trạng thái đăng nhập trên thiết bị này
+        </AppText>
+      </Pressable>
+      <PrimaryButton label="Đăng nhập" busy={busy} onPress={() => void submit()} />
+      {__DEV__ && (
+        <View style={styles.previewAction}>
+          <TextLink
+            label="Xem Inbox không cần đăng nhập (dev)"
+            disabled={busy}
+            onPress={() => router.replace('/')}
+          />
+        </View>
+      )}
+      <View style={styles.switchRow}>
+        <AppText variant="body-sm" style={styles.switchLabel}>
+          Chưa có tài khoản NEXA?
+        </AppText>
+        <TextLink label="Đăng ký ngay" disabled={busy} onPress={() => router.push('./register')} />
+      </View>
+    </AuthScaffold>
+  );
+}
