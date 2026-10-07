@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 import { colors } from '@nexa/design-tokens';
 import { AppText } from './app-text';
+import { styles } from './text-link.styles';
 
 export function TextLink({
   label,
@@ -29,7 +30,3 @@ export function TextLink({
   );
 }
 
-const styles = StyleSheet.create({
-  link: { minHeight: 44, justifyContent: 'center', alignSelf: 'flex-start' },
-  pressed: { opacity: 0.7 },
-});

@@ -1,1 +1,1 @@
-export { default } from '@/features/auth/screens/account-session/account-session-screen';
+export { default } from '@/features/notifications/screens/inbox/inbox-screen';

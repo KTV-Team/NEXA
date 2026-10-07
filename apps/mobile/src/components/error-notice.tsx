@@ -1,8 +1,9 @@
-import { StyleSheet, View } from 'react-native';
-import { colors, rounded, spacing } from '@nexa/design-tokens';
+import { View } from 'react-native';
+import { colors } from '@nexa/design-tokens';
 import { AppText } from './app-text';
 import { Icon } from './icon';
 import { TextLink } from './text-link';
+import { styles } from './error-notice.styles';
 
 export function ErrorNotice({
   message,
@@ -24,14 +25,3 @@ export function ErrorNotice({
   );
 }
 
-const styles = StyleSheet.create({
-  error: {
-    padding: spacing.md,
-    borderRadius: rounded.md,
-    backgroundColor: colors['brand-red'],
-    marginBottom: spacing.xl,
-    gap: spacing.xs,
-  },
-  errorRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.xs },
-  errorText: { flex: 1, color: colors['coral-dark'] },
-});

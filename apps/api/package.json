@@ -6,8 +6,8 @@
     "build": "nest build",
     "dev": "nest start --watch",
     "start": "node dist/main",
-    "lint": "eslint \"src/**/*.ts\" --max-warnings=0",
-    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings=0",
+    "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -43,12 +43,13 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "rootDir": ".",
+    "testMatch": ["<rootDir>/tests/**/*.spec.ts"],
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": ["ts-jest", { "tsconfig": "<rootDir>/tsconfig.test.json" }]
     },
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "<rootDir>/coverage",
+    "collectCoverageFrom": ["src/**/*.ts"],
     "testEnvironment": "node"
   }
 }

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
-import { colors, rounded, spacing } from '@nexa/design-tokens';
+import { colors } from '@nexa/design-tokens';
 import { loginSchema } from '@nexa/validation';
 import { AppText } from '@/components/app-text';
 import { ErrorNotice } from '@/components/error-notice';
@@ -13,6 +13,7 @@ import { FormField } from '../../components/form-field';
 import { useAuth } from '../../auth-provider';
 import { useAuthForm } from '../../hooks/use-auth-form';
 import { authErrorMessage } from '../../auth-errors';
+import { styles } from './login-screen.styles';
 
 export default function LoginScreen() {
   const auth = useAuth();
@@ -120,8 +121,17 @@ export default function LoginScreen() {
         </AppText>
       </Pressable>
       <PrimaryButton label="Đăng nhập" busy={busy} onPress={() => void submit()} />
+      {__DEV__ && (
+        <View style={styles.previewAction}>
+          <TextLink
+            label="Xem Inbox không cần đăng nhập (dev)"
+            disabled={busy}
+            onPress={() => router.replace('/')}
+          />
+        </View>
+      )}
       <View style={styles.switchRow}>
-        <AppText variant="body-sm" style={{ color: colors.slate }}>
+        <AppText variant="body-sm" style={styles.switchLabel}>
           Chưa có tài khoản NEXA?
         </AppText>
         <TextLink label="Đăng ký ngay" disabled={busy} onPress={() => router.push('./register')} />
@@ -129,46 +139,3 @@ export default function LoginScreen() {
     </AuthScaffold>
   );
 }
-const styles = StyleSheet.create({
-  remember: {
-    minHeight: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    marginBottom: spacing.xl,
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: rounded.xs,
-    borderWidth: 1,
-    borderColor: colors['hairline-strong'],
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  checked: { backgroundColor: colors.primary, borderColor: colors.primary },
-  rememberText: { flex: 1 },
-  switchRow: {
-    borderTopWidth: 1,
-    borderTopColor: colors['hairline-soft'],
-    marginTop: spacing.xl,
-    paddingTop: spacing.xs,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xxs,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  note: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: rounded.lg,
-    borderWidth: 1,
-    borderColor: colors['hairline-soft'],
-    backgroundColor: colors.surface,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  noteText: { flex: 1, color: colors.steel },
-});

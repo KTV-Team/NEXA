@@ -3,7 +3,7 @@ const typescriptPlugin = require('@typescript-eslint/eslint-plugin');
 
 module.exports = [
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'tests/**/*.ts'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {

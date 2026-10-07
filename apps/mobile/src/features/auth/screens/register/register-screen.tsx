@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
-import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
+import { Keyboard, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
-import { colors, spacing } from '@nexa/design-tokens';
+import { colors } from '@nexa/design-tokens';
 import { registerSchema } from '@nexa/validation';
 import { AppText } from '@/components/app-text';
 import { ErrorNotice } from '@/components/error-notice';
@@ -14,6 +14,7 @@ import { useAuth } from '../../auth-provider';
 import { useAuthForm } from '../../hooks/use-auth-form';
 import { authErrorMessage } from '../../auth-errors';
 import { registerFormSchema } from './register-form-schema';
+import { styles } from './register-screen.styles';
 
 export default function RegisterScreen() {
   const auth = useAuth();
@@ -139,7 +140,7 @@ export default function RegisterScreen() {
               />
               <AppText
                 variant="caption"
-                style={{ flex: 1, color: check.valid ? colors['moss-dark'] : colors.steel }}
+                style={[styles.checkText, { color: check.valid ? colors['moss-dark'] : colors.steel }]}
               >
                 {check.label}
               </AppText>
@@ -168,7 +169,7 @@ export default function RegisterScreen() {
       </AppText>
       <PrimaryButton label="Tạo tài khoản" busy={busy} onPress={() => void submit()} />
       <View style={styles.switchRow}>
-        <AppText variant="body-sm" style={{ color: colors.slate }}>
+        <AppText variant="body-sm" style={styles.switchLabel}>
           Đã có tài khoản NEXA?
         </AppText>
         <TextLink label="Đăng nhập ngay" disabled={busy} onPress={goBack} />
@@ -176,19 +177,3 @@ export default function RegisterScreen() {
     </AuthScaffold>
   );
 }
-const styles = StyleSheet.create({
-  checks: { gap: spacing.xxs },
-  check: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
-  terms: { color: colors.steel, marginBottom: spacing.xl },
-  switchRow: {
-    borderTopWidth: 1,
-    borderTopColor: colors['hairline-soft'],
-    marginTop: spacing.xl,
-    paddingTop: spacing.xs,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xxs,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

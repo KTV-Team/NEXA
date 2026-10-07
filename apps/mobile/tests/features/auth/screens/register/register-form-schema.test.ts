@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { registerFormSchema } from './register-form-schema';
+import { registerFormSchema } from '../../../../../src/features/auth/screens/register/register-form-schema';
 
 describe('registration form schema', () => {
   const credentials = {

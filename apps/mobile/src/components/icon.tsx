@@ -1,7 +1,18 @@
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { colors } from '@nexa/design-tokens';
 
-export type IconName = 'back' | 'eye' | 'eye-off' | 'check' | 'lock' | 'alert';
+export type IconName =
+  | 'back'
+  | 'eye'
+  | 'eye-off'
+  | 'check'
+  | 'lock'
+  | 'alert'
+  | 'mail'
+  | 'plus'
+  | 'calendar'
+  | 'clock'
+  | 'repeat';
 
 export function Icon({
   name,
@@ -42,6 +53,32 @@ export function Icon({
         <>
           <Circle cx={12} cy={12} r={9} />
           <Path d="M12 7v6m0 4h.01" />
+        </>
+      )}
+      {name === 'mail' && (
+        <>
+          <Rect x={3} y={5} width={18} height={14} rx={2} />
+          <Path d="m3 7 9 6 9-6" />
+        </>
+      )}
+      {name === 'plus' && <Path d="M12 5v14M5 12h14" />}
+      {name === 'calendar' && (
+        <>
+          <Rect x={3} y={5} width={18} height={16} rx={2} />
+          <Path d="M16 3v4M8 3v4M3 10h18" />
+        </>
+      )}
+      {name === 'clock' && (
+        <>
+          <Circle cx={12} cy={12} r={9} />
+          <Path d="M12 7v5l3 2" />
+        </>
+      )}
+      {name === 'repeat' && (
+        <>
+          <Path d="m17 2 4 4-4 4" />
+          <Path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4" />
+          <Path d="M21 13v2a3 3 0 0 1-3 3H3" />
         </>
       )}
     </Svg>

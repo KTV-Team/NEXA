@@ -32,9 +32,10 @@ Read the function/screen summary and inspect relevant source code and manifests 
 ## Colocation rules
 
 - Keep `apps/mobile/app/` for Expo Router route/layout entry points. Put screen implementations outside it, under the owning feature.
-- Put code used by one screen or component beside it. Props/types, local constants, tests, and small helpers may remain in the same file when that stays clear; create a nearby file when it improves readability or testing.
+- Put code used by one screen or component beside it. Keep component styles in a neighboring `<component>.styles.ts` file; a small style object whose values depend on runtime state may stay inline. Props/types, local constants, and small helpers may remain in the implementation file when that stays clear.
+- Put tests in a `tests/` directory at the root of their app or package, outside `src/`. Mirror the source path below `src/` within `tests/`; update test runner, lint, and typecheck configuration to discover and check that directory.
 - Code used across screens in one feature stays in that feature. Promote it to app-level `src/components` or another shared location only when there is a real consumer outside the owning feature and a stable common responsibility.
-- Keep shared UI components in `apps/mobile/src/components`, with one component per file. Component-specific styles and prop types stay with that component.
+- Keep shared UI components in `apps/mobile/src/components`, with one component per file. Component styles stay in an adjacent `<component>.styles.ts` file; prop types stay with that component.
 - Keep transport contracts in `packages/types`, boundary schemas in `packages/validation`, and HTTP transport/endpoints in `packages/api-client`. UI-only form fields and schemas stay with the screen that owns them.
 - Keep backend handlers and services in their existing NestJS business-module directories. Share through a module's explicit public providers; do not add abstraction layers or empty folders solely to match a template.
 - Common/shared code must not import from an owning screen or feature's private implementation. Prefer the smallest owner and move code upward only when reuse is demonstrated.

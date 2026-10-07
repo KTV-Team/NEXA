@@ -42,7 +42,7 @@ Inbox persistence is required regardless of push availability. On resume/reopen,
 | Path                     | Verified responsibility and technology                                              |
 | ------------------------ | ----------------------------------------------------------------------------------- |
 | `apps/mobile`            | Expo 57, React Native 0.86, React 19, TypeScript, Expo Router                       |
-| `apps/mobile/src`        | Mobile screens/feature code colocated by owner; shared UI is in per-component files |
+| `apps/mobile/src`        | Mobile screens/feature code and adjacent component style modules; tests live under `apps/mobile/tests` |
 | `apps/api`               | NestJS 11, Fastify adapter, TypeScript; shared Android/iOS HTTP backend             |
 | `apps/web`               | Retained Next.js 15 scaffold; out of MVP scope                                      |
 | `packages/types`         | Shared TypeScript DTOs and response types split by domain                           |
@@ -99,7 +99,7 @@ The following scripts exist; existence is not evidence that all checks pass:
 | `pnpm dev:app`                                           | API + mobile development                                                               |
 | `pnpm --filter @nexa/mobile typecheck`                   | Mobile TypeScript check                                                                |
 | `pnpm --filter @nexa/mobile lint`                        | Mobile ESLint                                                                          |
-| `pnpm --filter @nexa/mobile test`                        | Existing Vitest auth/transport/session tests                                           |
+| `pnpm --filter @nexa/mobile test`                        | Vitest auth/transport/session tests under `apps/mobile/tests`                         |
 | `pnpm --filter @nexa/mobile build`                       | Expo bundle export; includes browser output under current config, not a signed APK/IPA |
 | `pnpm --filter @nexa/mobile android`                     | Local Android native build/run                                                         |
 | `pnpm --filter @nexa/mobile ios`                         | Local iOS native build/run on macOS                                                    |
@@ -108,4 +108,4 @@ The following scripts exist; existence is not evidence that all checks pass:
 | `pnpm --filter @nexa/api start`                          | Start compiled backend after build; still a stub                                       |
 | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm lint` | Workspace-wide commands; may include historical web or incomplete checks               |
 
-Root `pnpm dev` includes the retained web workspace; use `dev:app` for current scope. `dev:web` remains a historical script. API Jest is configured but no API spec tests were found; API lint uses ESLint without applying fixes, while shared package lint scripts are placeholders. There is no tracked CI pipeline or backend deployment configuration. EAS profiles exist, but signing, native runtime testing, backend integration, and store release are unverified.
+Root `pnpm dev` includes the retained web workspace; use `dev:app` for current scope. `dev:web` remains a historical script. API Jest discovers `apps/api/tests/**/*.spec.ts`; no API spec tests currently exist. API lint uses ESLint without applying fixes, while shared package lint scripts are placeholders. There is no tracked CI pipeline or backend deployment configuration. EAS profiles exist, but signing, native runtime testing, backend integration, and store release are unverified.

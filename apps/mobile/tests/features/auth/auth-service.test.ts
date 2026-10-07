@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiClientError, createApiClient } from '@nexa/api-client';
 import { loginSchema, registerSchema } from '@nexa/validation';
-import { AuthService, type SessionStorage } from './auth-service';
+import { AuthService, type SessionStorage } from '../../../src/features/auth/auth-service';
 
 const user = {
   id: 'user-123',

@@ -60,18 +60,21 @@ Nếu không có biến môi trường, app tự chọn địa chỉ emulator t�
 
 ```text
 app/                                      Expo Router routes và layout, không chứa screen implementation
+src/layouts/                              Implementation root layout, tách khỏi route entry point
 src/features/auth/screens/login/          Screen đăng nhập, cùng code riêng của form
-src/features/auth/screens/register/       Screen đăng ký, schema confirm-password và test
+src/features/auth/screens/register/       Screen đăng ký và schema confirm-password
 src/features/auth/screens/account-session/ Landing phiên đăng nhập hiện có
 src/features/auth/components/             UI dùng chung trong feature auth
 src/features/auth/hooks/                  Hook form dùng giữa các màn auth
-src/features/auth/                        Provider, service, session storage, errors và test
+src/features/auth/                        Provider, service, session storage và errors
 src/components/                           Mỗi UI component dùng chung có file riêng
 src/theme/                                Typography adapter dùng shared token
 src/config/                               URL môi trường
+tests/features/auth/                      Test service auth, ngoài src và theo cấu trúc source
+tests/features/auth/screens/register/     Test schema form đăng ký
 ```
 
-Code chỉ dùng ở một màn hình/component được đặt cạnh nơi sử dụng. Code dùng trong auth giữ ở auth; UI dùng giữa các feature nằm trong `src/components`. DTO nằm trong `packages/types`, schema request chung trong `packages/validation`, HTTP client trong `packages/api-client`, style lấy từ `packages/design-tokens`. Schema xác nhận mật khẩu thuộc màn đăng ký; request chỉ gửi tên/email/mật khẩu, không gửi mật khẩu xác nhận hoặc role do client cung cấp.
+Code chỉ dùng ở một màn hình/component được đặt cạnh nơi sử dụng. Style component nằm trong file `<component>.styles.ts` kế bên; object style động nhỏ phụ thuộc state có thể ở trong JSX. Test nằm trong `tests/`, ngoài `src/`, theo đúng đường dẫn source. Code dùng trong auth giữ ở auth; UI dùng giữa các feature nằm trong `src/components`. DTO nằm trong `packages/types`, schema request chung trong `packages/validation`, HTTP client trong `packages/api-client`, style lấy từ `packages/design-tokens`. Schema xác nhận mật khẩu thuộc màn đăng ký; request chỉ gửi tên/email/mật khẩu, không gửi mật khẩu xác nhận hoặc role do client cung cấp.
 
 ## Kiểm tra và build
 
@@ -85,4 +88,4 @@ pnpm --filter @nexa/mobile exec expo install --check
 
 `build` export bundle Android, iOS và browser preview vào `dist` theo config hiện có; output browser không mở rộng MVP sang web. Đây không phải APK/IPA đã ký. `eas.json` có profile `preview` (Android APK, iOS simulator) và `production`. Native/cloud build cần tài khoản EAS, API và signing phù hợp; audit tài liệu này không chạy build hay xác nhận release.
 
-Hành vi client được kiểm tra trong [auth service tests](src/features/auth/auth-service.test.ts); API stub hiện tại nằm trong [auth controller](../api/src/auth/auth.controller.ts).
+Hành vi client được kiểm tra trong [auth service tests](tests/features/auth/auth-service.test.ts) và [registration schema tests](tests/features/auth/screens/register/register-form-schema.test.ts); API stub hiện tại nằm trong [auth controller](../api/src/auth/auth.controller.ts).

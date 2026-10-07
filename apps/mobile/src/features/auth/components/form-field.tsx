@@ -1,16 +1,9 @@
 import { forwardRef, useId, useState, type ReactNode } from 'react';
-import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-  type TextInputProps,
-} from 'react-native';
-import { colors, components, rounded, spacing } from '@nexa/design-tokens';
+import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
+import { colors } from '@nexa/design-tokens';
 import { AppText } from '@/components/app-text';
 import { Icon } from '@/components/icon';
-import { textStyle } from '@/theme/typography';
+import { PlatformWebOutline, styles } from './form-field.styles';
 
 interface FieldProps extends TextInputProps {
   label: string;
@@ -33,7 +26,7 @@ export const FormField = forwardRef<TextInput, FieldProps>(function FormField(
       <View style={styles.labelRow}>
         <AppText nativeID={`${id}-label`} variant="body-sm-medium">
           {label}
-          <AppText variant="body-sm" style={{ color: colors['coral-dark'] }}>
+          <AppText variant="body-sm" style={styles.requiredMarker}>
             {' '}
             *
           </AppText>
@@ -88,41 +81,4 @@ export const FormField = forwardRef<TextInput, FieldProps>(function FormField(
       {children}
     </View>
   );
-});
-
-const PlatformWebOutline =
-  Platform.OS === 'web' ? ({ outlineWidth: 0 } as TextInputProps['style']) : undefined;
-const styles = StyleSheet.create({
-  group: { marginBottom: spacing.xl, gap: spacing.xs },
-  labelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: spacing.xs,
-  },
-  wrapper: {
-    minHeight: components['text-input'].height,
-    height: components['text-input'].height,
-    borderWidth: 1,
-    borderColor: colors['hairline-strong'],
-    borderRadius: rounded.md,
-    backgroundColor: colors.canvas,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  focused: { borderWidth: 2, borderColor: colors['brand-blue'] },
-  invalid: { borderColor: colors['coral-dark'] },
-  input: {
-    ...textStyle('body-md'),
-    flex: 1,
-    minWidth: 0,
-    height: '100%',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    color: colors.ink,
-  },
-  passwordInput: { paddingRight: spacing.xxs },
-  eye: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  helper: { color: colors.steel },
-  error: { color: colors['coral-dark'] },
 });

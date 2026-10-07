@@ -1,6 +1,7 @@
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
-import { colors, rounded, spacing } from '@nexa/design-tokens';
+import { ActivityIndicator, Pressable } from 'react-native';
+import { colors } from '@nexa/design-tokens';
 import { AppText } from './app-text';
+import { styles } from './primary-button.styles';
 
 export function PrimaryButton({
   label,
@@ -39,18 +40,3 @@ export function PrimaryButton({
   );
 }
 
-const styles = StyleSheet.create({
-  button: {
-    minHeight: 44,
-    borderRadius: rounded.full,
-    backgroundColor: colors.primary,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.xl,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: spacing.xs,
-  },
-  pressed: { backgroundColor: colors.charcoal },
-  disabled: { backgroundColor: colors.hairline },
-});
