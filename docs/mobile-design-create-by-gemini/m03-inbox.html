@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M03: Inbox / Trang chính</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-inbox.html" class="showcase-nav-item active">M03: Inbox / Trang chính</a>
+        <a href="m04-create-notification.html" class="showcase-nav-item">M04: Tạo thông báo</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M03</span>
+          <span class="badge-tag-yellow">F02 · Inbox & Hộp thư chính</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header: Brand mark + Quick actions + Avatar -->
+          <div class="mobile-app-header">
+            <div class="mobile-brand-mark">
+              <div class="mobile-brand-logo">N</div>
+              <span class="mobile-brand-name">NEXA</span>
+            </div>
+
+            <!-- Top Header Actions: Sync indicator & Mark all read & Profile -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <!-- Sync / Refresh button -->
+              <button type="button" class="header-icon-btn" title="Đồng bộ thông báo" aria-label="Đồng bộ">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+              </button>
+
+              <!-- Mark All as Read button -->
+              <button type="button" class="header-icon-btn" title="Đánh dấu tất cả đã đọc" aria-label="Đánh dấu tất cả đã đọc">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 6L7 17l-5-5"/>
+                  <path d="M22 10l-7.5 7.5L13 16"/>
+                </svg>
+              </button>
+
+              <!-- User Avatar Button -->
+              <div class="header-avatar-btn" title="Hồ sơ tài khoản: Minh Anh">
+                MA
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Screen Content: Inbox Feed (Scrollable) -->
+          <div class="mobile-screen-content">
+            <!-- Screen Title & Unread Summary -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px;">
+              <div>
+                <h1 class="heading-3" style="font-size: 24px; line-height: 1.2;">Hộp thư</h1>
+                <p class="body-sm" style="color: var(--color-slate); margin-top: 2px;">
+                  Bạn có <strong style="color: var(--color-ink);">3 thông báo chưa đọc</strong>
+                </p>
+              </div>
+              <span class="badge-tag-yellow" style="font-weight: 600;">3 mới</span>
+            </div>
+
+            <!-- Realtime Sync Status Banner (Mở app đồng bộ tự động) -->
+            <div class="sync-status-bar">
+              <span class="sync-status-indicator">
+                <span class="sync-pulse-dot"></span>
+                <span>Kết nối trực tuyến • Đã đồng bộ lúc 09:41</span>
+              </span>
+              <span class="caption" style="color: var(--color-steel);">Vuốt để tải lại</span>
+            </div>
+
+            <!-- Fast Action Banner: Create New Notification CTA -->
+            <div style="margin-bottom: 16px;">
+              <a href="m04-create-notification.html" class="button-primary button-full" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Tạo thông báo mới</span>
+              </a>
+            </div>
+
+            <!-- Filter Pills Row (Section 5) -->
+            <div class="filter-pills-row">
+              <button type="button" class="pill-tab pill-tab-active">Tất cả (5)</button>
+              <button type="button" class="pill-tab">Chưa đọc (3)</button>
+              <button type="button" class="pill-tab">Bạn bè (3)</button>
+              <button type="button" class="pill-tab">Chính tôi (2)</button>
+              <button type="button" class="pill-tab">Lên lịch (1)</button>
+            </div>
+
+            <!-- Notification Items Feed -->
+            <div class="notification-feed-list" style="display: flex; flex-direction: column; gap: 4px;">
+              
+              <!-- Item 1: Unread Notification from Friend (Immediate) -->
+              <article class="notification-card unread">
+                <div class="notification-top-row">
+                  <div class="notification-sender-info">
+                    <div class="sender-avatar">TK</div>
+                    <div class="sender-details">
+                      <span class="sender-name">Tuấn Kiệt</span>
+                      <span class="sender-handle">@tuankiet • Bạn bè</span>
+                    </div>
+                  </div>
+                  <div class="notification-time-meta">
+                    <span class="notification-time">5 phút trước</span>
+                    <span class="unread-dot" title="Chưa đọc"></span>
+                  </div>
+                </div>
+
+                <div class="notification-main-content">
+                  <h2 class="notification-title">Nhắc hẹn: Ăn trưa trao đổi về dự án NEXA</h2>
+                  <p class="notification-body-text">
+                    Hẹn gặp cậu ở quán Cafe lúc 12:15 nhé, nhớ mang theo laptop để cùng xem qua mockup UI màn hình di động.
+                  </p>
+                </div>
+
+                <div class="notification-footer-row">
+                  <span class="delivery-badge immediate">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Gửi ngay
+                  </span>
+                  <div class="notification-card-actions">
+                    <button type="button" class="card-action-icon-btn" title="Đánh dấu đã đọc" aria-label="Đánh dấu đã đọc">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                    <button type="button" class="card-action-icon-btn danger" title="Xóa thông báo" aria-label="Xóa thông báo">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 2: Unread Self-Notification (Recurring Delivery) -->
+              <article class="notification-card unread">
+                <div class="notification-top-row">
+                  <div class="notification-sender-info">
+                    <div class="sender-avatar self">Tôi</div>
+                    <div class="sender-details">
+                      <span class="sender-name">Chính tôi</span>
+                      <span class="sender-handle">Tự nhắc nhở bản thân</span>
+                    </div>
+                  </div>
+                  <div class="notification-time-meta">
+                    <span class="notification-time">08:30 sáng</span>
+                    <span class="unread-dot" title="Chưa đọc"></span>
+                  </div>
+                </div>
+
+                <div class="notification-main-content">
+                  <h2 class="notification-title">Uống thuốc kháng sinh &amp; Vitamin sau ăn</h2>
+                  <p class="notification-body-text">
+                    Uống đúng giờ theo chỉ định bác sĩ: 1 viên kháng sinh 500mg và 1 viên sủi Vitamin C sau bữa sáng.
+                  </p>
+                </div>
+
+                <div class="notification-footer-row">
+                  <span class="delivery-badge recurring">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Lặp lại: 08:30 hàng ngày
+                  </span>
+                  <div class="notification-card-actions">
+                    <button type="button" class="card-action-icon-btn" title="Đánh dấu đã đọc" aria-label="Đánh dấu đã đọc">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                    <button type="button" class="card-action-icon-btn danger" title="Xóa thông báo" aria-label="Xóa thông báo">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 3: Unread Notification from Friend (Scheduled Delivery) -->
+              <article class="notification-card unread">
+                <div class="notification-top-row">
+                  <div class="notification-sender-info">
+                    <div class="sender-avatar">LH</div>
+                    <div class="sender-details">
+                      <span class="sender-name">Lan Hương</span>
+                      <span class="sender-handle">@lanhuong • Bạn bè</span>
+                    </div>
+                  </div>
+                  <div class="notification-time-meta">
+                    <span class="notification-time">07:00 sáng</span>
+                    <span class="unread-dot" title="Chưa đọc"></span>
+                  </div>
+                </div>
+
+                <div class="notification-main-content">
+                  <h2 class="notification-title">Chúc mừng sinh nhật Minh Anh! 🎂</h2>
+                  <p class="notification-body-text">
+                    Chúc bạn bước sang tuổi mới luôn tràn đầy nhiệt huyết, hạnh phúc và thành công rực rỡ với mọi dự định!
+                  </p>
+                </div>
+
+                <div class="notification-footer-row">
+                  <span class="delivery-badge scheduled">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Lên lịch hẹn giờ
+                  </span>
+                  <div class="notification-card-actions">
+                    <button type="button" class="card-action-icon-btn" title="Đánh dấu đã đọc" aria-label="Đánh dấu đã đọc">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </button>
+                    <button type="button" class="card-action-icon-btn danger" title="Xóa thông báo" aria-label="Xóa thông báo">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 4: Read Notification from Friend (Immediate) -->
+              <article class="notification-card read">
+                <div class="notification-top-row">
+                  <div class="notification-sender-info">
+                    <div class="sender-avatar">HĐ</div>
+                    <div class="sender-details">
+                      <span class="sender-name">Hải Đăng</span>
+                      <span class="sender-handle">@haidang • Bạn bè</span>
+                    </div>
+                  </div>
+                  <div class="notification-time-meta">
+                    <span class="notification-time">Hôm qua, 18:20</span>
+                  </div>
+                </div>
+
+                <div class="notification-main-content">
+                  <h2 class="notification-title">Đã hoàn thành xong phần API contracts</h2>
+                  <p class="notification-body-text">
+                    Mình đã đẩy commit cập nhật endpoint auth và users lên branch. Khi nào rảnh cậu kéo về kiểm tra giúp nhé.
+                  </p>
+                </div>
+
+                <div class="notification-footer-row">
+                  <span class="delivery-badge immediate">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Gửi ngay
+                  </span>
+                  <div class="notification-card-actions">
+                    <button type="button" class="card-action-icon-btn" title="Đánh dấu chưa đọc" aria-label="Đánh dấu chưa đọc">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+                    </button>
+                    <button type="button" class="card-action-icon-btn danger" title="Xóa thông báo" aria-label="Xóa thông báo">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Item 5: Read Self-Notification (Completed Schedule) -->
+              <article class="notification-card read">
+                <div class="notification-top-row">
+                  <div class="notification-sender-info">
+                    <div class="sender-avatar self">Tôi</div>
+                    <div class="sender-details">
+                      <span class="sender-name">Chính tôi</span>
+                      <span class="sender-handle">Tự nhắc nhở bản thân</span>
+                    </div>
+                  </div>
+                  <div class="notification-time-meta">
+                    <span class="notification-time">2 ngày trước</span>
+                  </div>
+                </div>
+
+                <div class="notification-main-content">
+                  <h2 class="notification-title">Nộp báo cáo tuần cho bộ phận Quản lý</h2>
+                  <p class="notification-body-text">
+                    Tổng kết các hạng mục công việc đã thực hiện trong tuần và kế hoạch tuần tới trước 17:00.
+                  </p>
+                </div>
+
+                <div class="notification-footer-row">
+                  <span class="delivery-badge scheduled">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Đã hoàn tất
+                  </span>
+                  <div class="notification-card-actions">
+                    <button type="button" class="card-action-icon-btn danger" title="Xóa thông báo" aria-label="Xóa thông báo">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+
+            <!-- Load More History Button (Section 5) -->
+            <div style="margin-top: 16px; margin-bottom: 24px; text-align: center;">
+              <button type="button" class="button-secondary button-full" style="font-size: 13px;">
+                Tải thêm lịch sử thông báo cũ
+              </button>
+            </div>
+          </div>
+
+          <!-- 4. Mobile Bottom Navigation Bar (4 Tab chuẩn NEXA) -->
+          <nav class="mobile-bottom-nav">
+            <!-- Tab 1: Inbox (Active) -->
+            <a href="m03-inbox.html" class="bottom-nav-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Hộp thư</span>
+            </a>
+
+            <!-- Tab 2: Tạo mới -->
+            <a href="m04-create-notification.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              <span>Tạo mới</span>
+            </a>
+
+            <!-- Tab 3: Bạn bè -->
+            <a href="#friends" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Bạn bè</span>
+            </a>
+
+            <!-- Tab 4: Hồ sơ / Cài đặt -->
+            <a href="#settings" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+
+          <!-- 5. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M03</div>
+            <h2 class="spec-screen-name">Inbox / Trang chính (Notification Inbox)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F02 · Inbox & Lịch sử</span>
+            <span class="badge-success">Phạm vi MVP xác nhận</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Yêu cầu sản phẩm (Theo docs/app-functions-and-screens.md)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Xem thông báo & số chưa đọc:</strong> Hiển thị danh sách thông báo theo thứ tự thời gian mới nhất, số lượng chưa đọc nổi bật trên header và tiêu đề.</li>
+              <li><strong>Thao tác trạng thái đọc:</strong> Cho phép đánh dấu từng mục thành đã đọc/chưa đọc hoặc một chạm "Đọc tất cả" để xóa trạng thái chưa đọc.</li>
+              <li><strong>Xóa thông báo:</strong> Xóa mục khỏi inbox của tài khoản người dùng một cách an toàn.</li>
+              <li><strong>Tải thêm lịch sử:</strong> Hỗ trợ phân trang / nút "Tải thêm lịch sử" để duyệt các thông báo cũ mà không làm chậm ứng dụng.</li>
+              <li><strong>Đồng bộ trên 3 trạng thái ứng dụng:</strong>
+                <ul style="padding-left: 18px; margin-top: 4px; display: flex; flex-direction: column; gap: 3px;">
+                  <li><em>Mở (Foreground):</em> Tự động cập nhật inbox và số chưa đọc qua kết nối thời gian thực mà không tạo trùng lặp với push.</li>
+                  <li><em>Nền (Background):</em> Hệ thống backend tiếp tục xử lý thông báo; native push hiển thị cảnh báo ngoài màn hình khóa.</li>
+                  <li><em>Đã đóng (Terminated):</em> Khi chạm push mở lại app, khôi phục session và đồng bộ toàn bộ lịch sử bị lỡ từ backend.</li>
+                </ul>
+              </li>
+              <li><strong>Phân biệt nguồn gửi:</strong> Phân biệt rõ giữa thông báo từ <em>Bạn bè đã chấp nhận kết bạn</em> và <em>Chính tôi (tự nhắc)</em>.</li>
+              <li><strong>Phân biệt hình thức gửi:</strong> Nhãn phân loại trực quan: <em>Gửi ngay</em>, <em>Lên lịch một lần</em>, hoặc <em>Lặp lại định kỳ</em>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Cấu trúc dữ liệu & API Schema (Inbox Item DTO) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🛡️</span> 2. Cấu trúc dữ liệu DTO (packages/types & packages/validation)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Trường dữ liệu</th>
+                  <th>Kiểu dữ liệu</th>
+                  <th>Mô tả chức năng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>id</strong></td>
+                  <td><code class="spec-token-code">string (uuid)</code></td>
+                  <td>Khóa định danh duy nhất của thông báo</td>
+                </tr>
+                <tr>
+                  <td><strong>senderId</strong></td>
+                  <td><code class="spec-token-code">string (uuid)</code></td>
+                  <td>ID người gửi (trùng với recipientId nếu là tự gửi)</td>
+                </tr>
+                <tr>
+                  <td><strong>senderName</strong></td>
+                  <td><code class="spec-token-code">string</code></td>
+                  <td>Họ tên hiển thị người gửi hoặc "Chính tôi"</td>
+                </tr>
+                <tr>
+                  <td><strong>title</strong></td>
+                  <td><code class="spec-token-code">string (1..100)</code></td>
+                  <td>Tiêu đề thông báo ngắn gọn</td>
+                </tr>
+                <tr>
+                  <td><strong>body</strong></td>
+                  <td><code class="spec-token-code">string (1..500)</code></td>
+                  <td>Nội dung chi tiết của lời nhắc/thông báo</td>
+                </tr>
+                <tr>
+                  <td><strong>deliveryType</strong></td>
+                  <td><code class="spec-token-code">'IMMEDIATE' | 'SCHEDULED' | 'RECURRING'</code></td>
+                  <td>Hình thức gửi: Ngay tức thì, Lên lịch, hoặc Lặp lại</td>
+                </tr>
+                <tr>
+                  <td><strong>isRead</strong></td>
+                  <td><code class="spec-token-code">boolean</code></td>
+                  <td>Trạng thái đã đọc hay chưa đọc của người nhận</td>
+                </tr>
+                <tr>
+                  <td><strong>createdAt</strong></td>
+                  <td><code class="spec-token-code">string (ISO 8601)</code></td>
+                  <td>Thời điểm tạo hoặc thời điểm gửi thành công</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái tương tác mẫu (Visual States) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Minh họa trạng thái giao diện (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- State 1: Hộp thư rỗng (Empty State) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Hộp thư trống (Empty State)</span>
+              <div class="inbox-empty-card" style="margin: 8px 0; padding: 24px 16px;">
+                <div class="empty-icon-circle">📭</div>
+                <div style="font-weight: 600; font-size: 14px; color: var(--color-ink);">Chưa có thông báo nào</div>
+                <p class="body-sm" style="color: var(--color-steel); max-width: 260px; margin: 0 auto;">
+                  Khi có thông báo từ bạn bè hoặc lời nhắc tự tạo, chúng sẽ hiển thị tại đây.
+                </p>
+                <a href="m04-create-notification.html" class="button-primary" style="margin-top: 4px; font-size: 13px; padding: 8px 18px;">
+                  Tạo thông báo đầu tiên
+                </a>
+              </div>
+            </div>
+
+            <!-- State 2: Đang đồng bộ / Tải dữ liệu (Loading / Syncing State) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Thanh đồng bộ khi kéo làm mới (Pull-to-refresh)</span>
+              <div style="margin-top: 8px;" class="sync-status-bar">
+                <span class="sync-status-indicator">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spin 1s linear infinite;">
+                    <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+                    <path d="M12 2a10 10 0 0 1 10 10"></path>
+                  </svg>
+                  <span>Đang kiểm tra thông báo mới từ máy chủ...</span>
+                </span>
+                <span class="caption" style="color: var(--color-brand-blue); font-weight: 600;">Đang kết nối</span>
+              </div>
+            </div>
+
+            <!-- State 3: Thao tác đánh dấu đọc tất cả -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 3: Đã đọc tất cả (0 chưa đọc)</span>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-hairline); margin-top: 6px;">
+                <span class="body-sm" style="color: var(--color-slate);">Tất cả thông báo đã được đánh dấu là đã đọc</span>
+                <span class="badge-success" style="font-size: 11px;">Hoàn tất</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nền ứng dụng</td>
+                  <td><code class="spec-token-code">colors.canvas</code></td>
+                  <td><span class="color-dot" style="background:#ffffff"></span>#ffffff (White canvas)</td>
+                </tr>
+                <tr>
+                  <td>Thẻ thông báo chưa đọc</td>
+                  <td><code class="spec-token-code">card-base (elevated)</code></td>
+                  <td>#ffffff, viền hairline-strong, unread-dot #4262ff</td>
+                </tr>
+                <tr>
+                  <td>Thẻ thông báo đã đọc</td>
+                  <td><code class="spec-token-code">colors.surface</code></td>
+                  <td>#f7f8fa, opacity 0.88, viền hairline-soft</td>
+                </tr>
+                <tr>
+                  <td>CTA Tạo mới</td>
+                  <td><code class="spec-token-code">button-primary</code></td>
+                  <td><span class="color-dot" style="background:#1c1c1e"></span>#1c1c1e, pill full (9999px), touch 44px</td>
+                </tr>
+                <tr>
+                  <td>Badge Nhận diện Brand</td>
+                  <td><code class="spec-token-code">colors.brand-yellow</code></td>
+                  <td><span class="color-dot" style="background:#ffd02f"></span>#ffd02f (Canary yellow badge)</td>
+                </tr>
+                <tr>
+                  <td>Chỉ báo chưa đọc (Dot)</td>
+                  <td><code class="spec-token-code">colors.brand-blue</code></td>
+                  <td><span class="color-dot" style="background:#4262ff"></span>#4262ff (Brand blue dot 8px)</td>
+                </tr>
+                <tr>
+                  <td>Bottom Navigation</td>
+                  <td><code class="spec-token-code">mobile-bottom-nav</code></td>
+                  <td>4 Tab cao 60px, chuẩn WCAG touch target 44px</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên quan -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m04-create-notification.html" class="button-primary" style="flex: 1; text-align: center; text-decoration: none;">
+              Đi tới M04: Tạo thông báo &rarr;
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục & Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

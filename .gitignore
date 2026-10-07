@@ -42,3 +42,9 @@ ios
 
 # NestJS
 *.js.map
+
+.agents
+
+# Local browser QA artifacts
+.playwright-cli/
+output/playwright/

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M04: Tạo thông báo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+
+    /* Segmented pill recipient switcher */
+    .segmented-switch {
+      display: flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+
+    .segmented-tab {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-slate);
+      text-align: center;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 150ms ease;
+    }
+
+    .segmented-tab.active {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-inbox.html" class="showcase-nav-item">M03: Inbox / Trang chính</a>
+        <a href="m04-create-notification.html" class="showcase-nav-item active">M04: Tạo thông báo</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M04</span>
+          <span class="badge-tag-yellow">F03 · Tạo & Lên lịch thông báo</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header: Back button + Title -->
+          <div class="mobile-app-header">
+            <!-- Circular back button (44x44px touch target) -->
+            <a href="m03-inbox.html" class="button-icon-circular" aria-label="Quay lại Hộp thư" title="Quay lại">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </a>
+
+            <div style="font-size: 17px; font-weight: 600; color: var(--color-ink);">
+              Tạo thông báo
+            </div>
+
+            <!-- Context Info / Reset icon button -->
+            <button type="button" class="header-icon-btn" title="Trợ giúp" aria-label="Thông tin">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 3. Screen Content: Create Notification Form (Scrollable) -->
+          <div class="mobile-screen-content">
+            <!-- Screen Title Group -->
+            <div class="screen-title-group" style="margin-bottom: 20px;">
+              <h1 class="heading-3" style="font-size: 24px; line-height: 1.25;">Gửi thông báo mới</h1>
+              <p class="body-sm" style="color: var(--color-slate); margin-top: 4px;">
+                Tạo lời nhắc cho bản thân hoặc gửi cho bạn bè đã chấp nhận kết bạn.
+              </p>
+            </div>
+
+            <form action="#" method="POST" onsubmit="return false;">
+              <!-- 1. Mục chọn người nhận (Recipient Selector) -->
+              <div class="form-group">
+                <label class="form-label form-label-required">Người nhận</label>
+                
+                <!-- Segmented Switch: Bản thân vs Bạn bè -->
+                <div class="segmented-switch">
+                  <button type="button" class="segmented-tab">Chính tôi (Tự nhắc)</button>
+                  <button type="button" class="segmented-tab active">Bạn bè đã kết bạn</button>
+                </div>
+
+                <!-- Danh sách bạn bè để chọn (Accepted Friends only per business policy) -->
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Friend Item 1: Selected -->
+                  <div class="friend-item-row selected">
+                    <div class="friend-item-info">
+                      <div class="sender-avatar">TK</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600; color: var(--color-ink);">Tuấn Kiệt</div>
+                        <div style="font-size: 12px; color: var(--color-steel);">@tuankiet • Đã kết bạn</div>
+                      </div>
+                    </div>
+                    <div class="friend-item-check">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <!-- Friend Item 2: Unselected -->
+                  <div class="friend-item-row">
+                    <div class="friend-item-info">
+                      <div class="sender-avatar">LH</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600; color: var(--color-ink);">Lan Hương</div>
+                        <div style="font-size: 12px; color: var(--color-steel);">@lanhuong • Đã kết bạn</div>
+                      </div>
+                    </div>
+                    <div class="friend-item-check" style="background: transparent; border-color: var(--color-hairline-strong);"></div>
+                  </div>
+
+                  <!-- Friend Item 3: Unselected -->
+                  <div class="friend-item-row">
+                    <div class="friend-item-info">
+                      <div class="sender-avatar">HĐ</div>
+                      <div>
+                        <div style="font-size: 14px; font-weight: 600; color: var(--color-ink);">Hải Đăng</div>
+                        <div style="font-size: 12px; color: var(--color-steel);">@haidang • Đã kết bạn</div>
+                      </div>
+                    </div>
+                    <div class="friend-item-check" style="background: transparent; border-color: var(--color-hairline-strong);"></div>
+                  </div>
+                </div>
+
+                <span class="form-helper" style="margin-top: 6px;">
+                  Chỉ bạn bè đã chấp nhận lời mời kết bạn mới có thể nhận thông báo.
+                </span>
+              </div>
+
+              <!-- 2. Mục Tiêu đề (Notification Title) -->
+              <div class="form-group">
+                <div class="form-label">
+                  <span class="form-label-required">Tiêu đề thông báo</span>
+                  <span class="caption" style="color: var(--color-stone);">38 / 100</span>
+                </div>
+                <div class="input-wrapper">
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    class="text-input"
+                    placeholder="Nhập tiêu đề ngắn gọn..."
+                    value="Nhắc hẹn: Ăn trưa trao đổi về dự án NEXA"
+                    maxlength="100"
+                    required
+                  >
+                </div>
+                <span class="form-helper">Tiêu đề sẽ hiển thị ở dòng đầu thông báo push và inbox.</span>
+              </div>
+
+              <!-- 3. Mục Nội dung (Notification Body) -->
+              <div class="form-group">
+                <div class="form-label">
+                  <span class="form-label-required">Nội dung chi tiết</span>
+                  <span class="caption" style="color: var(--color-stone);">88 / 500</span>
+                </div>
+                <div class="input-wrapper">
+                  <textarea
+                    id="body"
+                    name="body"
+                    class="textarea-input"
+                    placeholder="Nhập nội dung thông báo đầy đủ..."
+                    maxlength="500"
+                    rows="3"
+                    required
+                  >Hẹn gặp cậu ở quán Cafe lúc 12:15 nhé, nhớ mang theo laptop để cùng xem qua mockup UI màn hình di động.</textarea>
+                </div>
+                <span class="form-helper">Nội dung chi tiết được lưu trữ trong inbox của người nhận.</span>
+              </div>
+
+              <!-- 4. Mục Hình thức & Lên lịch gửi (Delivery Mode) -->
+              <div class="form-group">
+                <label class="form-label form-label-required">Hình thức gửi &amp; Lịch trình</label>
+                
+                <div class="radio-cards-grid">
+                  <!-- Radio 1: Immediate (Active) -->
+                  <div class="radio-card selected">
+                    <div class="radio-card-circle"></div>
+                    <div class="radio-card-content">
+                      <div class="radio-card-title">
+                        <span>Gửi ngay lập tức</span>
+                        <span class="delivery-badge immediate" style="font-size: 10px;">Ngay tức thì</span>
+                      </div>
+                      <p class="radio-card-desc">
+                        Gửi đến thiết bị và hiển thị trên màn hình người nhận ngay sau khi bạn bấm tạo.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Radio 2: Scheduled (One-time) -->
+                  <div class="radio-card">
+                    <div class="radio-card-circle"></div>
+                    <div class="radio-card-content">
+                      <div class="radio-card-title">
+                        <span>Lên lịch một lần</span>
+                        <span class="delivery-badge scheduled" style="font-size: 10px;">Hẹn giờ</span>
+                      </div>
+                      <p class="radio-card-desc">
+                        Chọn một thời điểm cụ thể trong tương lai để hệ thống tự động kích hoạt.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Radio 3: Recurring -->
+                  <div class="radio-card">
+                    <div class="radio-card-circle"></div>
+                    <div class="radio-card-content">
+                      <div class="radio-card-title">
+                        <span>Lặp lại định kỳ</span>
+                        <span class="delivery-badge recurring" style="font-size: 10px;">Chu kỳ</span>
+                      </div>
+                      <p class="radio-card-desc">
+                        Tự động kích hoạt định kỳ hàng ngày hoặc các ngày trong tuần theo giờ chỉ định.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. Tùy chọn Lịch biểu (Schedule Config - Phục vụ demo xem cấu hình) -->
+              <div class="card-base" style="background-color: var(--color-surface); padding: 14px 16px; margin-bottom: 24px; border-radius: var(--radius-lg);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <span style="font-size: 13px; font-weight: 600; color: var(--color-ink);">Thiết lập thời gian (Khi lên lịch)</span>
+                  <span class="badge-tag-yellow" style="font-size: 10px;">GMT+07:00</span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div>
+                    <label style="font-size: 12px; color: var(--color-slate); font-weight: 500; display: block; margin-bottom: 4px;">Ngày gửi</label>
+                    <input type="date" class="text-input" value="2026-10-15" style="height: 38px; font-size: 13px;">
+                  </div>
+                  <div>
+                    <label style="font-size: 12px; color: var(--color-slate); font-weight: 500; display: block; margin-bottom: 4px;">Giờ gửi</label>
+                    <input type="time" class="text-input" value="12:15" style="height: 38px; font-size: 13px;">
+                  </div>
+                </div>
+                <div class="caption" style="color: var(--color-steel); margin-top: 8px;">
+                  🕒 Thời gian gửi được xử lý máy chủ theo múi giờ tài khoản Việt Nam (GMT+7).
+                </div>
+              </div>
+
+              <!-- Primary CTA & Cancel Buttons -->
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+                <button type="submit" class="button-primary button-full">
+                  Gửi thông báo ngay
+                </button>
+                <a href="m03-inbox.html" class="button-secondary button-full" style="text-decoration: none; text-align: center;">
+                  Hủy bỏ
+                </a>
+              </div>
+            </form>
+          </div>
+
+          <!-- 4. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M04</div>
+            <h2 class="spec-screen-name">Tạo thông báo (Create & Schedule Notification)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F03 · Tạo & Gửi thông báo</span>
+            <span class="badge-success">Phạm vi MVP xác nhận</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Yêu cầu sản phẩm (Theo docs/app-functions-and-screens.md)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Đối tượng nhận:</strong> Người dùng có thể chọn gửi cho <em>Chính tôi</em> (tự nhắc) hoặc chọn bạn bè từ danh sách <em>Bạn bè đã chấp nhận</em>.</li>
+              <li><strong>Ràng buộc quan hệ bạn bè:</strong> Nghiêm cấm gửi thông báo cho tài khoản chưa phải là bạn bè hoặc chưa chấp nhận kết bạn. Server-side phải kiểm tra quyền trước khi tạo.</li>
+              <li><strong>3 hình thức phân phát:</strong>
+                <ul style="padding-left: 18px; margin-top: 4px; display: flex; flex-direction: column; gap: 3px;">
+                  <li><em>Gửi ngay (Immediate):</em> Xử lý và gửi push tức thì, lưu ngay vào inbox người nhận.</li>
+                  <li><em>Lên lịch một lần (Scheduled):</em> Lưu lịch biểu và chờ backend trigger đúng thời điểm trong tương lai.</li>
+                  <li><em>Lặp lại (Recurring):</em> Cấu hình chu kỳ (hàng ngày, ngày làm việc, hàng tuần) do backend quản trị tiến trình.</li>
+                </ul>
+              </li>
+              <li><strong>Độc lập tiến trình ứng dụng:</strong> Quá trình xử lý lên lịch chạy hoàn toàn trên backend shared, không phụ thuộc vào việc app mobile đang mở hay chạy nền Javascript.</li>
+              <li><strong>Trường thông tin bắt buộc:</strong> Người nhận hợp lệ, Tiêu đề (1 - 100 ký tự), Nội dung (1 - 500 ký tự).</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Quy tắc Validation (Zod Schema Mapping) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🛡️</span> 2. Ràng buộc Validation (packages/validation createNotificationSchema)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Trường dữ liệu</th>
+                  <th>Kiểu & Ràng buộc Zod</th>
+                  <th>Thông báo lỗi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>recipientId</strong></td>
+                  <td><code class="spec-token-code">z.string().uuid()</code></td>
+                  <td>"Người nhận không hợp lệ"</td>
+                </tr>
+                <tr>
+                  <td><strong>title</strong></td>
+                  <td><code class="spec-token-code">z.string().trim().min(1).max(100)</code></td>
+                  <td>"Tiêu đề không được để trống (tối đa 100 ký tự)"</td>
+                </tr>
+                <tr>
+                  <td><strong>body</strong></td>
+                  <td><code class="spec-token-code">z.string().trim().min(1).max(500)</code></td>
+                  <td>"Nội dung không được để trống (tối đa 500 ký tự)"</td>
+                </tr>
+                <tr>
+                  <td><strong>deliveryType</strong></td>
+                  <td><code class="spec-token-code">z.enum(['IMMEDIATE', 'SCHEDULED', 'RECURRING'])</code></td>
+                  <td>"Hình thức gửi không hợp lệ"</td>
+                </tr>
+                <tr>
+                  <td><strong>scheduledAt</strong></td>
+                  <td><code class="spec-token-code">z.string().datetime().refine(future)</code></td>
+                  <td>"Thời gian lên lịch phải lớn hơn thời điểm hiện tại"</td>
+                </tr>
+                <tr>
+                  <td><strong>recurrenceRule</strong></td>
+                  <td><code class="spec-token-code">z.string().optional()</code></td>
+                  <td>"Quy tắc lặp lại không đúng định dạng"</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái Validation & Visual States -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Trạng thái lỗi & Tương tác mẫu (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- Error State 1: Tiêu đề trống -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Để trống tiêu đề</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Tiêu đề thông báo</label>
+                <input type="text" class="text-input has-error" value="" placeholder="Nhập tiêu đề..." readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Tiêu đề không được để trống.
+                </div>
+              </div>
+            </div>
+
+            <!-- Error State 2: Lên lịch thời gian trong quá khứ -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Giờ lên lịch đã qua</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Thời gian gửi</label>
+                <input type="text" class="text-input has-error" value="08:00 - 05/10/2026 (Quá khứ)" readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Thời gian lên lịch phải lớn hơn thời điểm hiện tại ít nhất 1 phút.
+                </div>
+              </div>
+            </div>
+
+            <!-- State 3: Chế độ gửi cho Bản thân (Self Mode) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 3: Khi chọn chế độ "Chính tôi"</span>
+              <div style="margin-top: 6px; padding: 10px 12px; background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-hairline); display: flex; align-items: center; gap: 8px;">
+                <span class="sender-avatar self" style="width: 28px; height: 28px; font-size: 11px;">Tôi</span>
+                <span class="body-sm" style="color: var(--color-ink); font-weight: 500;">Tự nhắc nhở bản thân (Không cần chọn bạn bè)</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nền ứng dụng</td>
+                  <td><code class="spec-token-code">colors.canvas</code></td>
+                  <td><span class="color-dot" style="background:#ffffff"></span>#ffffff (White canvas)</td>
+                </tr>
+                <tr>
+                  <td>CTA chính</td>
+                  <td><code class="spec-token-code">button-primary</code></td>
+                  <td><span class="color-dot" style="background:#1c1c1e"></span>#1c1c1e, pill full (9999px), 14px 500</td>
+                </tr>
+                <tr>
+                  <td>Ô nhập (Input/Textarea)</td>
+                  <td><code class="spec-token-code">text-input / textarea</code></td>
+                  <td>Cao 44px (input) / 96px (textarea), radius 8px, viền #c7cad5</td>
+                </tr>
+                <tr>
+                  <td>Radio Card chọn lịch</td>
+                  <td><code class="spec-token-code">card-base (interactive)</code></td>
+                  <td>Viền 1.5px hairline-strong, active: border-color #1c1c1e</td>
+                </tr>
+                <tr>
+                  <td>Nút Back tròn</td>
+                  <td><code class="spec-token-code">button-icon-circular</code></td>
+                  <td>Kích thước chuẩn WCAG 44x44px, viền hairline</td>
+                </tr>
+                <tr>
+                  <td>Báo lỗi</td>
+                  <td><code class="spec-token-code">coral-dark / brand-red-dark</code></td>
+                  <td><span class="color-dot" style="background:#e3c5c5"></span>Viền #e3c5c5, chữ cảnh báo #600000</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên quan -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m03-inbox.html" class="button-primary" style="flex: 1; text-align: center; text-decoration: none;">
+              &larr; Quay lại M03: Inbox
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục & Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>
