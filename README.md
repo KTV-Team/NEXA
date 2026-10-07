@@ -6,18 +6,14 @@ This is the confirmed direction, not a list of shipped features. Web application
 
 ## Documentation authority
 
-| Document                                             | Responsibility                                                               |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
-| [AGENTS.md](AGENTS.md)                               | Engineering and coding-agent instructions                                    |
-| [Product requirements](docs/product-requirements.md) | Confirmed scope, acceptance criteria, permissions, unresolved decisions      |
-| [Architecture](docs/architecture.md)                 | Verified architecture and conceptual data gaps; separately labeled proposals |
-| [API contracts](docs/api-contracts.md)               | Existing routes, client expectations, missing contracts                      |
-| [Roadmap](docs/roadmap.md)                           | Evidence-based progress and planned work                                     |
-| [Mobile guide](apps/mobile/README.md)                | Mobile setup and build limitations                                           |
-| [Auth handoff](docs/mobile-auth-implementation.md)   | Existing mobile auth behavior and historical QA                              |
-| [Documentation audit](docs/documentation-audit.md)   | Findings and validation of this alignment                                    |
+| Document                                                       | Responsibility                        |
+| -------------------------------------------------------------- | ------------------------------------- |
+| [AGENTS.md](AGENTS.md)                                         | Engineering and coding-agent rules    |
+| [App functions and screens](docs/app-functions-and-screens.md) | Confirmed MVP function/screen summary |
+| [Git rules](docs/commit-rules.md)                              | Commit, branch, and merge conventions |
+| [Mobile guide](apps/mobile/README.md)                          | Mobile setup and build limitations    |
 
-Product requirements come only from the user-supplied task “Audit and Align Project Documentation with the Confirmed Notification App Product Scope” and subsequent explicit user confirmations, including notification support in open, background and closed states. HTML samples and visual design references are for UI/UX review only; they cannot add features, define business rules, determine product purpose, or establish implementation status. The PRD records those confirmed requirements; source code establishes implementation status.
+Product requirements come only from the user-supplied task “Audit and Align Project Documentation with the Confirmed Notification App Product Scope” and subsequent explicit user confirmations, including notification support in open, background and closed states. The function/screen summary is a concise reference; source code establishes implementation status. HTML samples and visual references do not add features or business rules.
 
 ## Current implementation
 
@@ -39,22 +35,22 @@ These are requirements, not implemented capabilities:
 | Background/locked screen | Backend continues immediate/scheduled/recurring processing and inbox persistence; native push supplies system alerts without requiring the app to keep running. |
 | Closed/terminated        | Backend processing continues; the OS can show native push. Tapping launches NEXA, restores/requests authentication, and opens an authorized relevant target.    |
 
-Inbox persistence is required regardless of push availability. On resume/reopen, fetch missed history and authoritative unread state. Permission denial, offline devices, OS restrictions and Android Force stop affect alert delivery; they must not lose backend inbox history. Provider acceptance is not proof of display or reading. Native push transport/provider, retry/expiry, presentation and privacy policies still need design decisions; the requirement to support all three states is already confirmed. See the [PRD](docs/product-requirements.md).
+Inbox persistence is required regardless of push availability. On resume/reopen, fetch missed history and authoritative unread state. Permission denial, offline devices, OS restrictions and Android Force stop affect alert delivery; they must not lose backend inbox history. Provider acceptance is not proof of display or reading. Native push transport/provider, retry/expiry, presentation and privacy policies still need design decisions; the requirement to support all three states is already confirmed. See the [app function and screen summary](docs/app-functions-and-screens.md).
 
 ## Stack and repository
 
-| Path                     | Verified responsibility and technology                                                                   |
-| ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| `apps/mobile`            | Expo 57, React Native 0.86, React 19, TypeScript, Expo Router                                            |
-| `apps/mobile/src`        | Mobile screens/feature code colocated by owner; shared UI is in per-component files                      |
-| `apps/api`               | NestJS 11, Fastify adapter, TypeScript; shared Android/iOS HTTP backend                                  |
-| `apps/web`               | Retained Next.js 15 scaffold; out of MVP scope                                                           |
-| `packages/types`         | Shared TypeScript DTOs and response types split by domain                                                |
-| `packages/validation`    | Shared Zod 3 boundary schemas split by domain                                                            |
-| `packages/api-client`    | Shared Fetch transport with endpoint groups                                                              |
-| `packages/design-tokens` | Shared visual tokens and mobile typography                                                               |
-| `docs`                   | Requirements, architecture, roadmap and implementation notes; UI/UX samples are separate review material |
-| `miro/DESIGN.md`         | Historical visual reference                                                                              |
+| Path                     | Verified responsibility and technology                                              |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| `apps/mobile`            | Expo 57, React Native 0.86, React 19, TypeScript, Expo Router                       |
+| `apps/mobile/src`        | Mobile screens/feature code colocated by owner; shared UI is in per-component files |
+| `apps/api`               | NestJS 11, Fastify adapter, TypeScript; shared Android/iOS HTTP backend             |
+| `apps/web`               | Retained Next.js 15 scaffold; out of MVP scope                                      |
+| `packages/types`         | Shared TypeScript DTOs and response types split by domain                           |
+| `packages/validation`    | Shared Zod 3 boundary schemas split by domain                                       |
+| `packages/api-client`    | Shared Fetch transport with endpoint groups                                         |
+| `packages/design-tokens` | Shared visual tokens and mobile typography                                          |
+| `docs`                   | App function/screen summary and Git commit rules                                    |
+| `miro/DESIGN.md`         | Historical visual reference                                                         |
 
 pnpm/Turborepo remain the foundation. [DESIGN.md](DESIGN.md) supplies existing visual primitives; its Miro marketing examples do not define NEXA features. No database, broker, or push provider has been selected by this audit.
 
@@ -112,4 +108,4 @@ The following scripts exist; existence is not evidence that all checks pass:
 | `pnpm --filter @nexa/api start`                          | Start compiled backend after build; still a stub                                       |
 | `pnpm build`, `pnpm typecheck`, `pnpm test`, `pnpm lint` | Workspace-wide commands; may include historical web or incomplete checks               |
 
-Root `pnpm dev` includes the retained web workspace; use `dev:app` for current scope. `dev:web` remains a historical script. API Jest is configured but no API spec tests were found; API lint uses `--fix`, while shared package lint scripts are placeholders. There is no tracked CI pipeline or backend deployment configuration. EAS profiles exist, but signing, native runtime testing, backend integration, and store release are unverified; see the [roadmap](docs/roadmap.md).
+Root `pnpm dev` includes the retained web workspace; use `dev:app` for current scope. `dev:web` remains a historical script. API Jest is configured but no API spec tests were found; API lint uses ESLint without applying fixes, while shared package lint scripts are placeholders. There is no tracked CI pipeline or backend deployment configuration. EAS profiles exist, but signing, native runtime testing, backend integration, and store release are unverified.

@@ -2,9 +2,9 @@
 
 ## Product authority
 
-NEXA is a personal notification and friend-management application for **Android and iOS only**, with one shared backend. [docs/product-requirements.md](docs/product-requirements.md) defines the confirmed MVP and unresolved decisions. Product requirements come only from the user-supplied task “Audit and Align Project Documentation with the Confirmed Notification App Product Scope” and subsequent explicit user confirmations, including notification support in open, background and closed states. HTML samples and visual design references are for UI/UX review only; they cannot add features, define business rules, determine product purpose, or establish implementation status.
+NEXA is a personal notification and friend-management application for **Android and iOS only**, with one shared backend. [docs/app-functions-and-screens.md](docs/app-functions-and-screens.md) summarizes the confirmed app functions and screens. Product requirements come only from the user-supplied task “Audit and Align Project Documentation with the Confirmed Notification App Product Scope” and subsequent explicit user confirmations, including notification support in open, background and closed states. HTML samples and visual design references are for UI/UX review only; they cannot add features, define business rules, determine product purpose, or establish implementation status.
 
-Read the PRD and relevant existing code/documentation before making product or architectural decisions. Use [docs/architecture.md](docs/architecture.md) for verified structure, [docs/api-contracts.md](docs/api-contracts.md) for route/client gaps, and [docs/roadmap.md](docs/roadmap.md) for planned work. Historical designs, comments, and roadmaps are not evidence of shipped features.
+Read the function/screen summary and inspect relevant source code and manifests before making product or architectural decisions. Verify structure, routes, and implementation status from the current code. Historical designs, comments, and roadmaps are not evidence of shipped features.
 
 ## Scope guardrails
 
@@ -24,7 +24,7 @@ Read the PRD and relevant existing code/documentation before making product or a
 - Sending to another user requires an accepted friendship; self-delivery is allowed. Check recipient visibility and friendship permissions server-side. Scheduled-delivery checks must follow the approved policy.
 - Keep API contracts, models, documentation, processing states, read/unread state, and Android/iOS behavior consistent. Distinguish requirements, proposals, partial implementation, and verified behavior.
 - Consider duplicate friend requests, concurrent accept/cancel, duplicate requests/delivery, durable scheduled execution, recurring occurrences, time zones/DST, retry/recovery, and failure handling where relevant. Never promise unestablished delivery guarantees.
-- Use the existing shared design tokens and preserve verified native UI behavior. [DESIGN.md](DESIGN.md) and HTML samples are visual references only; they do not define requirements, implementation priorities or business behavior. Resolve product decisions against the supplied task and confirmed PRD.
+- Use the existing shared design tokens and preserve verified native UI behavior. [DESIGN.md](DESIGN.md) and HTML samples are visual references only; they do not define requirements, implementation priorities or business behavior. Resolve product decisions against the supplied task, explicit user confirmations, and the function/screen summary.
 - Add appropriate tests and update documentation when implementing future features. Cover relevant ownership, transitions, contract compatibility, scheduling/recurrence, and failures. Never report completion from a mockup, comment, or unexecuted test.
 - Keep profile/account settings separate from sign-in. Do not invent auth methods, password-reset policy, or privileged roles.
 - Follow [docs/commit-rules.md](docs/commit-rules.md) for contribution conventions and approved merge flow. Respect additional applicable local/user instructions, including RTK and CodeGraph instructions.

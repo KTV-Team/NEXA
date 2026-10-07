@@ -1505,3 +1505,373 @@ button, input, select, textarea {
   border-color: var(--color-primary);
   font-weight: 600;
 }
+
+/* =============================================================================
+   Inbox & Notification System Components (M03: Inbox & M04: Create Notification)
+   Aligned with docs/app-functions-and-screens.md and DESIGN.md
+   ============================================================================= */
+
+/* Notification Item Card */
+.notification-card {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline-soft);
+  border-radius: var(--radius-xl);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  position: relative;
+  transition: all 150ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notification-card.unread {
+  background-color: #ffffff;
+  border-color: var(--color-hairline-strong);
+  box-shadow: 0 1px 3px rgba(5, 0, 56, 0.05);
+}
+
+.notification-card.read {
+  background-color: var(--color-surface);
+  border-color: var(--color-hairline-soft);
+  opacity: 0.88;
+}
+
+.notification-card:active {
+  background-color: var(--color-surface);
+}
+
+.notification-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.notification-sender-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sender-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+  background-color: var(--color-surface-pricing-featured);
+  color: var(--color-brand-blue);
+  border: 1px solid var(--color-hairline);
+}
+
+.sender-avatar.self {
+  background-color: var(--color-surface-yellow);
+  color: var(--color-yellow-dark);
+}
+
+.sender-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sender-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sender-handle {
+  font-size: 11px;
+  color: var(--color-steel);
+}
+
+.notification-time-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.notification-time {
+  font-size: 11px;
+  color: var(--color-stone);
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-brand-blue);
+  flex-shrink: 0;
+}
+
+.notification-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notification-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.35;
+}
+
+.notification-body-text {
+  font-size: 13px;
+  color: var(--color-slate);
+  line-height: 1.45;
+}
+
+.notification-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-hairline-soft);
+  margin-top: 2px;
+  gap: 8px;
+}
+
+.delivery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.delivery-badge.immediate {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.delivery-badge.scheduled {
+  background-color: var(--color-surface-yellow);
+  color: var(--color-yellow-dark);
+  border: 1px solid #fde68a;
+}
+
+.delivery-badge.recurring {
+  background-color: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.notification-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-action-icon-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--color-steel);
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.card-action-icon-btn:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-hairline);
+  color: var(--color-ink);
+}
+
+.card-action-icon-btn.danger:hover {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+/* Sync Bar */
+.sync-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  color: var(--color-slate);
+  margin-bottom: 12px;
+  border: 1px solid var(--color-hairline-soft);
+}
+
+.sync-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sync-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-success-accent);
+}
+
+/* Interactive Radio Selection Cards */
+.radio-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background-color: var(--color-canvas);
+  border: 1.5px solid var(--color-hairline-strong);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.radio-card:hover {
+  border-color: var(--color-steel);
+}
+
+.radio-card.active,
+.radio-card.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-soft);
+}
+
+.radio-card-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-hairline-strong);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 150ms ease;
+}
+
+.radio-card.active .radio-card-circle,
+.radio-card.selected .radio-card-circle {
+  border-color: var(--color-primary);
+}
+
+.radio-card.active .radio-card-circle::after,
+.radio-card.selected .radio-card-circle::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+}
+
+.radio-card-content {
+  flex: 1;
+}
+
+.radio-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.radio-card-desc {
+  font-size: 12px;
+  color: var(--color-slate);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* Friend Selector Item */
+.friend-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background-color: var(--color-canvas);
+  border: 1.5px solid var(--color-hairline-soft);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.friend-item-row.selected {
+  border-color: var(--color-primary);
+  background-color: var(--color-surface-soft);
+}
+
+.friend-item-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.friend-item-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-hairline-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  transition: all 120ms ease;
+}
+
+.friend-item-row.selected .friend-item-check {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* Empty State */
+.inbox-empty-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 36px 20px;
+  background-color: var(--color-surface-soft);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--radius-xxl);
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.empty-icon-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--color-surface-yellow);
+  color: var(--color-yellow-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+

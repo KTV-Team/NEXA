@@ -2,7 +2,7 @@
 
 Expo + React Native + TypeScript trong workspace pnpm/Turborepo. Trạng thái triển khai bên dưới được kiểm chứng từ mã nguồn mobile/API, không suy ra từ mẫu giao diện.
 
-Sản phẩm hiện được xác nhận là ứng dụng **thông báo cá nhân và quản lý bạn bè cho Android/iOS**, dùng chung backend. Xem [PRD](../../docs/product-requirements.md), [kiến trúc](../../docs/architecture.md), [API](../../docs/api-contracts.md) và [roadmap](../../docs/roadmap.md). Bạn bè, gửi ngay/hẹn giờ/lặp lại, inbox, realtime và native push là yêu cầu chưa triển khai. Thông báo phải hỗ trợ cả đang mở, chạy nền/khóa màn hình và đã đóng app trên Android/iOS. Nguồn yêu cầu duy nhất là task brief người dùng cung cấp đầu cuộc chat và các xác nhận bổ sung. HTML chỉ dùng chốt UI/UX; không quy định mục đích app, tính năng hay nghiệp vụ.
+Sản phẩm hiện được xác nhận là ứng dụng **thông báo cá nhân và quản lý bạn bè cho Android/iOS**, dùng chung backend. Xem [chức năng và màn hình MVP](../../docs/app-functions-and-screens.md). Bạn bè, gửi ngay/hẹn giờ/lặp lại, inbox, realtime và native push là yêu cầu chưa triển khai. Thông báo phải hỗ trợ cả đang mở, chạy nền/khóa màn hình và đã đóng app trên Android/iOS. Nguồn yêu cầu duy nhất là task brief người dùng cung cấp đầu cuộc chat và các xác nhận bổ sung. HTML chỉ dùng chốt UI/UX; không quy định mục đích app, tính năng hay nghiệp vụ.
 
 ## Phạm vi hiện tại
 
@@ -15,7 +15,7 @@ Sản phẩm hiện được xác nhận là ứng dụng **thông báo cá nhâ
 
 **Backend xác thực hiện vẫn là stub.** Chưa có đăng ký thật, kiểm tra mật khẩu/token hay quyền sở hữu; response chưa đúng hợp đồng shared API client. App sẽ báo lỗi khi dịch vụ chưa sẵn sàng hoặc trả sai hợp đồng. Không có tài khoản mẫu hay chế độ đăng nhập giả trong mobile; API có dữ liệu người dùng mẫu trong bộ nhớ.
 
-Trang `/` chỉ hiển thị tài khoản/đăng xuất sau phản hồi API hợp lệ, chưa phải inbox hay trang quản lý bạn bè. N01 (xác thực trong PRD) chưa hoàn tất đầu cuối cho đến khi backend thật được nối vào.
+Trang `/` chỉ hiển thị tài khoản/đăng xuất sau phản hồi API hợp lệ, chưa phải inbox hay trang quản lý bạn bè. Luồng xác thực chưa hoàn tất đầu cuối cho đến khi backend thật được nối vào.
 
 ## Yêu cầu thông báo trong cả ba trạng thái — chưa triển khai
 
@@ -27,7 +27,7 @@ Trang `/` chỉ hiển thị tài khoản/đăng xuất sau phản hồi API h�
 
 Cần thiết kế quyền thông báo, đăng ký/token thiết bị theo tài khoản, rotation/token hết hiệu lực, logout/đổi tài khoản, payload riêng tư trên màn khóa, retry/expiry và đồng bộ inbox khi mở lại. Nhà cung cấp push chưa được chọn; chưa có package/API/config tích hợp push trong repository.
 
-Kiểm thử native phải bao phủ ba trạng thái với thông báo cá nhân/bạn bè/sự kiện xã hội, hẹn giờ và từng lần lặp; thêm trường hợp từ chối quyền, mất mạng, OS hạn chế/Force stop, trùng realtime/push và tap khi app chưa chạy. Inbox backend phải giữ dữ liệu ngay cả khi push không hiển thị. Android Force stop trong Settings cần mở lại app; không coi đó là trạng thái đóng bình thường. Expo browser preview và QA auth cũ không xác minh native push. Xem [tiêu chí PRD](../../docs/product-requirements.md) và [hành vi nền tảng](https://docs.expo.dev/push-notifications/what-you-need-to-know/).
+Kiểm thử native phải bao phủ ba trạng thái với thông báo cá nhân/bạn bè/sự kiện xã hội, hẹn giờ và từng lần lặp; thêm trường hợp từ chối quyền, mất mạng, OS hạn chế/Force stop, trùng realtime/push và tap khi app chưa chạy. Inbox backend phải giữ dữ liệu ngay cả khi push không hiển thị. Android Force stop trong Settings cần mở lại app; không coi đó là trạng thái đóng bình thường. Expo browser preview và QA auth cũ không xác minh native push. Xem [chức năng và màn hình MVP](../../docs/app-functions-and-screens.md) và [hành vi nền tảng](https://docs.expo.dev/push-notifications/what-you-need-to-know/).
 
 ## Chạy từ repository root
 
@@ -85,4 +85,4 @@ pnpm --filter @nexa/mobile exec expo install --check
 
 `build` export bundle Android, iOS và browser preview vào `dist` theo config hiện có; output browser không mở rộng MVP sang web. Đây không phải APK/IPA đã ký. `eas.json` có profile `preview` (Android APK, iOS simulator) và `production`. Native/cloud build cần tài khoản EAS, API và signing phù hợp; audit tài liệu này không chạy build hay xác nhận release.
 
-Hợp đồng client và kết quả QA lịch sử nằm trong [bàn giao auth](../../docs/mobile-auth-implementation.md); trạng thái server hiện có được tách rõ trong [API contracts](../../docs/api-contracts.md).
+Hành vi client được kiểm tra trong [auth service tests](src/features/auth/auth-service.test.ts); API stub hiện tại nằm trong [auth controller](../api/src/auth/auth.controller.ts).

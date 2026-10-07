@@ -438,11 +438,11 @@ components:
 
 ## NEXA applicability — product scope supersedes examples
 
-This is a retained Miro-derived visual reference. Existing colors, typography, spacing and suitable primitives remain the NEXA design baseline; they do not define product requirements. NEXA is a personal notification/friend-management app for Android and iOS with a shared backend. Pricing, marketing navigation, enterprise tiers, whiteboards, customer stories and desktop/web layouts below are historical source examples, outside the current MVP. Do not build them as NEXA screens. The current PRD defines scope; native screens use shared tokens and the documented Noto Sans fallback, safe areas and mobile touch targets.
+This is a retained Miro-derived visual reference. Existing colors, typography, spacing and suitable primitives remain the NEXA design baseline; they do not define product requirements. NEXA is a personal notification/friend-management app for Android and iOS with a shared backend. Pricing, marketing navigation, enterprise tiers, whiteboards, customer stories and desktop/web layouts below are historical source examples, outside the current MVP. Do not build them as NEXA screens. [The app function and screen summary](../docs/app-functions-and-screens.md) defines the concise current scope; native screens use shared tokens and the documented Noto Sans fallback, safe areas and mobile touch targets.
 
 Historical extraction/iteration notes below are not project setup commands or evidence of implemented NEXA features. This audit changes no tokens or styling.
 
-See [PRD](../docs/product-requirements.md), [root visual baseline](../DESIGN.md), and [mobile guide](../apps/mobile/README.md).
+See [app functions and screens](../docs/app-functions-and-screens.md), [root visual baseline](../DESIGN.md), and the [mobile guide](../apps/mobile/README.md).
 
 
 ## Overview
