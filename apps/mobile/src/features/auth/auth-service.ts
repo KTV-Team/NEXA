@@ -1,5 +1,5 @@
 import { ApiClientError, createApiClient } from '@nexa/api-client';
-import type { AuthResponse, LoginDto, RegisterDto } from '@nexa/types';
+import type { AuthResponse, LoginDto, RegisterDto, UpdateUserDto } from '@nexa/types';
 import { z } from '@nexa/validation';
 
 const sessionSchema = z.object({
@@ -103,6 +103,22 @@ export class AuthService {
   async register(values: RegisterDto, remember = true): Promise<AuthSession> {
     this.remember = remember;
     return this.save(await this.transport.auth.register(values));
+  }
+
+  async updateProfile(values: UpdateUserDto): Promise<AuthSession> {
+    const startingSession = this.session;
+    if (!startingSession)
+      throw new ApiClientError(401, 'SESSION_EXPIRED', 'Session ended.');
+
+    const user = await this.api.users.update(values);
+    const currentSession = this.session;
+    if (!currentSession || currentSession.user.id !== startingSession.user.id)
+      throw new ApiClientError(401, 'SESSION_EXPIRED', 'Session ended.');
+
+    return this.save(
+      { user, tokens: currentSession.tokens },
+      currentSession.expiresAt,
+    );
   }
 
   private async accessToken(): Promise<string | null> {

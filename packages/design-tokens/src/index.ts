@@ -37,6 +37,7 @@ export const colors = {
   'brand-blue': '#4262ff',         // action blue for inline links and featured-pricing border
   'blue-450': '#5b76fe',           // mid-tint blue
   'blue-pressed': '#2a41b6',       // pressed-state blue
+  'info-surface': '#f5f8ff',
 
   'brand-coral': '#ff9999',        // coral accent for warm callouts
   'coral-light': '#ffc6c6',        // pale coral for feature card backgrounds
@@ -56,6 +57,12 @@ export const colors = {
   'brand-red-dark': '#e3c5c5',     // stronger red for error borders
 
   'success-accent': '#00b473',     // confirmation/success indicator green
+  'success-surface': '#f0fdf9',
+  danger: '#dc2626',
+  'danger-surface': '#fef2f2',
+  'skeleton-base': '#edf0f5',
+  'skeleton-highlight': '#f8f9fb',
+  'overlay-scrim': 'rgba(28, 28, 30, 0.5)',
 
   // Surface — the white canvas and its variants
   canvas: '#ffffff',                       // page background and primary card surface

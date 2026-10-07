@@ -1,16 +1,19 @@
-import { ActivityIndicator, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 import { colors } from '@nexa/design-tokens';
 import { AppText } from './app-text';
+import { LoadingIndicator } from './common/loading-indicator';
 import { styles } from './primary-button.styles';
 
 export function PrimaryButton({
   label,
   busy = false,
+  busyLabel = 'Đang xử lý…',
   disabled = false,
   onPress,
 }: {
   label: string;
   busy?: boolean;
+  busyLabel?: string;
   disabled?: boolean;
   onPress(): void;
 }) {
@@ -26,15 +29,16 @@ export function PrimaryButton({
       style={({ pressed }) => [
         styles.button,
         pressed && styles.pressed,
+        busy && styles.busy,
         disabled && styles.disabled,
       ]}
     >
-      {busy && <ActivityIndicator size="small" color={colors['on-primary']} />}
+      {busy && <LoadingIndicator size="sm" color={colors['on-primary']} />}
       <AppText
         variant="button-md"
         style={{ color: disabled ? colors.muted : colors['on-primary'] }}
       >
-        {busy ? 'Đang xử lý…' : label}
+        {busy ? busyLabel : label}
       </AppText>
     </Pressable>
   );
