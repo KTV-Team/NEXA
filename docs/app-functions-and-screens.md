@@ -1,6 +1,6 @@
 # Chức năng và màn hình NEXA
 
-Phạm vi MVP cho ứng dụng Android/iOS dùng chung backend, dựa trên task brief và các xác nhận của người dùng. Đây là yêu cầu sản phẩm, không khẳng định tính năng đã được triển khai. Hiện đăng nhập/đăng ký và session mới có UI một phần; backend còn stub.
+Phạm vi MVP cho ứng dụng Android/iOS dùng chung backend, dựa trên task brief và các xác nhận của người dùng. Đây là yêu cầu sản phẩm, không khẳng định tính năng đã được triển khai. Hiện đăng nhập/đăng ký và session mới có UI một phần; backend API cho register, login, refresh, logout, lấy user hiện tại và đổi mật khẩu đã được triển khai; frontend auth cần tích hợp riêng.
 
 ## Chức năng chính
 

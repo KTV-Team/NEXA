@@ -8,6 +8,8 @@ export interface AppEnvironment {
   NODE_ENV: NodeEnvironment;
   PORT: number;
   CORS_ORIGIN: string[];
+  AUTH_WEB_ORIGINS: string[];
+  AUTH_ACCESS_SECRET: string;
   DB_HOST: string;
   DB_PORT: number;
   DB_NAME: string;
@@ -61,13 +63,38 @@ export function loadEnvironment(): AppEnvironment {
   };
 
   const cors = process.env['CORS_ORIGIN'] ?? 'http://localhost:3000';
-  const origins = cors.split(',').map((origin) => origin.trim()).filter(Boolean);
+  const origins = cors
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
   if (origins.length === 0) throw new Error('CORS_ORIGIN must contain an origin');
+  const webOrigins = (process.env['AUTH_WEB_ORIGINS'] ?? 'http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  const authSecret = process.env['AUTH_ACCESS_SECRET']?.trim() ?? '';
+  let decodedSecret: Buffer;
+  try {
+    decodedSecret = Buffer.from(authSecret, 'base64');
+  } catch {
+    decodedSecret = Buffer.alloc(0);
+  }
+  if (
+    decodedSecret.length < 32 ||
+    decodedSecret.toString('base64').replace(/=+$/, '') !== authSecret.replace(/=+$/, '')
+  ) {
+    throw new Error('AUTH_ACCESS_SECRET must be base64 for at least 32 random bytes');
+  }
+  if (mode === 'production' && webOrigins.some((origin) => !origin.startsWith('https://'))) {
+    throw new Error('AUTH_WEB_ORIGINS must use HTTPS in production');
+  }
 
   return {
     NODE_ENV: mode,
     PORT: port('PORT', '4000'),
     CORS_ORIGIN: origins,
+    AUTH_WEB_ORIGINS: webOrigins,
+    AUTH_ACCESS_SECRET: authSecret,
     DB_HOST: required('DB_HOST'),
     DB_PORT: port('DB_PORT', '5432'),
     DB_NAME: required('DB_NAME'),
