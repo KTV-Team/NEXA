@@ -34,7 +34,10 @@ describe('development demo API integration', () => {
   });
 
   it('returns the shared envelope with database-backed records', async () => {
-    const reply = await app.getHttpAdapter().getInstance().inject({ method: 'GET', url: '/api/v1/dev/demo' });
+    const reply = await app
+      .getHttpAdapter()
+      .getInstance()
+      .inject({ method: 'GET', url: '/api/v1/dev/demo' });
     expect(reply.statusCode).toBe(200);
     const result = reply.json() as ApiResponse<DevDemoData>;
     expect(result.success).toBe(true);
@@ -45,27 +48,39 @@ describe('development demo API integration', () => {
   });
 
   it('wraps health data for the shared API client', async () => {
-    const reply = await app.getHttpAdapter().getInstance().inject({ method: 'GET', url: '/api/v1/health' });
+    const reply = await app
+      .getHttpAdapter()
+      .getInstance()
+      .inject({ method: 'GET', url: '/api/v1/health' });
     expect(reply.statusCode).toBe(200);
     expect((reply.json() as ApiResponse<HealthStatus>).data?.status).toBe('ok');
   });
 
-  it('does not include stub tokens or users', async () => {
-    const login = await app.getHttpAdapter().getInstance().inject({
-      method: 'POST',
-      url: '/api/v1/auth/login',
-      payload: { email: 'alice@example.test', password: 'not-a-real-password' },
-    });
-    expect(login.statusCode).toBe(501);
-    expect(login.json()).toMatchObject({ success: false, error: { code: 'NOT_IMPLEMENTED' } });
+  it('rejects invalid credentials and keeps unimplemented user listing unavailable', async () => {
+    const login = await app
+      .getHttpAdapter()
+      .getInstance()
+      .inject({
+        method: 'POST',
+        url: '/api/v1/auth/login',
+        payload: { email: 'alice@example.test', password: 'not-a-real-password' },
+      });
+    expect(login.statusCode).toBe(401);
+    expect(login.json()).toMatchObject({ success: false, error: { code: 'INVALID_CREDENTIALS' } });
 
-    const users = await app.getHttpAdapter().getInstance().inject({ method: 'GET', url: '/api/v1/users' });
+    const users = await app
+      .getHttpAdapter()
+      .getInstance()
+      .inject({ method: 'GET', url: '/api/v1/users' });
     expect(users.statusCode).toBe(501);
   });
 
   it('maps a database failure to a sanitized 503 response', async () => {
     await app.get<DataSource>(DataSource).destroy();
-    const reply = await app.getHttpAdapter().getInstance().inject({ method: 'GET', url: '/api/v1/dev/demo' });
+    const reply = await app
+      .getHttpAdapter()
+      .getInstance()
+      .inject({ method: 'GET', url: '/api/v1/dev/demo' });
     expect(reply.statusCode).toBe(503);
     expect(reply.json()).toMatchObject({ success: false, error: { code: 'DATABASE_UNAVAILABLE' } });
     expect(reply.body).not.toContain('SELECT');

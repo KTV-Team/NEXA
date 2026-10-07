@@ -20,8 +20,8 @@ Product requirements come only from the user-supplied task “Audit and Align Pr
 Product status audited on 2026-10-06; source organization updated on 2026-10-07. The repository is an early scaffold, not production-ready. The source refactor colocates mobile screens with their feature code and splits shared packages by responsibility; it does not add product capabilities.
 
 - Mobile has native login/register forms, shared validation, session restoration/refresh handling, protected routes, local logout, and SecureStore persistence. Inbox and create-notification screens are UI scaffolds; account/session information has its own route.
-- The API has PostgreSQL/TypeORM entities, a reviewed migration, development seeds, health, and a database-backed development demo. Authentication and user-management routes return 501; registration, authentication guards, and ownership checks are missing.
-- Health and development demo routes use the shared success/error envelope. Mobile authentication does not work end to end because the backend auth routes are not implemented.
+- The API has PostgreSQL/TypeORM migrations, development seeds, health, a database-backed development demo, and email/password auth APIs for register, login, refresh, logout, current user, and change password. Friend and notification APIs and broader user management remain unimplemented.
+- Mobile can use the auth API with bearer access tokens and refresh tokens in JSON. A future same-site web client can use the same backend with an HttpOnly refresh cookie; no web auth UI has been added.
 - Friendships, notification sending, durable inbox processing, scheduling, recurrence, realtime, and native push remain unimplemented. Existing notification entities and demo fixtures do not prove these product flows work. The older database scaffold also contains teams, todos, events, and roles; these are not confirmed MVP features.
 - `apps/web` is retained historical scaffold, outside current scope. Expo browser preview is a development aid, not a supported web product.
 
@@ -85,6 +85,8 @@ When starting API and mobile separately, run `pnpm --filter @nexa/mobile dev` in
 | -------------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------- |
 | `PORT`                                 | API process             | `4000`                                                                                       |
 | `CORS_ORIGIN`                          | API process             | `http://localhost:3000`; set to actual origin for optional Expo browser preview              |
+| `AUTH_WEB_ORIGINS`                     | API auth                | Exact web origins allowed to use cookie-based auth                                           |
+| `AUTH_ACCESS_SECRET`                   | API auth                | Base64 of at least 32 random bytes; required, never commit it                                |
 | `EXPO_PUBLIC_API_URL`                  | Mobile                  | Full URL including `/api/v1`; example `http://localhost:4000/api/v1`                         |
 | `NODE_ENV`                             | API process             | Required: `development`, `test`, or `production`; development demo is excluded in production |
 | `DB_HOST` / `DB_PORT`                  | API process             | Required host; port defaults to `5432`                                                       |
