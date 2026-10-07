@@ -59,21 +59,19 @@ Nếu không có biến môi trường, app tự chọn địa chỉ emulator t�
 ## Cấu trúc
 
 ```text
-app/                         Expo Router: layout, login, register, landing phiên
-src/components/              Text, button, icon, error notice
-src/theme/                   Typography adapter dùng shared token
-src/config/                  URL môi trường
-src/features/auth/
-  screens/                   Màn đăng nhập/đăng ký native
-  components/                Scaffold, input, dialog nhỏ
-  auth-service.ts            Transport, refresh và persistence độc lập UI
-  auth-provider.tsx          Session state của React
-  session-storage.ts         SecureStore / web preview adapter
-  use-auth-form.ts           Validation và touched state
-  auth-service.test.ts       Kiểm thử contract và phiên
+app/                                      Expo Router routes và layout, không chứa screen implementation
+src/features/auth/screens/login/          Screen đăng nhập, cùng code riêng của form
+src/features/auth/screens/register/       Screen đăng ký, schema confirm-password và test
+src/features/auth/screens/account-session/ Landing phiên đăng nhập hiện có
+src/features/auth/components/             UI dùng chung trong feature auth
+src/features/auth/hooks/                  Hook form dùng giữa các màn auth
+src/features/auth/                        Provider, service, session storage, errors và test
+src/components/                           Mỗi UI component dùng chung có file riêng
+src/theme/                                Typography adapter dùng shared token
+src/config/                               URL môi trường
 ```
 
-DTO nằm trong `packages/types`, schema trong `packages/validation`, HTTP client trong `packages/api-client`, style lấy từ `packages/design-tokens`. Chỉ gửi tên/email/mật khẩu khi đăng ký; mật khẩu xác nhận và role do client cung cấp không nằm trong DTO.
+Code chỉ dùng ở một màn hình/component được đặt cạnh nơi sử dụng. Code dùng trong auth giữ ở auth; UI dùng giữa các feature nằm trong `src/components`. DTO nằm trong `packages/types`, schema request chung trong `packages/validation`, HTTP client trong `packages/api-client`, style lấy từ `packages/design-tokens`. Schema xác nhận mật khẩu thuộc màn đăng ký; request chỉ gửi tên/email/mật khẩu, không gửi mật khẩu xác nhận hoặc role do client cung cấp.
 
 ## Kiểm tra và build
 

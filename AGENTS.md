@@ -28,3 +28,13 @@ Read the PRD and relevant existing code/documentation before making product or a
 - Add appropriate tests and update documentation when implementing future features. Cover relevant ownership, transitions, contract compatibility, scheduling/recurrence, and failures. Never report completion from a mockup, comment, or unexecuted test.
 - Keep profile/account settings separate from sign-in. Do not invent auth methods, password-reset policy, or privileged roles.
 - Follow [docs/commit-rules.md](docs/commit-rules.md) for contribution conventions and approved merge flow. Respect additional applicable local/user instructions, including RTK and CodeGraph instructions.
+
+## Colocation rules
+
+- Keep `apps/mobile/app/` for Expo Router route/layout entry points. Put screen implementations outside it, under the owning feature.
+- Put code used by one screen or component beside it. Props/types, local constants, tests, and small helpers may remain in the same file when that stays clear; create a nearby file when it improves readability or testing.
+- Code used across screens in one feature stays in that feature. Promote it to app-level `src/components` or another shared location only when there is a real consumer outside the owning feature and a stable common responsibility.
+- Keep shared UI components in `apps/mobile/src/components`, with one component per file. Component-specific styles and prop types stay with that component.
+- Keep transport contracts in `packages/types`, boundary schemas in `packages/validation`, and HTTP transport/endpoints in `packages/api-client`. UI-only form fields and schemas stay with the screen that owns them.
+- Keep backend handlers and services in their existing NestJS business-module directories. Share through a module's explicit public providers; do not add abstraction layers or empty folders solely to match a template.
+- Common/shared code must not import from an owning screen or feature's private implementation. Prefer the smallest owner and move code upward only when reuse is demonstrated.

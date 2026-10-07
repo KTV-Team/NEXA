@@ -21,7 +21,7 @@ Product requirements come only from the user-supplied task “Audit and Align Pr
 
 ## Current implementation
 
-Audited on 2026-10-06. The repository is an early scaffold, not production-ready.
+Product status audited on 2026-10-06; source organization updated on 2026-10-07. The repository is an early scaffold, not production-ready. The source refactor colocates mobile screens with their feature code and splits shared packages by responsibility; it does not add product capabilities.
 
 - Mobile has native login/register forms, shared validation, session restoration/refresh handling, protected routes, local logout, and SecureStore persistence. The authenticated landing only displays account/session information.
 - The API has health, authentication stubs, and in-memory user endpoints. Login does not verify credentials; registration is missing; authentication guards and ownership checks are missing.
@@ -46,11 +46,12 @@ Inbox persistence is required regardless of push availability. On resume/reopen,
 | Path                     | Verified responsibility and technology                                                                   |
 | ------------------------ | -------------------------------------------------------------------------------------------------------- |
 | `apps/mobile`            | Expo 57, React Native 0.86, React 19, TypeScript, Expo Router                                            |
+| `apps/mobile/src`        | Mobile screens/feature code colocated by owner; shared UI is in per-component files                      |
 | `apps/api`               | NestJS 11, Fastify adapter, TypeScript; shared Android/iOS HTTP backend                                  |
 | `apps/web`               | Retained Next.js 15 scaffold; out of MVP scope                                                           |
-| `packages/types`         | Shared TypeScript DTOs and response types                                                                |
-| `packages/validation`    | Shared Zod 3 schemas                                                                                     |
-| `packages/api-client`    | Shared Fetch transport                                                                                   |
+| `packages/types`         | Shared TypeScript DTOs and response types split by domain                                                |
+| `packages/validation`    | Shared Zod 3 boundary schemas split by domain                                                            |
+| `packages/api-client`    | Shared Fetch transport with endpoint groups                                                              |
 | `packages/design-tokens` | Shared visual tokens and mobile typography                                                               |
 | `docs`                   | Requirements, architecture, roadmap and implementation notes; UI/UX samples are separate review material |
 | `miro/DESIGN.md`         | Historical visual reference                                                                              |

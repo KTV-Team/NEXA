@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, rounded, spacing } from '@nexa/design-tokens';
-import { AppText, Icon } from '../../../components/ui';
+import { AppText } from '@/components/app-text';
+import { Icon } from '@/components/icon';
 
 export function AuthScaffold({
   title,

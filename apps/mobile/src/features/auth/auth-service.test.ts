@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApiClientError, createApiClient } from '@nexa/api-client';
-import { loginSchema, registerFormSchema, registerSchema } from '@nexa/validation';
+import { loginSchema, registerSchema } from '@nexa/validation';
 import { AuthService, type SessionStorage } from './auth-service';
 
 const user = {
@@ -43,14 +43,7 @@ describe('mobile form contracts', () => {
       user.name,
     );
   });
-  it('requires confirmation and never includes confirmation or a client-supplied role in the registration DTO', () => {
-    expect(
-      registerFormSchema.safeParse({
-        ...credentials,
-        name: user.name,
-        confirmPassword: 'Different123',
-      }).success,
-    ).toBe(false);
+  it('never includes confirmation or a client-supplied role in the registration DTO', () => {
     expect(
       registerSchema.parse({
         ...credentials,

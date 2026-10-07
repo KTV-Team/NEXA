@@ -11,7 +11,7 @@ import {
 } from '@expo-google-fonts/noto-sans';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors } from '@nexa/design-tokens';
-import { AuthProvider, useAuth } from '../src/features/auth/auth-provider';
+import { AuthProvider, useAuth } from '@/features/auth/auth-provider';
 
 void SplashScreen.preventAutoHideAsync();
 function RootNavigator() {

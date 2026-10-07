@@ -2,13 +2,18 @@ import { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { colors, spacing } from '@nexa/design-tokens';
-import { registerFormSchema, registerSchema } from '@nexa/validation';
-import { AppText, ErrorNotice, Icon, PrimaryButton, TextLink } from '../../../components/ui';
-import { AuthScaffold } from '../components/auth-scaffold';
-import { FormField } from '../components/form-field';
-import { useAuth } from '../auth-provider';
-import { useAuthForm } from '../use-auth-form';
-import { authErrorMessage } from '../auth-errors';
+import { registerSchema } from '@nexa/validation';
+import { AppText } from '@/components/app-text';
+import { ErrorNotice } from '@/components/error-notice';
+import { Icon } from '@/components/icon';
+import { PrimaryButton } from '@/components/primary-button';
+import { TextLink } from '@/components/text-link';
+import { AuthScaffold } from '../../components/auth-scaffold';
+import { FormField } from '../../components/form-field';
+import { useAuth } from '../../auth-provider';
+import { useAuthForm } from '../../hooks/use-auth-form';
+import { authErrorMessage } from '../../auth-errors';
+import { registerFormSchema } from './register-form-schema';
 
 export default function RegisterScreen() {
   const auth = useAuth();

@@ -13,7 +13,7 @@ Mã nguồn có màn đăng nhập/đăng ký native, validation qua packages/va
 - Logout cố xóa phiên local kể cả khi request server thất bại; thu hồi phiên server vẫn cần backend thật.
 - Trang sau đăng nhập chỉ hiển thị thông tin tài khoản/đăng xuất; chưa có luồng inbox hoặc quản lý bạn bè.
 
-Bằng chứng: [AuthService](../apps/mobile/src/features/auth/auth-service.ts), [AuthProvider](../apps/mobile/src/features/auth/auth-provider.tsx), [storage](../apps/mobile/src/features/auth/session-storage.ts), [routing](../apps/mobile/app/_layout.tsx), [session landing](../apps/mobile/app/index.tsx), [shared validation](../packages/validation/src/index.ts).
+Bằng chứng: [AuthService](../apps/mobile/src/features/auth/auth-service.ts), [AuthProvider](../apps/mobile/src/features/auth/auth-provider.tsx), [storage](../apps/mobile/src/features/auth/session-storage.ts), [routing](../apps/mobile/app/_layout.tsx), [session landing](../apps/mobile/src/features/auth/screens/account-session/account-session-screen.tsx), [shared validation](../packages/validation/src/index.ts), [registration form schema](../apps/mobile/src/features/auth/screens/register/register-form-schema.ts).
 
 Các chức năng tài khoản bổ sung như recovery/reset phải được xác nhận riêng; một đường dẫn hoặc dialog trong UI không xác nhận tính năng backend.
 
@@ -35,7 +35,7 @@ Các contract và gap được tách chi tiết trong [API contracts](api-contra
 
 ## Bằng chứng kiểm thử và giới hạn
 
-[auth-service.test.ts](../apps/mobile/src/features/auth/auth-service.test.ts) có test form/DTO, envelope và stub rejection, HTTP 204/timeout, lưu phiên không lưu mật khẩu, ghi nhớ bật/tắt, restore/refresh, dữ liệu phiên hỏng/bị từ chối, mất mạng và logout lỗi. Các test dùng transport/storage mock; đây là bằng chứng test code tồn tại, không phải chứng nhận runtime backend hoặc native.
+[auth-service.test.ts](../apps/mobile/src/features/auth/auth-service.test.ts) kiểm tra shared DTO/schema, envelope và stub rejection, HTTP 204/timeout, lưu phiên không lưu mật khẩu, ghi nhớ bật/tắt, restore/refresh, dữ liệu phiên hỏng/bị từ chối, mất mạng và logout lỗi. Kiểm tra riêng quy tắc confirm-password nằm cạnh màn đăng ký trong [register-form-schema.test.ts](../apps/mobile/src/features/auth/screens/register/register-form-schema.test.ts). Các test dùng transport/storage mock; đây là bằng chứng test code tồn tại, không phải chứng nhận runtime backend hoặc native.
 
 Audit tài liệu này không chạy lại test/build. Browser preview không xác minh native SecureStore qua restart, bàn phím/accessibility native, signed binary hay push khi app nền/đóng. Những kiểm tra này phải hoàn thành khi tích hợp theo [roadmap](roadmap.md).
 

@@ -8,8 +8,9 @@ import {
   type TextInputProps,
 } from 'react-native';
 import { colors, components, rounded, spacing } from '@nexa/design-tokens';
-import { AppText, Icon } from '../../../components/ui';
-import { textStyle } from '../../../theme/typography';
+import { AppText } from '@/components/app-text';
+import { Icon } from '@/components/icon';
+import { textStyle } from '@/theme/typography';
 
 interface FieldProps extends TextInputProps {
   label: string;

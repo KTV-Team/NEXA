@@ -3,12 +3,16 @@ import { Keyboard, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { colors, rounded, spacing } from '@nexa/design-tokens';
 import { loginSchema } from '@nexa/validation';
-import { AppText, ErrorNotice, Icon, PrimaryButton, TextLink } from '../../../components/ui';
-import { AuthScaffold } from '../components/auth-scaffold';
-import { FormField } from '../components/form-field';
-import { useAuth } from '../auth-provider';
-import { useAuthForm } from '../use-auth-form';
-import { authErrorMessage } from '../auth-errors';
+import { AppText } from '@/components/app-text';
+import { ErrorNotice } from '@/components/error-notice';
+import { Icon } from '@/components/icon';
+import { PrimaryButton } from '@/components/primary-button';
+import { TextLink } from '@/components/text-link';
+import { AuthScaffold } from '../../components/auth-scaffold';
+import { FormField } from '../../components/form-field';
+import { useAuth } from '../../auth-provider';
+import { useAuthForm } from '../../hooks/use-auth-form';
+import { authErrorMessage } from '../../auth-errors';
 
 export default function LoginScreen() {
   const auth = useAuth();
@@ -53,7 +57,10 @@ export default function LoginScreen() {
       }
     >
       {auth.restorationError && (
-        <ErrorNotice message={auth.restorationError} retry={() => void auth.retryRestore()} />
+        <ErrorNotice
+          message={auth.restorationError}
+          action={{ label: 'Thử khôi phục phiên', onPress: () => void auth.retryRestore() }}
+        />
       )}
       {error && <ErrorNotice message={error} />}
       <FormField

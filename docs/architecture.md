@@ -1,13 +1,13 @@
 # NEXA architecture and data model
 
-Audited 2026-10-06. [Product requirements](product-requirements.md) define Android/iOS and a shared backend. Native Android/iOS push is confirmed for open/background/closed notification behavior. Requirements come from the supplied user task and explicit confirmations, not UI samples. This separates verified source-code structure from proposed work; this audit implements no infrastructure or schema.
+Audited 2026-10-07 after source colocation refactor. [Product requirements](product-requirements.md) define Android/iOS and a shared backend. Native Android/iOS push is confirmed for open/background/closed notification behavior. Requirements come from the supplied user task and explicit confirmations, not UI samples. This separates verified source-code structure from proposed work; this refactor changes organization, not infrastructure or schema.
 
 ## Verified structure
 
 ```text
 Android / iOS
-  apps/mobile: Expo + React Native + Expo Router
-  auth forms -> AuthProvider -> AuthService
+  apps/mobile: Expo + React Native + Expo Router (`app/` routes; screen implementations in `src/features/auth/screens/`)
+  auth feature: colocated screens/components/hooks -> AuthProvider -> AuthService
   session persistence -> Expo SecureStore (native)
   HTTP -> packages/api-client (Fetch)
              |
@@ -17,12 +17,12 @@ Android / iOS
     AuthModule: login/refresh/logout stubs
     UsersModule: two in-memory sample users
 
-Shared: packages/types, validation (Zod), design-tokens
+Shared: packages/types (domain files + barrel), validation (domain files + barrel), api-client (transport + endpoint groups), design-tokens
 Workspace: pnpm + Turborepo
 Retained outside MVP: apps/web (Next.js)
 ```
 
-Evidence: [mobile layout](../apps/mobile/app/_layout.tsx), [auth service](../apps/mobile/src/features/auth/auth-service.ts), [session storage](../apps/mobile/src/features/auth/session-storage.ts), [Fetch client](../packages/api-client/src/index.ts), [API bootstrap](../apps/api/src/main.ts), and [modules](../apps/api/src/app.module.ts). No unverified database, worker, socket, broker, or OS push path is included.
+Evidence: [mobile layout](../apps/mobile/app/_layout.tsx), [auth feature screens](../apps/mobile/src/features/auth/screens/), [auth service](../apps/mobile/src/features/auth/auth-service.ts), [session storage](../apps/mobile/src/features/auth/session-storage.ts), [Fetch client entry point](../packages/api-client/src/index.ts), [API bootstrap](../apps/api/src/main.ts), and [modules](../apps/api/src/app.module.ts). No unverified database, worker, socket, broker, or OS push path is included.
 
 Mobile sends email/password DTOs and expects access/refresh tokens; these do not prove real JWT/password services. SecureStore stores session data, not passwords; remember-off keeps sessions in memory. Browser preview uses tab sessionStorage for development. The protected landing displays session details, with no inbox/friendship screens.
 
