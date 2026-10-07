@@ -1,14 +1,17 @@
 import { Controller, Get } from '@nestjs/common';
-import type { HealthStatus } from '@nexa/types';
+import type { ApiResponse, HealthStatus } from '@nexa/types';
 
 @Controller('health')
 export class HealthController {
   @Get()
-  check(): HealthStatus {
+  check(): ApiResponse<HealthStatus> {
     return {
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      version: process.env['npm_package_version'] ?? '0.0.0',
+      success: true,
+      data: {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        version: process.env['npm_package_version'] ?? '0.0.0',
+      },
     };
   }
 }
