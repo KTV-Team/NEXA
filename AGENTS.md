@@ -2,10 +2,13 @@
 
 ## Mandatory Codex quality rules
 
-- At the start of every coding task (implementation, bug fix, refactor, or test change), read [docs/rules.md](docs/rules.md) in full before editing code. Apply it throughout implementation and self-review; a link or remembered summary is not a substitute for reading it.
-- Read the assigned member spec and relevant handoff contracts before implementation. The A/B/C specs contain draft proposals; only explicit leader-approved decisions establish product or contract requirements.
-- After context compaction or resuming work, ensure these rules are available in context; re-read them if missing, uncertain, or changed. Do not re-read unchanged rules before every individual edit.
-- Before handing off, review the complete task diff against these rules and report actual checks and unresolved gaps. Do not treat self-review as independent approval or permission to merge.
+- [docs/rules.md](docs/rules.md) is the mandatory coding standard for every agent working in this repository, across all apps and packages. Apply every relevant rule during implementation, bug fixes, refactors, test changes, and code review; these rules are not optional suggestions.
+- **Before editing code:** read this `AGENTS.md`, the complete `docs/rules.md`, and applicable local instructions from the current checkout at the start of each coding task. Do not substitute a link, a remembered summary, or assumptions from an earlier task. If required instructions cannot be read, report the exact missing source and continue only independent read-only work until it is available.
+- **During implementation:** identify the relevant rule IDs and use them to check each implementation step, including affected callers, consumers, permissions, error paths, and tests. Keep the rules available in context; do not postpone compliance until the final review.
+- **After resuming or context compaction:** re-read `AGENTS.md` and `docs/rules.md` before the next code edit. Re-read them when their contents change during the task. Unchanged rules already loaded for the active task need not be re-read before every individual edit.
+- **Before completion:** inspect the complete task diff against every applicable rule, fix introduced violations, and run the relevant existing lint/typecheck/tests and additional checks required by the change. After a correction, verify the affected behavior again; do not report completion while required violations or essential verification remain unresolved.
+- **In the handoff:** report what changed, the checks actually executed and their results, and any unresolved rule IDs or verification gaps. Never label skipped or unexecuted checks as passed, or describe partial implementation as verified completion. Self-review does not replace independent review or authorize merging.
+- Do not edit instructions, weaken rules, suppress findings, or reduce checks merely to make a task pass. Changes to these safeguards require explicit leader authorization; this does not require renewed approval for routine implementation already within the assigned scope.
 
 ## Product authority
 

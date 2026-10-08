@@ -144,7 +144,7 @@ export class AuthService {
 
   async logout(): Promise<void> {
     try {
-      if (this.session) await this.transport.auth.logout();
+      if (this.session) await this.transport.auth.logout(this.session.tokens.refreshToken);
     } finally {
       await this.clear();
     }
