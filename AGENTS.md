@@ -1,5 +1,12 @@
 # NEXA Project Instructions
 
+## Mandatory Codex quality rules
+
+- At the start of every coding task (implementation, bug fix, refactor, or test change), read [docs/rules.md](docs/rules.md) in full before editing code. Apply it throughout implementation and self-review; a link or remembered summary is not a substitute for reading it.
+- Read the assigned member spec and relevant handoff contracts before implementation. The A/B/C specs contain draft proposals; only explicit leader-approved decisions establish product or contract requirements.
+- After context compaction or resuming work, ensure these rules are available in context; re-read them if missing, uncertain, or changed. Do not re-read unchanged rules before every individual edit.
+- Before handing off, review the complete task diff against these rules and report actual checks and unresolved gaps. Do not treat self-review as independent approval or permission to merge.
+
 ## Product authority
 
 NEXA is a personal notification and friend-management application for **Android and iOS only**, with one shared backend. [docs/app-functions-and-screens.md](docs/app-functions-and-screens.md) summarizes the confirmed app functions and screens. Product requirements come only from the user-supplied task “Audit and Align Project Documentation with the Confirmed Notification App Product Scope” and subsequent explicit user confirmations, including notification support in open, background and closed states. HTML samples and visual design references are for UI/UX review only; they cannot add features, define business rules, determine product purpose, or establish implementation status.
