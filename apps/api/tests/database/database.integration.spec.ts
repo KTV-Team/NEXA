@@ -29,29 +29,34 @@ describe('PostgreSQL schema and seed integration', () => {
     await cleanupSeedFixtures();
   });
 
-  it('applies both migrations and can revert auth sessions without losing existing users', async () => {
+  it('applies the feature migration and can revert it without losing auth, users, or legacy data', async () => {
     expect(await source.query('SELECT 1 AS connected')).toEqual([{ connected: 1 }]);
     expect(await source.showMigrations()).toBe(false);
 
     const tables = await source.query(`
       SELECT table_name FROM information_schema.tables
       WHERE table_schema = current_schema()
-        AND table_name IN ('users', 'auth_accounts', 'auth_sessions', 'teams', 'team_members', 'todo_lists', 'todo_items', 'events', 'event_participants', 'notifications', 'notification_recipients')
+        AND table_name IN ('users', 'auth_accounts', 'auth_sessions', 'teams', 'team_members', 'todo_lists', 'todo_items', 'events', 'event_participants', 'notifications', 'notification_recipients', 'friendships', 'friend_requests', 'personal_notifications', 'notification_occurrences', 'inbox_items')
     `);
-    expect(tables).toHaveLength(11);
+    expect(tables).toHaveLength(16);
 
     const existingUserId = randomUUID();
+    const existingSessionId = randomUUID();
+    const existingLegacyNotificationId = randomUUID();
     await source.getRepository(UserEntity).insert({
       id: existingUserId,
       email: `${existingUserId}@example.test`,
       name: 'Migration sentinel',
       systemRole: 'USER',
     });
+    await source.query('INSERT INTO auth_sessions(id,user_id,client_type,refresh_token_hash,expires_at) VALUES($1,$2,$3,$4,now()+interval \'1 day\')', [existingSessionId, existingUserId, 'mobile', randomUUID().replaceAll('-', '').padEnd(64, 'a')]);
+    await source.query('INSERT INTO notifications(id,title,body,status,created_by) VALUES($1,$2,$3,$4,$5)', [existingLegacyNotificationId, 'Legacy sentinel', 'Must survive feature migration rollback', 'DRAFT', existingUserId]);
     try {
       await source.undoLastMigration();
-      expect(await source.query("SELECT to_regclass('auth_sessions') AS table_name")).toEqual([
-        { table_name: null },
-      ]);
+      expect(await source.query("SELECT to_regclass('auth_sessions') AS table_name")).toEqual([{ table_name: 'auth_sessions' }]);
+      expect(await source.query("SELECT to_regclass('personal_notifications') AS table_name")).toEqual([{ table_name: null }]);
+      expect(await source.query('SELECT id FROM auth_sessions WHERE id=$1', [existingSessionId])).toHaveLength(1);
+      expect(await source.query('SELECT id FROM notifications WHERE id=$1', [existingLegacyNotificationId])).toHaveLength(1);
       expect(
         await source.getRepository(UserEntity).findOneBy({ id: existingUserId }),
       ).not.toBeNull();
@@ -61,6 +66,8 @@ describe('PostgreSQL schema and seed integration', () => {
         await source.getRepository(UserEntity).findOneBy({ id: existingUserId }),
       ).not.toBeNull();
     } finally {
+      await source.query('DELETE FROM notifications WHERE id=$1', [existingLegacyNotificationId]);
+      await source.query('DELETE FROM auth_sessions WHERE id=$1', [existingSessionId]);
       await source.getRepository(UserEntity).delete({ id: existingUserId });
     }
   });

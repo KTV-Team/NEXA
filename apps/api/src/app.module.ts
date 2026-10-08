@@ -9,6 +9,7 @@ import { DevModule } from './dev/dev.module';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ApiEnvelopeInterceptor } from './common/interceptors/api-envelope.interceptor';
+import { SocialModule } from './social/social.module';
 
 const devModules = appEnvironment.NODE_ENV === 'production' ? [] : [DevModule];
 
@@ -20,6 +21,7 @@ const devModules = appEnvironment.NODE_ENV === 'production' ? [] : [DevModule];
     HealthModule,
     AuthModule,
     UsersModule,
+    SocialModule,
     ...devModules,
   ],
   providers: [
