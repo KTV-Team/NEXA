@@ -225,5 +225,12 @@ describe('session lifecycle', () => {
     await service.login(credentials, true);
     await expect(service.logout()).rejects.toThrow('offline');
     expect(await storage.read()).toBeNull();
+    expect(fetcher).toHaveBeenNthCalledWith(
+      2,
+      'https://api.example/auth/logout',
+      expect.objectContaining({
+        body: JSON.stringify({ refreshToken: tokens.refreshToken }),
+      }),
+    );
   });
 });

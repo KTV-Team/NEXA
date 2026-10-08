@@ -14,5 +14,6 @@ export const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   pressed: { backgroundColor: colors.charcoal },
+  busy: { opacity: 0.88 },
   disabled: { backgroundColor: colors.hairline },
 });

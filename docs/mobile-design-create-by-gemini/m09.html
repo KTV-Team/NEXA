@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile Spec — M09: Thành phần phản hồi & Trạng thái tải</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport width switches via pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+
+    /* Sub-tabs inside Mobile Device Frame */
+    .util-tab-nav {
+      display: flex;
+      background-color: var(--color-surface);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 16px;
+      border: 1px solid var(--color-hairline-soft);
+    }
+
+    .util-tab-btn {
+      flex: 1;
+      text-align: center;
+      padding: 8px 4px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-slate);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 140ms ease;
+      white-space: nowrap;
+    }
+
+    .util-tab-btn.active {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .util-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--color-steel);
+      margin: 16px 0 8px 2px;
+    }
+
+    .util-demo-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .interactive-toast-anchor {
+      position: relative;
+      min-height: 52px;
+      margin-bottom: 8px;
+    }
+
+    .demo-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-hairline-strong);
+      background-color: var(--color-canvas);
+      color: var(--color-ink);
+      cursor: pointer;
+      min-height: 40px;
+      transition: all 120ms ease;
+    }
+    .demo-toggle-btn:hover {
+      background-color: var(--color-surface);
+      border-color: var(--color-ink);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-inbox.html" class="showcase-nav-item">M03: Inbox / Trang chính</a>
+        <a href="m04-create-notification.html" class="showcase-nav-item">M04: Tạo thông báo</a>
+        <a href="m05-user-search.html" class="showcase-nav-item">M05: Tìm người dùng</a>
+        <a href="m06-friends.html" class="showcase-nav-item">M06: Bạn bè / Lời mời</a>
+        <a href="m07-profile-settings.html" class="showcase-nav-item">M07: Hồ sơ / Cài đặt</a>
+        <a href="m08-notification-target.html" class="showcase-nav-item">M08: Đích thông báo</a>
+        <a href="m09-components-utils.html" class="showcase-nav-item active">M09: Utils & Feedback</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M09</span>
+          <span class="badge-tag-yellow">Hệ thống thành phần phản hồi & Trạng thái tải</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header -->
+          <div class="mobile-app-header">
+            <a href="index.html" class="button-icon-circular" aria-label="Quay lại Mục lục" title="Quay lại">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </a>
+
+            <div style="font-size: 17px; font-weight: 600; color: var(--color-ink);">
+              UI Utils & Feedback
+            </div>
+
+            <!-- Refresh Icon button -->
+            <button type="button" class="header-icon-btn" onclick="resetDemos()" title="Làm mới demo" aria-label="Làm mới">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 3. Screen Content: Interactive Tab Views -->
+          <div class="mobile-screen-content" style="position: relative; overflow-y: auto;">
+            <!-- Category Switcher Tabs -->
+            <div class="util-tab-nav">
+              <button type="button" class="util-tab-btn active" onclick="switchCategory('tab-alerts', this)">Alerts & Toasts</button>
+              <button type="button" class="util-tab-btn" onclick="switchCategory('tab-dialogs', this)">Dialogs</button>
+              <button type="button" class="util-tab-btn" onclick="switchCategory('tab-loading-page', this)">Trang tải</button>
+              <button type="button" class="util-tab-btn" onclick="switchCategory('tab-skeletons', this)">Skeletons</button>
+            </div>
+
+            <!-- TAB 1: ALERTS & TOASTS -->
+            <div id="tab-alerts" class="util-tab-content">
+              <!-- Section: In-line Alerts -->
+              <div class="util-section-title">1. Thông báo ngữ cảnh (Inline Alerts)</div>
+              
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <!-- Info Alert -->
+                <div class="nexa-alert info" role="status">
+                  <div class="nexa-alert-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  </div>
+                  <div class="nexa-alert-content">
+                    <div class="nexa-alert-title">Đồng bộ tự động</div>
+                    <div class="nexa-alert-desc">Hộp thư được cập nhật tức thời từ máy chủ qua WebSocket khi ứng dụng đang mở.</div>
+                  </div>
+                  <button type="button" class="nexa-alert-close" aria-label="Đóng" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+
+                <!-- Success Alert -->
+                <div class="nexa-alert success" role="status">
+                  <div class="nexa-alert-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  </div>
+                  <div class="nexa-alert-content">
+                    <div class="nexa-alert-title">Lên lịch gửi thành công</div>
+                    <div class="nexa-alert-desc">Thông báo sẽ được gửi tới Tuấn Kiệt vào lúc 14:00 ngày mai.</div>
+                  </div>
+                  <button type="button" class="nexa-alert-close" aria-label="Đóng" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+
+                <!-- Warning Alert -->
+                <div class="nexa-alert warning" role="alert">
+                  <div class="nexa-alert-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                  </div>
+                  <div class="nexa-alert-content">
+                    <div class="nexa-alert-title">Chưa cấp quyền thông báo</div>
+                    <div class="nexa-alert-desc">Bạn có thể bỏ lỡ thông báo khi ứng dụng chạy nền hoặc bị đóng.</div>
+                  </div>
+                </div>
+
+                <!-- Danger / Error Alert -->
+                <div class="nexa-alert danger" role="alert">
+                  <div class="nexa-alert-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                  </div>
+                  <div class="nexa-alert-content">
+                    <div class="nexa-alert-title">Mất kết nối máy chủ</div>
+                    <div class="nexa-alert-desc">Không thể tải dữ liệu mới. Đang thử kết nối lại tự động...</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section: Floating Toasts -->
+              <div class="util-section-title">2. Thông báo nổi vi mô (Floating Toasts)</div>
+              
+              <!-- Demo Trigger Buttons -->
+              <div class="util-demo-row">
+                <button type="button" class="demo-toggle-btn" onclick="showToast('toast-success')">
+                  <span style="color:#059669;">●</span> Toast Thành công
+                </button>
+                <button type="button" class="demo-toggle-btn" onclick="showToast('toast-undo')">
+                  <span style="color:var(--color-brand-yellow-deep);">●</span> Toast Hoàn tác
+                </button>
+                <button type="button" class="demo-toggle-btn" onclick="showToast('toast-error')">
+                  <span style="color:#dc2626;">●</span> Toast Báo lỗi
+                </button>
+              </div>
+
+              <!-- Toast Preview Anchors (In-viewport demo) -->
+              <div class="interactive-toast-anchor">
+                <!-- Toast Default / Success -->
+                <div id="toast-success" class="nexa-toast toast-success" style="display: flex;">
+                  <div class="nexa-toast-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  </div>
+                  <div class="nexa-toast-message">Đã đánh dấu đã đọc thông báo</div>
+                  <button type="button" class="nexa-toast-close" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+              </div>
+
+              <div class="interactive-toast-anchor">
+                <!-- Toast with Action Button (Undo) -->
+                <div id="toast-undo" class="nexa-toast" style="display: flex;">
+                  <div class="nexa-toast-message">Đã xóa 1 thông báo khỏi hộp thư</div>
+                  <button type="button" class="nexa-toast-action" onclick="alert('Đã hoàn tác thao tác xóa!')">HOÀN TÁC</button>
+                  <button type="button" class="nexa-toast-close" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+              </div>
+
+              <div class="interactive-toast-anchor">
+                <!-- Toast Error Light Style -->
+                <div id="toast-error" class="nexa-toast toast-light" style="display: flex;">
+                  <div class="nexa-toast-icon" style="color: #dc2626;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  </div>
+                  <div class="nexa-toast-message">Không thể gửi lời mời kết bạn</div>
+                  <button type="button" class="nexa-toast-close" onclick="this.parentElement.style.display='none'">&times;</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 2: DIALOGS & MODALS -->
+            <div id="tab-dialogs" class="util-tab-content" style="display: none;">
+              <div class="util-section-title">1. Hộp thoại xác nhận (Confirmation Dialogs)</div>
+              
+              <div class="util-demo-row">
+                <button type="button" class="demo-toggle-btn" onclick="openModal('modal-confirm-unfriend')">
+                  Mở Dialog Hủy kết bạn
+                </button>
+                <button type="button" class="demo-toggle-btn" onclick="openModal('modal-confirm-delete')">
+                  Mở Dialog Xóa thông báo
+                </button>
+                <button type="button" class="demo-toggle-btn" onclick="openBottomSheet()">
+                  Mở Bottom Sheet tùy chọn
+                </button>
+              </div>
+
+              <!-- Static Preview of Dialog inside screen -->
+              <div style="background-color: var(--color-surface); padding: 16px; border-radius: var(--radius-xl); border: 1px solid var(--color-hairline); margin-top: 10px;">
+                <div class="modal-dialog" style="box-shadow: none; max-width: 100%; border: 1px solid var(--color-hairline);">
+                  <div class="modal-icon-badge danger">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
+                  </div>
+                  <h3 class="modal-title">Hủy kết bạn?</h3>
+                  <p class="modal-desc">Bạn sẽ không thể gửi thông báo trực tiếp cho <strong>Tuấn Kiệt</strong> cho đến khi kết bạn lại.</p>
+                  <div class="modal-actions-row">
+                    <button type="button" class="button-secondary" style="min-height: 44px; border-radius: var(--radius-full);">Giữ lại</button>
+                    <button type="button" class="button-primary" style="background-color: #dc2626; color: #fff; min-height: 44px; border-radius: var(--radius-full);">Hủy bạn</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- TAB 3: LOADING PAGE -->
+            <div id="tab-loading-page" class="util-tab-content" style="display: none;">
+              <div class="util-section-title">Chế độ xem trước màn hình tải trang</div>
+              
+              <div class="util-demo-row">
+                <button type="button" class="demo-toggle-btn" onclick="showLoaderMode('mode-spinner')">
+                  Logo Pulse / Splash Loader
+                </button>
+                <button type="button" class="demo-toggle-btn" onclick="showLoaderMode('mode-error')">
+                  Màn hình lỗi & Thử lại
+                </button>
+              </div>
+
+              <!-- Loading Page Preview 1: App Boot Spinner -->
+              <div id="mode-spinner" class="loading-page-container" style="background-color: var(--color-canvas); border-radius: var(--radius-xl); border: 1px solid var(--color-hairline-soft);">
+                <div class="nexa-app-loader">
+                  <div class="nexa-logo-spinner">N</div>
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="font-size: 15px; font-weight: 600; color: var(--color-ink);">Đang khởi tạo ứng dụng...</div>
+                    <div class="loading-text">Kiểm tra phiên &amp; đồng bộ hộp thư</div>
+                  </div>
+                  <div style="width: 140px; margin-top: 8px;">
+                    <div class="progress-bar-track">
+                      <div class="progress-bar-fill indeterminate"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loading Page Preview 2: Error & Retry State -->
+              <div id="mode-error" class="loading-page-container" style="display: none; background-color: var(--color-canvas); border-radius: var(--radius-xl); border: 1px solid var(--color-hairline-soft);">
+                <div class="state-illustration-box error">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path><path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                </div>
+                <div class="state-title">Không thể tải dữ liệu</div>
+                <div class="state-desc">Kết nối mạng không ổn định hoặc máy chủ đang bảo trì. Vui lòng kiểm tra lại đường truyền.</div>
+                <button type="button" class="button-primary" style="min-height: 44px; padding: 0 24px; border-radius: var(--radius-full);" onclick="alert('Đang thử tải lại dữ liệu...')">
+                  Thử kết nối lại
+                </button>
+              </div>
+            </div>
+
+            <!-- TAB 4: SKELETONS & ELEMENT LOADERS -->
+            <div id="tab-skeletons" class="util-tab-content" style="display: none;">
+              <!-- 1. Buttons with Loading State -->
+              <div class="util-section-title">1. Trạng thái tải của Nút bấm (Button Loaders)</div>
+              
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px;">
+                <!-- Primary Button Loading -->
+                <button type="button" class="button-primary button-full button-loading" style="min-height: 44px; border-radius: var(--radius-full);">
+                  <span class="spinner spinner-sm spinner-light"></span>
+                  <span>Đang gửi thông báo...</span>
+                </button>
+
+                <!-- Secondary Button Loading -->
+                <button type="button" class="button-secondary button-full button-loading" style="min-height: 44px; border-radius: var(--radius-full);">
+                  <span class="spinner spinner-sm spinner-ink"></span>
+                  <span>Đang hủy kết bạn...</span>
+                </button>
+
+                <!-- Inline Action Pill Loading -->
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <button type="button" class="button-pill-secondary button-loading" style="min-height: 36px; padding: 0 16px;">
+                    <span class="spinner spinner-sm spinner-blue"></span>
+                    <span>Đang tìm...</span>
+                  </button>
+                  <span class="caption" style="color: var(--color-steel);">Nút inline phản hồi debounce search</span>
+                </div>
+              </div>
+
+              <!-- 2. Skeletons for Cards & Lists -->
+              <div class="util-section-title">2. Skeleton Shimmer cho Thẻ &amp; Danh sách</div>
+              
+              <!-- Card Skeleton 1: Notification Card -->
+              <div class="skeleton-card" style="margin-bottom: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="skeleton skeleton-circle" style="width: 36px; height: 36px;"></div>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                      <div class="skeleton skeleton-title" style="width: 90px; height: 12px; margin: 0;"></div>
+                      <div class="skeleton skeleton-text" style="width: 60px; height: 10px; margin: 0;"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton" style="width: 60px; height: 20px; border-radius: var(--radius-full);"></div>
+                </div>
+                <div class="skeleton skeleton-title" style="width: 75%; height: 14px; margin-top: 4px;"></div>
+                <div class="skeleton skeleton-text" style="width: 100%; height: 11px;"></div>
+                <div class="skeleton skeleton-text" style="width: 45%; height: 11px; margin: 0;"></div>
+              </div>
+
+              <!-- Card Skeleton 2: Friend User Item -->
+              <div class="skeleton-card" style="margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="skeleton skeleton-circle" style="width: 40px; height: 40px;"></div>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                      <div class="skeleton skeleton-title" style="width: 120px; height: 13px; margin: 0;"></div>
+                      <div class="skeleton skeleton-text" style="width: 160px; height: 11px; margin: 0;"></div>
+                    </div>
+                  </div>
+                  <div class="skeleton" style="width: 80px; height: 32px; border-radius: var(--radius-full);"></div>
+                </div>
+              </div>
+
+              <!-- 3. Form Input Skeleton & Trailing Spinner -->
+              <div class="util-section-title">3. Ô nhập liệu đang tải (Input Loading)</div>
+              <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                <!-- Input with debounce search spinner -->
+                <div class="input-search-wrap">
+                  <div class="input-leading-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </div>
+                  <input type="text" class="input-search-field" value="tuankiet..." readonly style="color: var(--color-ink);">
+                  <div style="position: absolute; right: 14px; top: 12px;">
+                    <span class="spinner spinner-sm spinner-ink"></span>
+                  </div>
+                </div>
+
+                <!-- Input Skeleton Placeholder -->
+                <div class="skeleton skeleton-input"></div>
+              </div>
+
+              <!-- 4. Standalone Spinners & Progress Indicators -->
+              <div class="util-section-title">4. Kích cỡ Spinner &amp; Thanh tiến trình</div>
+              <div style="background-color: var(--color-surface); padding: 14px; border-radius: var(--radius-lg); border: 1px solid var(--color-hairline-soft); display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; align-items: center; justify-content: space-around;">
+                  <div style="text-align: center;">
+                    <span class="spinner spinner-sm spinner-ink"></span>
+                    <div class="micro" style="margin-top: 4px; color: var(--color-steel);">16px SM</div>
+                  </div>
+                  <div style="text-align: center;">
+                    <span class="spinner spinner-md spinner-blue"></span>
+                    <div class="micro" style="margin-top: 4px; color: var(--color-steel);">22px MD</div>
+                  </div>
+                  <div style="text-align: center;">
+                    <span class="spinner spinner-lg spinner-ink"></span>
+                    <div class="micro" style="margin-top: 4px; color: var(--color-steel);">36px LG</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--color-steel);">
+                    <span>Tiến trình tải (Determinate 68%)</span>
+                    <span>68%</span>
+                  </div>
+                  <div class="progress-bar-track">
+                    <div class="progress-bar-fill" style="width: 68%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODAL OVERLAYS (Interactive) -->
+            <!-- Modal 1: Unfriend Confirmation -->
+            <div id="modal-confirm-unfriend" class="modal-backdrop" style="display: none;" onclick="closeModalOnBackdrop(event, this)">
+              <div class="modal-dialog" role="dialog" aria-modal="true">
+                <div class="modal-icon-badge danger">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
+                </div>
+                <h3 class="modal-title">Hủy kết bạn?</h3>
+                <p class="modal-desc">Bạn sẽ không thể gửi thông báo cho <strong>Tuấn Kiệt</strong> sau khi hủy kết bạn.</p>
+                <div class="modal-actions-row">
+                  <button type="button" class="button-secondary" style="min-height: 44px; border-radius: var(--radius-full);" onclick="closeModal('modal-confirm-unfriend')">Giữ lại</button>
+                  <button type="button" class="button-primary" style="background-color: #dc2626; color: #fff; min-height: 44px; border-radius: var(--radius-full);" onclick="confirmUnfriendAction()">Hủy bạn</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal 2: Delete Notification Confirmation -->
+            <div id="modal-confirm-delete" class="modal-backdrop" style="display: none;" onclick="closeModalOnBackdrop(event, this)">
+              <div class="modal-dialog" role="dialog" aria-modal="true">
+                <div class="modal-icon-badge danger">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </div>
+                <h3 class="modal-title">Xóa thông báo này?</h3>
+                <p class="modal-desc">Thông báo sẽ bị xóa vĩnh viễn khỏi Hộp thư đến của bạn và không thể phục hồi.</p>
+                <div class="modal-actions-row">
+                  <button type="button" class="button-secondary" style="min-height: 44px; border-radius: var(--radius-full);" onclick="closeModal('modal-confirm-delete')">Hủy bỏ</button>
+                  <button type="button" class="button-primary" style="background-color: #dc2626; color: #fff; min-height: 44px; border-radius: var(--radius-full);" onclick="confirmDeleteAction()">Xóa ngay</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Sheet Action Sheet Overlay -->
+            <div id="modal-bottom-sheet" class="bottom-sheet-backdrop" style="display: none;" onclick="closeSheetOnBackdrop(event, this)">
+              <div class="bottom-sheet-panel" role="dialog" aria-modal="true">
+                <div class="bottom-sheet-drag-handle"></div>
+                <div class="bottom-sheet-title">Tùy chọn thông báo</div>
+                
+                <button type="button" class="bottom-sheet-item" onclick="closeBottomSheet()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                  <span>Đánh dấu chưa đọc</span>
+                </button>
+
+                <button type="button" class="bottom-sheet-item" onclick="closeBottomSheet()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                  <span>Tắt nhận thông báo từ người này</span>
+                </button>
+
+                <button type="button" class="bottom-sheet-item danger" onclick="closeBottomSheet()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  <span>Xóa thông báo</span>
+                </button>
+
+                <div style="border-top: 1px solid var(--color-hairline-soft); margin-top: 4px; padding-top: 8px;">
+                  <button type="button" class="button-secondary button-full" style="min-height: 44px; border-radius: var(--radius-full);" onclick="closeBottomSheet()">
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 4. Mobile Bottom Indicator Bar -->
+          <div class="mobile-home-indicator">
+            <div class="indicator-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Technical Specification & Guidelines -->
+      <div class="spec-panel">
+        <div class="spec-header">
+          <div class="spec-title-group">
+            <span class="spec-screen-code">M09 · UTILS &amp; FEEDBACK</span>
+            <h1 class="spec-screen-name">Thành phần phản hồi &amp; Trạng thái tải</h1>
+            <p class="spec-screen-desc">
+              Bộ công cụ giao diện chuẩn hóa cho trải nghiệm phản hồi vi mô (micro-feedback) trên Android và iOS.
+              Bao gồm thông báo ngữ cảnh (Alert), thông báo nổi tự tắt (Toast), hộp thoại xác nhận hành động nguy hiểm (Dialog/Modal),
+              bảng tùy chọn kéo đáy (Bottom Sheet), cùng toàn bộ trạng thái tải màn hình (Loading Page) và bộ khung xương giả lập dữ liệu (Skeleton Shimmer) theo đúng nguyên tắc DESIGN.md.
+            </p>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">Core UX Utils</span>
+            <span class="badge-tag-yellow">WCAG Compliant</span>
+            <span class="badge-tag-yellow">Touch Target &ge; 44px</span>
+          </div>
+        </div>
+
+        <!-- Spec Card 1: Alert vs Toast Comparison -->
+        <section class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-card-icon">1</div>
+            <h2 class="spec-card-title">Phân biệt và Quy chuẩn Alert vs Toast</h2>
+          </div>
+          <div class="spec-card-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px;">
+              <div style="background-color: var(--color-surface); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-hairline-soft);">
+                <div style="font-weight: 600; font-size: 13px; color: var(--color-ink); margin-bottom: 6px;">🔔 Alert (Thông báo ngữ cảnh)</div>
+                <ul class="spec-list" style="font-size: 12px;">
+                  <li><strong>Tính chất:</strong> Cố định trong bố cục (in-line), không tự biến mất.</li>
+                  <li><strong>Vị trí:</strong> Đặt đầu form nhập liệu, danh sách thông báo hoặc banner dưới topbar.</li>
+                  <li><strong>Ứng dụng:</strong> Cảnh báo mất mạng, nhắc nhở quyền thông báo OS, lỗi form nghiệm thu API.</li>
+                  <li><strong>Tương tác:</strong> Có nút đóng (x) thủ công hoặc nút hành động liên kết.</li>
+                </ul>
+              </div>
+
+              <div style="background-color: var(--color-surface); padding: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-hairline-soft);">
+                <div style="font-weight: 600; font-size: 13px; color: var(--color-ink); margin-bottom: 6px;">🍞 Toast (Thông báo nổi vi mô)</div>
+                <ul class="spec-list" style="font-size: 12px;">
+                  <li><strong>Tính chất:</strong> Nổi tạm thời trên lớp UI (floating capsule), tự động biến mất sau <strong>3000ms – 4000ms</strong>.</li>
+                  <li><strong>Vị trí:</strong> Cách mép dưới 24px (hoặc nổi trên bottom navigation 4 tab), không che mất nút CTA chính.</li>
+                  <li><strong>Ứng dụng:</strong> "Đã đánh dấu đã đọc", "Đã sao chép liên kết", "Đã hủy lời mời".</li>
+                  <li><strong>Tương tác Hoàn tác (Undo):</strong> Giữ lại 4 giây cho phép người dùng đảo ngược thao tác xóa.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="spec-table-wrap">
+              <table class="spec-table">
+                <thead>
+                  <tr>
+                    <th>Loại trạng thái</th>
+                    <th>Nền (Background)</th>
+                    <th>Màu viền &amp; Icon</th>
+                    <th>Mục đích sử dụng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="badge-tag-yellow" style="background:#e0e7ff; color:#1e40af;">Info</span></td>
+                    <td><code>#f5f8ff</code></td>
+                    <td><code>#4262ff</code> (brand-blue)</td>
+                    <td>Thông báo tiến trình đồng bộ thời gian thực, cập nhật ứng dụng.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge-tag-yellow" style="background:#d1fae5; color:#065f46;">Success</span></td>
+                    <td><code>#f0fdf9</code></td>
+                    <td><code>#00b473</code> (success-accent)</td>
+                    <td>Tạo thông báo thành công, kết bạn thành công, lưu thông tin.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge-tag-yellow" style="background:var(--color-surface-yellow); color:var(--color-yellow-dark);">Warning</span></td>
+                    <td><code>#fff8e0</code></td>
+                    <td><code>#fcb900</code> (brand-yellow-deep)</td>
+                    <td>Cảnh báo quyền native push tắt, xung đột lịch hẹn giờ.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="badge-tag-yellow" style="background:#fee2e2; color:#991b1b;">Danger / Error</span></td>
+                    <td><code>#fef2f2</code></td>
+                    <td><code>#dc2626</code> (danger-red)</td>
+                    <td>Mất kết nối máy chủ, từ chối quyền gửi (chưa kết bạn), lỗi 500.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Spec Card 2: Confirmation Dialogs & Bottom Sheet -->
+        <section class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-card-icon">2</div>
+            <h2 class="spec-card-title">Hộp thoại xác nhận &amp; Bottom Sheet</h2>
+          </div>
+          <div class="spec-card-content">
+            <ul class="spec-list">
+              <li>
+                <strong>Lớp phủ mờ (Scrim / Backdrop):</strong> Màu nền <code>rgba(28, 28, 30, 0.5)</code> kết hợp bộ lọc <code>backdrop-filter: blur(2px)</code> giúp tập trung thị giác vào hộp thoại trung tâm.
+              </li>
+              <li>
+                <strong>Nguyên tắc hành động nguy hiểm (Destructive Actions):</strong> Các thao tác không thể hoàn tác như "Hủy kết bạn" hoặc "Xóa thông báo vĩnh viễn" bắt buộc phải mở Modal xác nhận 2 nút (Nút an toàn bên trái, Nút hành động nguy hiểm màu đỏ <code>#dc2626</code> bên phải).
+              </li>
+              <li>
+                <strong>Quy chuẩn chạm 44px:</strong> Toàn bộ các nút trong Modal và từng mục hành động trong Bottom Sheet đều phải có <code>min-height: 44px</code> theo chuẩn WCAG 2.5.5.
+              </li>
+              <li>
+                <strong>Bottom Sheet Panel:</strong> Bo góc trên <code>radius-xxxl (28px)</code>, thanh kéo drag-handle 36x4px, hỗ trợ vuốt xuống để đóng và đóng khi chạm ra ngoài backdrop.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Spec Card 3: Loading States & Skeletons -->
+        <section class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-card-icon">3</div>
+            <h2 class="spec-card-title">Chiến lược hiển thị trạng thái tải (Loading Policy)</h2>
+          </div>
+          <div class="spec-card-content">
+            <ul class="spec-list">
+              <li>
+                <strong>Ngưỡng thời gian phản hồi (150ms rule):</strong>
+                Nếu API phản hồi trong thời gian dưới 150ms, không hiển thị skeleton hoặc spinner để tránh hiện tượng chớp màn hình (visual flicker). Nếu vượt quá 150ms, hiển thị skeleton giả lập cấu trúc nội dung.
+              </li>
+              <li>
+                <strong>Hiệu ứng lướt sóng Shimmer:</strong> Sử dụng gradient <code>linear-gradient(90deg, #edf0f5 25%, #f8f9fb 50%, #edf0f5 75%)</code> với chu kỳ lặp 1.5 giây.
+              </li>
+              <li>
+                <strong>Tôn trọng trợ năng (Reduced Motion):</strong> Khi người dùng kích hoạt <code>@media (prefers-reduced-motion: reduce)</code>, animation shimmer và spin phải dừng chuyển động, chuyển sang độ mờ tĩnh nhẹ để chống mỏi mắt và co giật.
+              </li>
+              <li>
+                <strong>Trạng thái nút bấm đang tải (.button-loading):</strong> Nút bấm bị vô hiệu hóa pointer-events, độ mờ 88%, icon spinner quay tại chỗ thay thế hoặc đứng cạnh nhãn mô tả, đảm bảo người dùng không bấm lặp (double submit).
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Spec Card 4: Error Handling & API Alignment -->
+        <section class="spec-card">
+          <div class="spec-card-header">
+            <div class="spec-card-icon">4</div>
+            <h2 class="spec-card-title">Quy đổi mã lỗi API sang trải nghiệm người dùng</h2>
+          </div>
+          <div class="spec-card-content">
+            <div class="spec-table-wrap">
+              <table class="spec-table">
+                <thead>
+                  <tr>
+                    <th>Mã HTTP</th>
+                    <th>Ý nghĩa nghiệp vụ NEXA</th>
+                    <th>Thành phần phản hồi</th>
+                    <th>Hành vi người dùng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>400 Bad Request</code></td>
+                    <td>Dữ liệu gửi không hợp lệ (tiêu đề trống, hẹn giờ quá khứ)</td>
+                    <td>Inline Alert / Helper text đỏ</td>
+                    <td>Sửa trực tiếp trên trường nhập</td>
+                  </tr>
+                  <tr>
+                    <td><code>401 Unauthorized</code></td>
+                    <td>Hết hạn phiên đăng nhập (JWT token expired)</td>
+                    <td>Modal Dialog thông báo</td>
+                    <td>Chuyển hướng về màn hình Đăng nhập (M01)</td>
+                  </tr>
+                  <tr>
+                    <td><code>403 Forbidden</code></td>
+                    <td>Chưa phải bạn bè được chấp nhận để gửi thông báo</td>
+                    <td>Toast Báo lỗi / Modal cảnh báo</td>
+                    <td>Gợi ý gửi lời mời kết bạn trước (M05)</td>
+                  </tr>
+                  <tr>
+                    <td><code>404 Not Found</code></td>
+                    <td>Thông báo đích đã bị xóa khỏi hệ thống</td>
+                    <td>Màn hình trống / Toast báo lỗi</td>
+                    <td>Quay về danh sách Hộp thư chính (M03)</td>
+                  </tr>
+                  <tr>
+                    <td><code>409 Conflict</code></td>
+                    <td>Lời mời kết bạn đã tồn tại hoặc đã gửi trước đó</td>
+                    <td>Toast thông báo trạng thái</td>
+                    <td>Cập nhật nhãn "Đang chờ chấp nhận"</td>
+                  </tr>
+                  <tr>
+                    <td><code>500 Server Error</code></td>
+                    <td>Lỗi máy chủ nội bộ hoặc lỗi đường truyền push</td>
+                    <td>Toast Báo lỗi + Nút Thử lại</td>
+                    <td>Thử gửi lại sau ít phút</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript for Interactive UI Demo inside Mobile Device Frame -->
+  <script>
+    // Tab category switching
+    function switchCategory(targetId, btnElement) {
+      document.querySelectorAll('.util-tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.util-tab-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.style.display = 'block';
+      }
+      btnElement.classList.add('active');
+    }
+
+    // Toast interactive triggers
+    function showToast(toastId) {
+      const toast = document.getElementById(toastId);
+      if (toast) {
+        toast.style.display = 'flex';
+        toast.style.animation = 'none';
+        // Force reflow
+        void toast.offsetWidth;
+        toast.style.animation = 'toastSlideUp 260ms cubic-bezier(0.16, 1, 0.3, 1)';
+        
+        // Auto dismiss after 3.5s
+        setTimeout(() => {
+          if (toast.style.display === 'flex') {
+            toast.style.display = 'none';
+          }
+        }, 3500);
+      }
+    }
+
+    // Modal dialog open/close
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.style.display = 'none';
+    }
+
+    function closeModalOnBackdrop(event, backdrop) {
+      if (event.target === backdrop) {
+        backdrop.style.display = 'none';
+      }
+    }
+
+    function confirmUnfriendAction() {
+      closeModal('modal-confirm-unfriend');
+      showToast('toast-undo');
+    }
+
+    function confirmDeleteAction() {
+      closeModal('modal-confirm-delete');
+      showToast('toast-undo');
+    }
+
+    // Bottom sheet controls
+    function openBottomSheet() {
+      const sheet = document.getElementById('modal-bottom-sheet');
+      if (sheet) sheet.style.display = 'flex';
+    }
+
+    function closeBottomSheet() {
+      const sheet = document.getElementById('modal-bottom-sheet');
+      if (sheet) sheet.style.display = 'none';
+    }
+
+    function closeSheetOnBackdrop(event, backdrop) {
+      if (event.target === backdrop) {
+        backdrop.style.display = 'none';
+      }
+    }
+
+    // Loading mode toggles
+    function showLoaderMode(modeId) {
+      document.getElementById('mode-spinner').style.display = 'none';
+      document.getElementById('mode-error').style.display = 'none';
+      document.getElementById(modeId).style.display = 'flex';
+    }
+
+    // Reset all demos
+    function resetDemos() {
+      document.querySelectorAll('.nexa-alert').forEach(el => el.style.display = 'flex');
+      document.querySelectorAll('.modal-backdrop, .bottom-sheet-backdrop').forEach(el => el.style.display = 'none');
+      showLoaderMode('mode-spinner');
+      showToast('toast-success');
+    }
+  </script>
+</body>
+</html>

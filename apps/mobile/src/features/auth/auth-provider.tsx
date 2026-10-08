@@ -6,7 +6,7 @@ import {
   useState,
   type PropsWithChildren,
 } from 'react';
-import type { LoginDto, RegisterDto } from '@nexa/types';
+import type { LoginDto, RegisterDto, UpdateUserDto } from '@nexa/types';
 import { apiUrl } from '../../config/env';
 import { AuthService, type AuthSession } from './auth-service';
 import { sessionStorage } from './session-storage';
@@ -20,6 +20,7 @@ interface AuthContextValue {
   retryRestore(): Promise<void>;
   login(values: LoginDto, remember: boolean): Promise<void>;
   register(values: RegisterDto): Promise<void>;
+  updateProfile(values: UpdateUserDto): Promise<void>;
   logout(): Promise<void>;
 }
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -71,6 +72,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
         register: async (values) => {
           setSession(await service.register(values));
           setRestorationError(null);
+        },
+        updateProfile: async (values) => {
+          setSession(await service.updateProfile(values));
         },
         logout: async () => {
           try {

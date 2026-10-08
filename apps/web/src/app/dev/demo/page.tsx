@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { DemoPanel } from './demo-panel';
 
 export default function DemoPage() {
@@ -6,7 +7,7 @@ export default function DemoPage() {
 
   return (
     <main className="nx-container" style={{ paddingTop: 48, paddingBottom: 48 }}>
-      <a href="/">Back to NEXA</a>
+      <Link href="/">Back to NEXA</Link>
       <h1 style={{ marginTop: 24 }}>Database connection demo</h1>
       <p>Web and mobile read the same PostgreSQL data through the NEXA API.</p>
       <DemoPanel />

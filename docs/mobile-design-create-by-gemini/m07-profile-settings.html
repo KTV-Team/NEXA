@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M07: Hồ sơ / Cài đặt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-inbox.html" class="showcase-nav-item">M03: Inbox / Trang chính</a>
+        <a href="m04-create-notification.html" class="showcase-nav-item">M04: Tạo thông báo</a>
+        <a href="m05-user-search.html" class="showcase-nav-item">M05: Tìm người dùng</a>
+        <a href="m06-friends.html" class="showcase-nav-item">M06: Bạn bè / Lời mời</a>
+        <a href="m07-profile-settings.html" class="showcase-nav-item active">M07: Hồ sơ / Cài đặt</a>
+        <a href="m08-notification-target.html" class="showcase-nav-item">M08: Đích thông báo</a>
+        <a href="m09-components-utils.html" class="showcase-nav-item">M09: Utils & Feedback</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M07</span>
+          <span class="badge-tag-yellow">F06 · Hồ sơ & Cài đặt</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header: Title + Brand -->
+          <div class="mobile-app-header">
+            <div class="mobile-brand-mark">
+              <div class="mobile-brand-logo">N</div>
+              <span class="mobile-brand-name">NEXA</span>
+            </div>
+
+            <div style="font-size: 17px; font-weight: 600; color: var(--color-ink);">
+              Hồ sơ & Cài đặt
+            </div>
+
+            <!-- Empty space for balanced layout -->
+            <div style="width: 36px;"></div>
+          </div>
+
+          <!-- 3. Screen Content: Profile Info & Preferences Form (Scrollable) -->
+          <div class="mobile-screen-content">
+            <!-- Profile Identity Card -->
+            <div class="profile-header-card">
+              <div class="profile-avatar-xl">MA</div>
+              <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+                <div style="font-size: 18px; font-weight: 600; color: var(--color-ink); line-height: 1.2;">
+                  Hoàng Minh Anh
+                </div>
+                <div style="font-size: 13px; color: var(--color-steel);">
+                  minh.anh@nexa.vn
+                </div>
+                <div class="caption" style="color: var(--color-stone); margin-top: 2px;">
+                  Thành viên từ tháng 10/2026
+                </div>
+              </div>
+            </div>
+
+            <!-- Group 1: Chỉnh sửa thông tin tài khoản (PATCH /users/me) -->
+            <div class="settings-group">
+              <div class="settings-group-title">Thông tin tài khoản</div>
+              
+              <form action="#" method="POST" onsubmit="return false;">
+                <!-- Field 1: Họ và tên -->
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="form-label form-label-required">Họ và tên</label>
+                  <div class="input-wrapper">
+                    <input
+                      type="text"
+                      class="text-input"
+                      value="Hoàng Minh Anh"
+                      required
+                    >
+                  </div>
+                  <span class="form-helper">Tên hiển thị khi kết nối bạn bè và gửi thông báo.</span>
+                </div>
+
+                <!-- Field 2: Email (Readonly identifier) -->
+                <div class="form-group" style="margin-bottom: 12px;">
+                  <label class="form-label">Email tài khoản</label>
+                  <div class="input-wrapper">
+                    <input
+                      type="email"
+                      class="text-input"
+                      value="minh.anh@nexa.vn"
+                      readonly
+                      style="background-color: var(--color-surface); color: var(--color-slate);"
+                    >
+                  </div>
+                  <span class="form-helper">Email định danh tài khoản dùng để đăng nhập.</span>
+                </div>
+
+                <!-- Field 3: URL ảnh đại diện -->
+                <div class="form-group" style="margin-bottom: 16px;">
+                  <label class="form-label">Đường dẫn ảnh đại diện (Tùy chọn)</label>
+                  <div class="input-wrapper">
+                    <input
+                      type="url"
+                      class="text-input"
+                      placeholder="https://example.com/avatar.jpg"
+                      value=""
+                    >
+                  </div>
+                  <span class="form-helper">URL ảnh trực tiếp (nếu để trống sẽ dùng chữ viết tắt).</span>
+                </div>
+
+                <!-- Save Changes CTA -->
+                <button type="submit" class="button-primary button-full" style="font-size: 13px; min-height: 40px;">
+                  Lưu thay đổi hồ sơ
+                </button>
+              </form>
+            </div>
+
+            <!-- Group 2: Cài đặt thông báo & Hệ thống -->
+            <div class="settings-group">
+              <div class="settings-group-title">Hệ thống & Thông báo</div>
+              
+              <div class="settings-item-row">
+                <span class="settings-item-label">Thông báo đẩy Native</span>
+                <span class="settings-item-value">
+                  <span class="badge-success" style="font-size: 11px;">Đã bật</span>
+                </span>
+              </div>
+
+              <div class="settings-item-row">
+                <span class="settings-item-label">Múi giờ hoạt động</span>
+                <span class="settings-item-value">GMT+07:00 (Hà Nội)</span>
+              </div>
+
+              <div class="settings-item-row">
+                <span class="settings-item-label">Đồng bộ nền & màn hình khóa</span>
+                <span class="settings-item-value">Tự động</span>
+              </div>
+              
+              <div class="caption" style="color: var(--color-steel); padding: 4px 6px;">
+                💡 NEXA dùng quyền thông báo native của hệ điều hành Android/iOS.
+              </div>
+            </div>
+
+            <!-- Group 3: Thông tin ứng dụng & Phiên bản -->
+            <div class="settings-group">
+              <div class="settings-group-title">Thông tin ứng dụng</div>
+              
+              <div class="settings-item-row">
+                <span class="settings-item-label">Phiên bản</span>
+                <span class="settings-item-value">v1.0.0 (MVP Build)</span>
+              </div>
+
+              <div class="settings-item-row">
+                <span class="settings-item-label">Nền tảng</span>
+                <span class="settings-item-value">Mobile App (Android / iOS)</span>
+              </div>
+            </div>
+
+            <!-- Group 4: Vùng an toàn / Đăng xuất (Logout) -->
+            <div style="margin-top: 12px; margin-bottom: 24px;">
+              <a href="m01-login.html" class="button-secondary button-full" style="color: var(--color-coral-dark); border-color: #fca5a5; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Đăng xuất khỏi thiết bị này</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- 4. Mobile Bottom Navigation Bar (4 Tab chuẩn NEXA) -->
+          <nav class="mobile-bottom-nav">
+            <a href="m03-inbox.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Hộp thư</span>
+            </a>
+            <a href="m04-create-notification.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              <span>Tạo mới</span>
+            </a>
+            <a href="m06-friends.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Bạn bè</span>
+            </a>
+            <a href="m07-profile-settings.html" class="bottom-nav-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+
+          <!-- 5. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M07</div>
+            <h2 class="spec-screen-name">Hồ sơ / Cài đặt (Profile & Account Settings)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F06 · Hồ sơ cá nhân</span>
+            <span class="badge-success">Phạm vi MVP xác nhận</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Yêu cầu sản phẩm (Theo docs/app-functions-and-screens.md)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Xem và sửa thông tin tài khoản:</strong> Người dùng xem và chỉnh sửa các trường thuộc tài khoản của chính mình đã được xác nhận (Họ tên, Ảnh đại diện).</li>
+              <li><strong>Phân tách luồng hồ sơ và đăng nhập:</strong> Giữ cài đặt tài khoản riêng biệt với đăng nhập; không tự tiện bổ sung phương thức xác thực hoặc chính sách reset mật khẩu chưa duyệt.</li>
+              <li><strong>Cài đặt Push thông báo hệ điều hành:</strong> Quyền thông báo sử dụng giao diện native của Android/iOS, không làm màn hình phân quyền riêng rườm rà.</li>
+              <li><strong>Đăng xuất an toàn:</strong> Thực hiện gọi <code>POST /auth/logout</code>, thu hồi token, xóa dữ liệu phiên làm việc và xóa token thiết bị liên kết khỏi backend.</li>
+              <li><strong>Phạm vi loại trừ:</strong> Chưa bao gồm cài đặt kênh bên ngoài như email/SMS/Telegram/Discord, không có trang quản trị web dashboard.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Cấu trúc dữ liệu & Zod Schema Mapping -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🛡️</span> 2. Ràng buộc Validation (packages/validation updateUserSchema)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Trường dữ liệu</th>
+                  <th>Kiểu & Ràng buộc Zod</th>
+                  <th>Mô tả / Thông báo lỗi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>name</strong></td>
+                  <td><code class="spec-token-code">z.string().min(2).max(100).optional()</code></td>
+                  <td>Họ tên tài khoản (2..100 ký tự)</td>
+                </tr>
+                <tr>
+                  <td><strong>avatarUrl</strong></td>
+                  <td><code class="spec-token-code">z.string().url().optional()</code></td>
+                  <td>URL ảnh đại diện hợp lệ</td>
+                </tr>
+                <tr>
+                  <td><strong>email</strong></td>
+                  <td><code class="spec-token-code">z.string().email() (read-only)</code></td>
+                  <td>Email định danh (không sửa đổi ở client)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái tương tác mẫu (Visual States) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Minh họa trạng thái giao diện (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- State 1: Cập nhật thành công -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Lưu thay đổi hồ sơ thành công</span>
+              <div style="margin-top: 6px; padding: 10px 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); display: flex; align-items: center; gap: 8px;">
+                <span style="color: #166534; font-size: 14px;">✅</span>
+                <span class="body-sm" style="color: #166534; font-weight: 500;">Thông tin hồ sơ của bạn đã được cập nhật.</span>
+              </div>
+            </div>
+
+            <!-- State 2: Lỗi tên quá ngắn -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Lỗi nhập họ tên ít hơn 2 ký tự</span>
+              <div style="margin-top: 6px;">
+                <label class="form-label" style="font-size: 13px;">Họ và tên</label>
+                <input type="text" class="text-input has-error" value="A" readonly>
+                <div class="form-helper error" style="margin-top: 4px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  Tên phải có tối thiểu 2 ký tự.
+                </div>
+              </div>
+            </div>
+
+            <!-- State 3: Hộp thoại xác nhận đăng xuất -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 3: Hộp thoại xác nhận đăng xuất</span>
+              <div style="margin-top: 8px; padding: 14px; background: #ffffff; border: 1.5px solid var(--color-hairline-strong); border-radius: var(--radius-lg); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+                <div style="font-weight: 600; font-size: 14px; color: var(--color-ink); margin-bottom: 4px;">Bạn có chắc muốn đăng xuất?</div>
+                <p class="body-sm" style="color: var(--color-slate); margin-bottom: 12px;">
+                  Thiết bị này sẽ không còn nhận push thông báo cho đến khi bạn đăng nhập lại.
+                </p>
+                <div style="display: flex; gap: 8px;">
+                  <button type="button" class="button-sm button-sm-danger" style="flex: 1;">Đăng xuất</button>
+                  <button type="button" class="button-sm button-sm-secondary" style="flex: 1;">Ở lại</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Thẻ định danh hồ sơ</td>
+                  <td><code class="spec-token-code">profile-header-card</code></td>
+                  <td>Nền #ffffff, radius 20px, viền hairline-soft</td>
+                </tr>
+                <tr>
+                  <td>Avatar lớn</td>
+                  <td><code class="spec-token-code">profile-avatar-xl</code></td>
+                  <td>Kích thước 64x64px, chữ 24px, viền hairline 2px</td>
+                </tr>
+                <tr>
+                  <td>Nhóm cài đặt</td>
+                  <td><code class="spec-token-code">settings-item-row</code></td>
+                  <td>Nền #ffffff, radius 8px, viền mảnh hairline-soft</td>
+                </tr>
+                <tr>
+                  <td>Nút đăng xuất</td>
+                  <td><code class="spec-token-code">button-sm-danger</code></td>
+                  <td>Chữ đỏ coral-dark #600000, viền cảnh báo #fca5a5</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên kết -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m03-inbox.html" class="button-primary" style="flex: 1; text-align: center; text-decoration: none;">
+              &larr; Quay lại M03: Hộp thư
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục & Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

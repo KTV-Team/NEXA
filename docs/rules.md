@@ -1,0 +1,29 @@
+- **COR-01 — Correct behavior and boundaries:** Handle empty and null values, pagination boundaries, time calculations, and invalid input/state correctly. Verify observable behavior against approved requirements.
+- **COR-02 — Concurrent transitions:** Prevent lost updates, accept/cancel races, double submissions, and concurrent transitions that violate established invariants.
+- **COR-03 — Explicit error behavior:** Handle failures explicitly. Do not swallow errors, show misleading success states, leave unhandled rejections, or omit recovery from relevant failure paths.
+- **ARC-01 — Smallest suitable owner:** Keep local code local and feature-owned code within its feature. Place shared contracts and transport according to repository boundaries and colocation conventions.
+- **ARC-02 — Justified common/shared extraction:** Extract shared code only for real consumers with a stable common responsibility. Avoid speculative reuse and feature-specific switches in generic components. Similar code may remain separate when responsibilities differ.
+- **ARC-03 — Dependency direction:** Shared code must not depend on private feature or screen implementations. Avoid problematic dependency cycles and use explicit public APIs instead of bypassing module boundaries.
+- **ARC-04 — Proportionate complexity:** Use the smallest suitable implementation. Avoid unnecessary abstractions, services, and dependencies with concrete maintenance costs. Do not impose arbitrary patterns or file/function length limits.
+- **MAI-01 — Clear responsibilities and naming:** Use names and interfaces that communicate behavior, responsibility, state, units, and ownership without creating ambiguity or misuse risks.
+- **MAI-02 — Consistent sources of truth:** Prevent duplicated business rules, schemas, and state from drifting. Distinguish harmful duplication from harmless repetition; do not centralize unrelated responsibilities solely to remove similar code.
+- **MAI-03 — Useful documentation:** Document changes to contracts, configuration, and build/test/release behavior. Keep comments accurate and use them to explain non-obvious reasons.
+- **SEC-01 — Boundary validation:** Validate untrusted inputs on the server. TypeScript DTOs and client-side validation do not establish runtime validity at API boundaries.
+- **SEC-02 — Authorization and ownership:** Enforce required permissions server-side for every affected operation, including object IDs, lists, transitions, and delayed execution. Authentication alone is insufficient.
+- **SEC-03 — Sensitive data and secrets:** Do not expose tokens, credentials, or private data in inappropriate responses, logs, source code, unsafe storage, or review excerpts.
+- **SEC-04 — Injection and abuse paths:** Apply appropriate controls before untrusted values reach queries, commands, URLs, or costly operations. Assess reachable injection and abuse paths and their concrete impact.
+- **CON-01 — Contract compatibility:** Keep DTOs, boundary schemas, transport, and consumers consistent. Changes or removals of exports and API fields must not silently break clients.
+- **CON-02 — Sound type boundaries:** Narrow or validate unknown inputs before use. Do not use unsafe assertions or `any` to conceal invalid states. Evaluate assertions by their actual risks rather than banning them mechanically.
+- **RN-01 — Pure render and immutable state:** Keep rendering free of external side effects. Do not mutate state or props in ways that cause incorrect rendering.
+- **RN-02 — Effects and lifecycle:** Clean up subscriptions, listeners, and timers. Prevent stale closures, incorrect effect dependencies, and asynchronous races along affected execution paths.
+- **RN-03 — Native user states:** Implement correct loading, error, empty, permission, navigation, resume, and cold-start behavior wherever the change affects those states.
+- **RN-04 — Accessibility and layout:** Keep changed controls usable with assistive technology and supported screen and text sizes. Verify accessibility and layout claims through code evidence or actual visual/native validation.
+- **REL-01 — Duplicate-safe operations:** Ensure retries and realtime/push signals do not duplicate effects or corrupt state. Persistence and business guarantees must match approved requirements.
+- **REL-02 — Recovery and retry:** Bound retries, classify failures, and provide appropriate recovery. Do not claim successful delivery or persistence before it is established.
+- **REL-03 — Scheduling and time:** Implement durable execution, recurrence, time zones/DST, restart recovery, and recipient eligibility according to approved policies when scheduling is involved.
+- **TST-01 — Meaningful regression coverage:** Write tests that fail for the demonstrated regression and assert observable behavior rather than mirror implementation details.
+- **TST-02 — Relevant failure coverage:** Cover ownership, transitions, contracts, concurrency, and failure cases in proportion to the change and its concrete risks.
+- **TST-03 — Trustworthy verification:** Ensure the test runner discovers intended files, assertions verify meaningful behavior, and mocks do not hide the boundary being tested. Report checks for the actual reviewed revision; do not label skipped or unexecuted checks as passed.
+- **PERF-01 — Bounded work and data:** Bound queries and lists. Prevent N+1 requests, expensive repeated work, and memory growth on realistic affected execution paths.
+- **PERF-02 — Measured/provable user impact:** Avoid speculative optimization and blanket memoization. Justify performance changes with scale, complexity, or profiling evidence.
+- **GOV-01 — Reviewable change and safeguards:** Keep changes focused and reviewable. Do not weaken rules, CI, or test exclusions merely to make checks pass. Avoid unrelated refactors that obscure material behavior changes.

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M08: Đích thông báo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-inbox.html" class="showcase-nav-item">M03: Inbox / Trang chính</a>
+        <a href="m04-create-notification.html" class="showcase-nav-item">M04: Tạo thông báo</a>
+        <a href="m05-user-search.html" class="showcase-nav-item">M05: Tìm người dùng</a>
+        <a href="m06-friends.html" class="showcase-nav-item">M06: Bạn bè / Lời mời</a>
+        <a href="m07-profile-settings.html" class="showcase-nav-item">M07: Hồ sơ / Cài đặt</a>
+        <a href="m08-notification-target.html" class="showcase-nav-item active">M08: Đích thông báo</a>
+        <a href="m09-components-utils.html" class="showcase-nav-item">M09: Utils & Feedback</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M08</span>
+          <span class="badge-tag-yellow">F07 · Đích thông báo</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header: Back button + Title + Delete action -->
+          <div class="mobile-app-header">
+            <!-- Circular back button (44x44px touch target) -->
+            <a href="m03-inbox.html" class="button-icon-circular" aria-label="Quay lại Hộp thư" title="Quay lại">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </a>
+
+            <div style="font-size: 17px; font-weight: 600; color: var(--color-ink);">
+              Chi tiết thông báo
+            </div>
+
+            <!-- Delete action button -->
+            <button type="button" class="header-icon-btn danger" title="Xóa thông báo này" aria-label="Xóa">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 3. Screen Content: Detailed Notification Item (Scrollable) -->
+          <div class="mobile-screen-content">
+            <!-- Notification Detail Card -->
+            <article class="detail-card">
+              <!-- Header Badges Row -->
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                <span class="delivery-badge immediate">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  Gửi ngay
+                </span>
+                <span class="caption" style="color: var(--color-stone);">09:36 • Hôm nay</span>
+              </div>
+
+              <!-- Sender Info Row -->
+              <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--color-hairline-soft);">
+                <div class="user-avatar-lg friend">TK</div>
+                <div style="display: flex; flex-direction: column; gap: 2px;">
+                  <span style="font-size: 15px; font-weight: 600; color: var(--color-ink);">Tuấn Kiệt</span>
+                  <span style="font-size: 12px; color: var(--color-steel);">@tuankiet • Bạn bè đã kết bạn</span>
+                </div>
+              </div>
+
+              <!-- Title & Message Body -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <h1 class="heading-4" style="font-size: 20px; line-height: 1.3; color: var(--color-ink);">
+                  Nhắc hẹn: Ăn trưa trao đổi về dự án NEXA
+                </h1>
+                <p class="body-md" style="color: var(--color-slate); line-height: 1.6; white-space: pre-line;">
+                  Hẹn gặp cậu ở quán Cafe lúc 12:15 nhé, nhớ mang theo laptop để cùng xem qua mockup UI màn hình di động.
+
+                  Mình đã chuẩn bị sẵn một số ghi chú về phần đồng bộ 3 trạng thái ứng dụng và quản trị danh sách bạn bè.
+                </p>
+              </div>
+
+              <!-- Technical Delivery & Inbox Metadata Box -->
+              <div class="detail-meta-box">
+                <div class="detail-meta-item">
+                  <span class="detail-meta-item-label">Mã lưu trữ Inbox:</span>
+                  <span class="detail-meta-item-value">inbox-8f2a4b12</span>
+                </div>
+                <div class="detail-meta-item">
+                  <span class="detail-meta-item-label">Trạng thái Native Push:</span>
+                  <span class="badge-success" style="font-size: 11px;">Đã hiển thị trên OS</span>
+                </div>
+                <div class="detail-meta-item">
+                  <span class="detail-meta-item-label">Trạng thái đọc:</span>
+                  <span class="detail-meta-item-value" style="color: var(--color-brand-blue);">Đã đọc lúc 09:41</span>
+                </div>
+                <div class="detail-meta-item">
+                  <span class="detail-meta-item-label">Múi giờ:</span>
+                  <span class="detail-meta-item-value">Asia/Ho_Chi_Minh (GMT+7)</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons Row -->
+              <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+                <a href="m04-create-notification.html" class="button-primary button-full" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+                  <span>Gửi lại thông báo cho Tuấn Kiệt</span>
+                </a>
+                
+                <div style="display: flex; gap: 8px;">
+                  <button type="button" class="button-secondary" style="flex: 1; font-size: 13px;">
+                    Đánh dấu chưa đọc
+                  </button>
+                  <a href="m03-inbox.html" class="button-secondary" style="flex: 1; font-size: 13px; text-decoration: none; text-align: center;">
+                    Về Hộp thư
+                  </a>
+                </div>
+              </div>
+            </article>
+
+            <!-- Case Note: Minh họa xử lý khi mục đã bị xóa -->
+            <div class="card-base" style="background-color: var(--color-surface); padding: 14px 16px; border-radius: var(--radius-xl); border: 1px dashed var(--color-hairline-strong); margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <span style="font-size: 16px;">🛡️</span>
+                <span style="font-size: 13px; font-weight: 600; color: var(--color-ink);">Xử lý khi mục không còn khả dụng</span>
+              </div>
+              <p class="caption" style="color: var(--color-steel); line-height: 1.5;">
+                Nếu người dùng chạm vào push notification cho một thông báo đã bị xóa khỏi inbox hoặc không còn quyền truy cập, hệ thống hiển thị thông báo lỗi rõ ràng và cung cấp nút chuyển hướng an toàn về màn hình chính.
+              </p>
+            </div>
+          </div>
+
+          <!-- 4. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M08</div>
+            <h2 class="spec-screen-name">Đích thông báo (Notification Target / Deep Link)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F07 · Đích thông báo</span>
+            <span class="badge-success">Phạm vi MVP xác nhận</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Yêu cầu sản phẩm (Theo docs/app-functions-and-screens.md)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Mở đúng nội dung được phép:</strong> Khi chạm vào thông báo từ push notification hệ điều hành hoặc từ inbox feed, ứng dụng điều hướng chính xác đến màn hình chi tiết tương ứng.</li>
+              <li><strong>Xử lý trên 3 trạng thái ứng dụng:</strong>
+                <ul style="padding-left: 18px; margin-top: 4px; display: flex; flex-direction: column; gap: 3px;">
+                  <li><em>Foreground (Đang mở):</em> Mở ngay nội dung chi tiết mà không làm gián đoạn trạng thái ứng dụng.</li>
+                  <li><em>Background (Chạy nền / Màn hình khóa):</em> Chạm push notification kích hoạt warm-start và điều hướng tới đích thông báo.</li>
+                  <li><em>Closed / Terminated (Đã đóng):</em> Cold-start ứng dụng, khôi phục session đăng nhập từ SecureStore, rồi mới mở nội dung đích.</li>
+                </ul>
+              </li>
+              <li><strong>Yêu cầu đăng nhập lại nếu cần:</strong> Nếu phiên làm việc hết hạn khi mở từ push, ứng dụng chuyển hướng đến màn hình Đăng nhập (M01) kèm lưu lại route đích để mở sau khi đăng nhập thành công.</li>
+              <li><strong>Xử lý mục đã xóa / mất quyền:</strong> Hiển thị thông báo thân thiện và điều hướng an toàn về Hộp thư nếu mục đã bị xóa ở backend hoặc tài khoản mất quyền truy cập.</li>
+              <li><strong>Phân biệt trạng thái hệ thống:</strong> Tách bạch giữa lưu trữ inbox backend, trạng thái tiếp nhận push của nhà cung cấp, hiển thị trên OS và trạng thái đọc của người dùng.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Cấu trúc dữ liệu & Zod Schema Mapping -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🛡️</span> 2. Ràng buộc Endpoint & Schema (apis.md & packages/types)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Method & Endpoint</th>
+                  <th>Chức năng</th>
+                  <th>Phản hồi / Xử lý lỗi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code class="spec-token-code">GET /inbox/:itemId</code></td>
+                  <td>Lấy chi tiết mục thông báo từ inbox</td>
+                  <td>200 OK (InboxItemDto) / 404 NotFound</td>
+                </tr>
+                <tr>
+                  <td><code class="spec-token-code">PATCH /inbox/:itemId</code></td>
+                  <td>Cập nhật trạng thái đọc/chưa đọc</td>
+                  <td>200 OK (Cập nhật isRead thành công)</td>
+                </tr>
+                <tr>
+                  <td><code class="spec-token-code">DELETE /inbox/:itemId</code></td>
+                  <td>Xóa mục khỏi inbox của tài khoản</td>
+                  <td>204 No Content / Xóa bền vững</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái tương tác mẫu (Visual States) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Minh họa trạng thái giao diện (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- State 1: Mục đã bị xóa hoặc không còn quyền truy cập -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Mục đã xóa hoặc không còn quyền (404/403)</span>
+              <div class="inbox-empty-card" style="margin: 8px 0; padding: 20px 16px;">
+                <div class="empty-icon-circle" style="background-color: #fee2e2; color: #991b1b;">⚠️</div>
+                <div style="font-weight: 600; font-size: 13px; color: var(--color-ink);">Nội dung không còn khả dụng</div>
+                <p class="caption" style="color: var(--color-steel); max-width: 250px; margin: 0 auto;">
+                  Thông báo này đã bị xóa hoặc bạn không còn quyền truy cập.
+                </p>
+                <a href="m03-inbox.html" class="button-secondary" style="margin-top: 6px; font-size: 12px; padding: 6px 14px;">
+                  Quay lại Hộp thư
+                </a>
+              </div>
+            </div>
+
+            <!-- State 2: Yêu cầu đăng nhập lại khi chạm push lúc hết session -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Hết hạn phiên khi khởi động từ Push (Session Expired)</span>
+              <div style="margin-top: 6px; padding: 12px; background: var(--color-surface-yellow); border: 1px solid #fde68a; border-radius: var(--radius-md);">
+                <div style="font-weight: 600; font-size: 13px; color: var(--color-yellow-dark); margin-bottom: 2px;">Phiên đăng nhập đã hết hạn</div>
+                <div class="caption" style="color: var(--color-ink);">
+                  Vui lòng đăng nhập lại để xem nội dung thông báo được bảo vệ.
+                </div>
+                <a href="m01-login.html" class="button-primary" style="display: inline-block; margin-top: 8px; font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                  Đăng nhập lại &rarr;
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Thẻ chi tiết thông báo</td>
+                  <td><code class="spec-token-code">detail-card</code></td>
+                  <td>Nền #ffffff, radius 28px, viền hairline-soft</td>
+                </tr>
+                <tr>
+                  <td>Khung kỹ thuật / Metadata</td>
+                  <td><code class="spec-token-code">detail-meta-box</code></td>
+                  <td>Nền #f7f8fa, radius 12px, font 12px</td>
+                </tr>
+                <tr>
+                  <td>Nút Back tròn 44px</td>
+                  <td><code class="spec-token-code">button-icon-circular</code></td>
+                  <td>44x44px, radius 9999px, viền hairline</td>
+                </tr>
+                <tr>
+                  <td>Badge trạng thái</td>
+                  <td><code class="spec-token-code">badge-success</code></td>
+                  <td>Nền #ecfdf5, chữ #00b473</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên kết -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m03-inbox.html" class="button-primary" style="flex: 1; text-align: center; text-decoration: none;">
+              &larr; Về M03: Hộp thư
+            </a>
+            <a href="index.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Xem Mục lục & Token Map
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>
