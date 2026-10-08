@@ -10,4 +10,13 @@ export type {
   User,
   WebAuthResponse,
   WebAuthTokens,
+  UserSummary,
+  FriendRequest,
+  Friendship,
+  CreateNotificationDto,
+  UpdateNotificationDto,
+  PersonalNotification,
+  InboxItem,
+  Delivery,
+  RecurrenceRule,
 } from '@nexa/types';

@@ -17,6 +17,7 @@ export interface AppEnvironment {
   DB_PASSWORD: string;
   DB_SSL: boolean;
   ALLOW_DEV_SEED: boolean;
+  NOTIFICATION_WORKER_ENABLED: boolean;
   DEV_SEED_PASSWORD?: string;
 }
 
@@ -102,6 +103,7 @@ export function loadEnvironment(): AppEnvironment {
     DB_PASSWORD: required('DB_PASSWORD'),
     DB_SSL: bool('DB_SSL', false),
     ALLOW_DEV_SEED: bool('ALLOW_DEV_SEED', false),
+    NOTIFICATION_WORKER_ENABLED: bool('NOTIFICATION_WORKER_ENABLED', mode !== 'test'),
     DEV_SEED_PASSWORD: process.env['DEV_SEED_PASSWORD'],
   };
 }

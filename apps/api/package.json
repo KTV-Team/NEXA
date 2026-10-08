@@ -9,7 +9,7 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json --noEmit",
     "test": "jest",
-    "test:db": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand database/database.integration.spec.ts dev/dev.integration.spec.ts auth/auth.integration.spec.ts auth/api-client.contract.spec.ts",
+    "test:db": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "db:migration:generate": "typeorm-ts-node-commonjs migration:generate",
     "db:migration:run": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts",
     "db:migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/data-source.ts",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@fastify/cookie": "11.1.2",
+    "@js-temporal/polyfill": "0.5.1",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.0",

@@ -4,6 +4,7 @@ interface TestAuthClient {
     logout(refreshToken?: string): Promise<void>;
   };
 }
+export {};
 
 // Keep the cross-workspace test runtime-only so the API tsconfig rootDir stays scoped to apps/api.
 // eslint-disable-next-line @typescript-eslint/no-require-imports

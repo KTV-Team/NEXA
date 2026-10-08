@@ -17,12 +17,12 @@ Product requirements come only from the user-supplied task “Audit and Align Pr
 
 ## Current implementation
 
-Product status audited on 2026-10-06; source organization updated on 2026-10-07. The repository is an early scaffold, not production-ready. The source refactor colocates mobile screens with their feature code and splits shared packages by responsibility; it does not add product capabilities.
+Product status updated on 2026-10-08. The repository is an early implementation and still needs deployment and native-delivery work.
 
 - Mobile has native login/register forms, shared validation, session restoration/refresh handling, protected routes, local logout, and SecureStore persistence. Inbox and create-notification screens are UI scaffolds; account/session information has its own route.
-- The API has PostgreSQL/TypeORM migrations, development seeds, health, a database-backed development demo, and email/password auth APIs for register, login, refresh, logout, current user, and change password. Friend and notification APIs and broader user management remain unimplemented.
+- The API has PostgreSQL/TypeORM migrations, development seeds, health, a database-backed development demo, email/password auth, profile update/search, friend requests/friendships, personal notifications, durable inbox records, and a PostgreSQL-backed scheduler. See [Social and notification API](docs/social-notification-api.md) for the current contract.
 - Mobile can use the auth API with bearer access tokens and refresh tokens in JSON. A future same-site web client can use the same backend with an HttpOnly refresh cookie; no web auth UI has been added.
-- Friendships, notification sending, durable inbox processing, scheduling, recurrence, realtime, and native push remain unimplemented. Existing notification entities and demo fixtures do not prove these product flows work. The older database scaffold also contains teams, todos, events, and roles; these are not confirmed MVP features.
+- Realtime inbox updates, native push delivery, device-token registration, and mobile UI integration remain unimplemented. The scheduler commits inbox items but does not claim OS display. Existing team/event notification entities remain separate legacy scaffold and are not used by the personal notification APIs. The older database scaffold also contains teams, todos, events, and roles; these are not confirmed MVP features.
 - `apps/web` is retained historical scaffold, outside current scope. Expo browser preview is a development aid, not a supported web product.
 
 ## Required behavior across app states
@@ -93,6 +93,7 @@ When starting API and mobile separately, run `pnpm --filter @nexa/mobile dev` in
 | `DB_NAME` / `DB_USER` / `DB_PASSWORD`  | API process             | Required local database configuration; keep credentials outside Git                          |
 | `DB_SSL`                               | API process             | `false`; enables verified TLS when `true`                                                    |
 | `ALLOW_DEV_SEED` / `DEV_SEED_PASSWORD` | Development seed        | Opt-in and local seed password                                                               |
+| `NOTIFICATION_WORKER_ENABLED`          | API scheduler           | Defaults on outside tests; set false to disable this process's polling worker                |
 | `NEXT_PUBLIC_API_URL`                  | Historical web scaffold | `http://localhost:4000/api/v1`; not required for mobile MVP                                  |
 
 For Android emulator use `http://10.0.2.2:4000/api/v1`; for iOS simulator use `http://localhost:4000/api/v1`; for physical devices use the reachable API machine's LAN address. Restart Metro after URL changes. `EXPO_PUBLIC_*` values are bundled into the client and must not contain secrets. Release API URL and deployment environment remain to be defined.

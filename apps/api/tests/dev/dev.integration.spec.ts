@@ -56,7 +56,7 @@ describe('development demo API integration', () => {
     expect((reply.json() as ApiResponse<HealthStatus>).data?.status).toBe('ok');
   });
 
-  it('rejects invalid credentials and keeps unimplemented user listing unavailable', async () => {
+  it('rejects invalid credentials and requires authentication for user search', async () => {
     const login = await app
       .getHttpAdapter()
       .getInstance()
@@ -72,7 +72,7 @@ describe('development demo API integration', () => {
       .getHttpAdapter()
       .getInstance()
       .inject({ method: 'GET', url: '/api/v1/users' });
-    expect(users.statusCode).toBe(501);
+    expect(users.statusCode).toBe(401);
   });
 
   it('maps a database failure to a sanitized 503 response', async () => {

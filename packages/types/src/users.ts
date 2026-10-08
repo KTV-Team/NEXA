@@ -22,5 +22,11 @@ export interface CreateUserDto {
 
 export interface UpdateUserDto {
   name?: string;
+  avatarUrl?: string | null;
+}
+
+export interface UserSummary {
+  id: ID;
+  name: string;
   avatarUrl?: string;
 }
