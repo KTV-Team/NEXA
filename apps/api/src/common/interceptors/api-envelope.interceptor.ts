@@ -7,12 +7,6 @@ export class ApiEnvelopeInterceptor<T> implements NestInterceptor<T, { success: 
     _context: ExecutionContext,
     next: CallHandler<T>,
   ): Observable<{ success: true; data: T }> {
-    return next.handle().pipe(
-      map((data: unknown) => {
-        if (data && typeof data === 'object' && 'success' in data)
-          return data as { success: true; data: T };
-        return { success: true as const, data: data as T };
-      }),
-    );
+    return next.handle().pipe(map((data: T) => ({ success: true as const, data })));
   }
 }

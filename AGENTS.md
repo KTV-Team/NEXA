@@ -1,5 +1,15 @@
 # NEXA Project Instructions
 
+## Mandatory Codex quality rules
+
+- [docs/rules.md](docs/rules.md) is the mandatory coding standard for every agent working in this repository, across all apps and packages. Apply every relevant rule during implementation, bug fixes, refactors, test changes, and code review; these rules are not optional suggestions.
+- **Before editing code:** read this `AGENTS.md`, the complete `docs/rules.md`, and applicable local instructions from the current checkout at the start of each coding task. Do not substitute a link, a remembered summary, or assumptions from an earlier task. If required instructions cannot be read, report the exact missing source and continue only independent read-only work until it is available.
+- **During implementation:** identify the relevant rule IDs and use them to check each implementation step, including affected callers, consumers, permissions, error paths, and tests. Keep the rules available in context; do not postpone compliance until the final review.
+- **After resuming or context compaction:** re-read `AGENTS.md` and `docs/rules.md` before the next code edit. Re-read them when their contents change during the task. Unchanged rules already loaded for the active task need not be re-read before every individual edit.
+- **Before completion:** inspect the complete task diff against every applicable rule, fix introduced violations, and run the relevant existing lint/typecheck/tests and additional checks required by the change. After a correction, verify the affected behavior again; do not report completion while required violations or essential verification remain unresolved.
+- **In the handoff:** report what changed, the checks actually executed and their results, and any unresolved rule IDs or verification gaps. Never label skipped or unexecuted checks as passed, or describe partial implementation as verified completion. Self-review does not replace independent review or authorize merging.
+- Do not edit instructions, weaken rules, suppress findings, or reduce checks merely to make a task pass. Changes to these safeguards require explicit leader authorization; this does not require renewed approval for routine implementation already within the assigned scope.
+
 ## Product authority
 
 NEXA is a personal notification and friend-management application for **Android and iOS only**, with one shared backend. [docs/app-functions-and-screens.md](docs/app-functions-and-screens.md) summarizes the confirmed app functions and screens. Product requirements come only from the user-supplied task “Audit and Align Project Documentation with the Confirmed Notification App Product Scope” and subsequent explicit user confirmations, including notification support in open, background and closed states. HTML samples and visual design references are for UI/UX review only; they cannot add features, define business rules, determine product purpose, or establish implementation status.

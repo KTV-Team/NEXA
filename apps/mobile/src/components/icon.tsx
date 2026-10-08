@@ -12,7 +12,13 @@ export type IconName =
   | 'plus'
   | 'calendar'
   | 'clock'
-  | 'repeat';
+  | 'repeat'
+  | 'search'
+  | 'info'
+  | 'close'
+  | 'users'
+  | 'user'
+  | 'chevron-right';
 
 export function Icon({
   name,
@@ -81,6 +87,33 @@ export function Icon({
           <Path d="M21 13v2a3 3 0 0 1-3 3H3" />
         </>
       )}
+      {name === 'search' && (
+        <>
+          <Circle cx={10.8} cy={10.8} r={7.3} />
+          <Path d="m16.2 16.2 4.3 4.3" />
+        </>
+      )}
+      {name === 'info' && (
+        <>
+          <Circle cx={12} cy={12} r={9} />
+          <Path d="M12 11v5m0-8h.01" />
+        </>
+      )}
+      {name === 'close' && <Path d="m18 6-12 12M6 6l12 12" />}
+      {name === 'users' && (
+        <>
+          <Path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+          <Circle cx={9.5} cy={7} r={4} />
+          <Path d="M20 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+        </>
+      )}
+      {name === 'user' && (
+        <>
+          <Circle cx={12} cy={8} r={4} />
+          <Path d="M4 21v-1a8 8 0 0 1 16 0v1" />
+        </>
+      )}
+      {name === 'chevron-right' && <Path d="m9 18 6-6-6-6" />}
     </Svg>
   );
 }

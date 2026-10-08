@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXA Mobile — M05: Tìm người dùng</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Viewport size switchers using pure CSS */
+    #vp-360:checked ~ .showcase-body .mobile-device { max-width: 360px; }
+    #vp-390:checked ~ .showcase-body .mobile-device { max-width: 390px; }
+    #vp-430:checked ~ .showcase-body .mobile-device { max-width: 430px; }
+
+    .viewport-switch-group {
+      display: inline-flex;
+      background-color: var(--color-surface);
+      border: 1px solid var(--color-hairline);
+      border-radius: var(--radius-full);
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .viewport-btn-label {
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--color-steel);
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      user-select: none;
+      transition: all 150ms ease;
+    }
+
+    #vp-360:checked ~ .showcase-topbar label[for="vp-360"],
+    #vp-390:checked ~ .showcase-topbar label[for="vp-390"],
+    #vp-430:checked ~ .showcase-topbar label[for="vp-430"] {
+      background-color: var(--color-primary);
+      color: var(--color-on-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Viewport width switcher controllers (pure CSS) -->
+  <input type="radio" name="vp-size" id="vp-360" style="display:none;">
+  <input type="radio" name="vp-size" id="vp-390" checked style="display:none;">
+  <input type="radio" name="vp-size" id="vp-430" style="display:none;">
+
+  <div class="showcase-layout">
+    <!-- Showcase Top Bar -->
+    <header class="showcase-topbar">
+      <div class="showcase-brand">
+        <div class="nexa-logo-badge">N</div>
+        <div class="showcase-title-wrap">
+          <span class="showcase-app-name">NEXA Mobile Spec</span>
+          <span class="showcase-app-sub">Chuẩn UI/UX mobile tinh gọn (DESIGN.md)</span>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="showcase-nav-links">
+        <a href="index.html" class="showcase-nav-item">Mục lục & Tokens</a>
+        <a href="m01-login.html" class="showcase-nav-item">M01: Đăng nhập</a>
+        <a href="m02-register.html" class="showcase-nav-item">M02: Đăng ký</a>
+        <a href="m03-inbox.html" class="showcase-nav-item">M03: Inbox / Trang chính</a>
+        <a href="m04-create-notification.html" class="showcase-nav-item">M04: Tạo thông báo</a>
+        <a href="m05-user-search.html" class="showcase-nav-item active">M05: Tìm người dùng</a>
+        <a href="m06-friends.html" class="showcase-nav-item">M06: Bạn bè / Lời mời</a>
+        <a href="m07-profile-settings.html" class="showcase-nav-item">M07: Hồ sơ / Cài đặt</a>
+        <a href="m08-notification-target.html" class="showcase-nav-item">M08: Đích thông báo</a>
+        <a href="m09-components-utils.html" class="showcase-nav-item">M09: Utils & Feedback</a>
+      </nav>
+
+      <!-- Viewport switchers -->
+      <div class="viewport-switch-group">
+        <label for="vp-360" class="viewport-btn-label">360px</label>
+        <label for="vp-390" class="viewport-btn-label">390px (Chuẩn)</label>
+        <label for="vp-430" class="viewport-btn-label">430px</label>
+      </div>
+    </header>
+
+    <!-- Showcase Body Grid -->
+    <main class="showcase-body">
+      <!-- Left Column: Mobile Viewport Preview -->
+      <div class="preview-column">
+        <div class="viewport-info-bar">
+          <span>Khung màn hình đại diện M05</span>
+          <span class="badge-tag-yellow">F04 · Tìm kiếm người dùng</span>
+        </div>
+
+        <!-- Mobile Device Frame (390px standard) -->
+        <div class="mobile-device" id="mobilePreview">
+          <!-- 1. Mobile Status Bar (iOS/Android 44px safe area) -->
+          <div class="mobile-status-bar">
+            <span class="status-time">9:41</span>
+            <div class="status-notch"></div>
+            <div class="status-icons">
+              <!-- Cellular Icon -->
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="7.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+                <rect x="4.5" y="5.5" width="2.5" height="5" rx="0.5" fill="currentColor"/>
+                <rect x="8.5" y="3.5" width="2.5" height="7" rx="0.5" fill="currentColor"/>
+                <rect x="12.5" y="0.5" width="2.5" height="10" rx="0.5" fill="currentColor"/>
+              </svg>
+              <!-- Wifi Icon -->
+              <svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.5 11C8.32843 11 9 10.3284 9 9.5C9 8.67157 8.32843 8 7.5 8C6.67157 8 6 8.67157 6 9.5C6 10.3284 6.67157 11 7.5 11Z" fill="currentColor"/>
+                <path d="M4.3 6.3C5.2 5.5 6.3 5 7.5 5C8.7 5 9.8 5.5 10.7 6.3L11.8 5.2C10.6 4.1 9.1 3.5 7.5 3.5C5.9 3.5 4.4 4.1 3.2 5.2L4.3 6.3Z" fill="currentColor"/>
+                <path d="M1.8 3.8C3.4 2.3 5.4 1.5 7.5 1.5C9.6 1.5 11.6 2.3 13.2 3.8L14.3 2.7C12.4 0.9 10 0 7.5 0C5 0 2.6 0.9 0.7 2.7L1.8 3.8Z" fill="currentColor"/>
+              </svg>
+              <!-- Battery Icon -->
+              <svg width="22" height="11" viewBox="0 0 22 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0.5" y="0.5" width="18" height="10" rx="2.5" stroke="currentColor"/>
+                <rect x="2" y="2" width="13" height="7" rx="1.5" fill="currentColor"/>
+                <path d="M20 3.5V7.5" stroke="currentColor" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- 2. Mobile App Header: Back button + Title -->
+          <div class="mobile-app-header">
+            <!-- Circular back button (44x44px touch target) -->
+            <a href="m06-friends.html" class="button-icon-circular" aria-label="Quay lại Bạn bè" title="Quay lại">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </a>
+
+            <div style="font-size: 17px; font-weight: 600; color: var(--color-ink);">
+              Tìm người dùng
+            </div>
+
+            <!-- Help / info button -->
+            <button type="button" class="header-icon-btn" title="Chính sách tìm kiếm" aria-label="Thông tin">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </button>
+          </div>
+
+          <!-- 3. Screen Content: Search Bar & Results Feed (Scrollable) -->
+          <div class="mobile-screen-content">
+            <!-- Screen Title Group -->
+            <div class="screen-title-group" style="margin-bottom: 16px;">
+              <h1 class="heading-3" style="font-size: 22px; line-height: 1.25;">Kết nối bạn bè</h1>
+              <p class="body-sm" style="color: var(--color-slate); margin-top: 4px;">
+                Tìm theo username hoặc email chính xác để gửi lời mời kết bạn.
+              </p>
+            </div>
+
+            <!-- Search Bar Pill (DESIGN.md search-pill standard) -->
+            <div class="search-pill-container" style="height: 44px; margin-bottom: 8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-steel); flex-shrink: 0;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                type="text"
+                class="search-pill-input"
+                placeholder="Nhập @username hoặc email..."
+                value="@minh"
+                style="font-size: 15px;"
+              >
+              <!-- Clear icon button -->
+              <button type="button" style="background: none; border: none; cursor: pointer; color: var(--color-stone); padding: 4px;" aria-label="Xóa nội dung">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Search Policy Helper Banner -->
+            <div class="card-base" style="background-color: var(--color-surface); padding: 10px 12px; margin-bottom: 16px; border-radius: var(--radius-md); display: flex; align-items: flex-start; gap: 8px;">
+              <span style="font-size: 14px; margin-top: 1px;">💡</span>
+              <span class="caption" style="color: var(--color-steel);">
+                Chỉ tìm kiếm theo các trường được phép (username, email) để bảo vệ quyền riêng tư người dùng.
+              </span>
+            </div>
+
+            <!-- Results Summary Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 2px;">
+              <span class="micro" style="text-transform: uppercase; font-weight: 600; color: var(--color-steel);">
+                Kết quả tìm kiếm (3)
+              </span>
+              <span class="caption" style="color: var(--color-slate);">Từ khóa: "@minh"</span>
+            </div>
+
+            <!-- Search Results List -->
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              
+              <!-- Result Item 1: Chưa kết bạn -> Nút "+ Kết bạn" -->
+              <div class="user-card">
+                <div class="user-card-info">
+                  <div class="user-avatar-lg">MT</div>
+                  <div class="user-meta">
+                    <span class="user-name-title">Minh Triết</span>
+                    <span class="user-handle-sub">@minhtriet • triet.m@gmail.com</span>
+                  </div>
+                </div>
+                <div class="user-card-actions">
+                  <button type="button" class="button-sm button-sm-primary" title="Gửi lời mời kết bạn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="12" y1="5" x2="12" y2="19"></line>
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>Kết bạn</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Result Item 2: Đang chờ phản hồi (Lời mời đã gửi) -> Nút "Hủy lời mời" -->
+              <div class="user-card">
+                <div class="user-card-info">
+                  <div class="user-avatar-lg" style="background-color: var(--color-surface-yellow); color: var(--color-yellow-dark);">MH</div>
+                  <div class="user-meta">
+                    <span class="user-name-title">Minh Hằng</span>
+                    <span class="user-handle-sub">@minhhang • Đã gửi lời mời</span>
+                  </div>
+                </div>
+                <div class="user-card-actions">
+                  <button type="button" class="button-sm button-sm-secondary" title="Hủy lời mời đã gửi">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    <span>Hủy lời mời</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Result Item 3: Đã là bạn bè -> Badge "Bạn bè" & Nút gửi thông báo -->
+              <div class="user-card">
+                <div class="user-card-info">
+                  <div class="user-avatar-lg friend">MQ</div>
+                  <div class="user-meta">
+                    <span class="user-name-title">Minh Quang</span>
+                    <span class="user-handle-sub">@minhquang • Đã kết bạn</span>
+                  </div>
+                </div>
+                <div class="user-card-actions">
+                  <span class="badge-success" style="font-size: 11px;">Bạn bè</span>
+                  <a href="m04-create-notification.html" class="button-icon-circular" style="width: 32px; height: 32px;" title="Gửi thông báo cho bạn bè">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Quick Jump to Requests Banner -->
+            <div style="margin-top: 20px; padding: 14px 16px; background-color: var(--color-surface); border-radius: var(--radius-xl); border: 1px solid var(--color-hairline-soft); display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: var(--color-ink);">Bạn có 2 lời mời kết bạn mới</div>
+                <div class="caption" style="color: var(--color-slate);">Xem và phản hồi lời mời kết bạn gửi đến.</div>
+              </div>
+              <a href="m06-friends.html" class="button-secondary" style="font-size: 12px; padding: 6px 14px; min-height: 32px;">
+                Xem lời mời &rarr;
+              </a>
+            </div>
+          </div>
+
+          <!-- 4. Mobile Bottom Navigation Bar (4 Tab chuẩn NEXA) -->
+          <nav class="mobile-bottom-nav">
+            <a href="m03-inbox.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span>Hộp thư</span>
+            </a>
+            <a href="m04-create-notification.html" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+              <span>Tạo mới</span>
+            </a>
+            <a href="m06-friends.html" class="bottom-nav-item active">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Bạn bè</span>
+            </a>
+            <a href="#settings" class="bottom-nav-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Cài đặt</span>
+            </a>
+          </nav>
+
+          <!-- 5. Mobile Home Indicator (iOS 34px safe area) -->
+          <div class="mobile-home-indicator">
+            <div class="home-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Specification & Annotation Panel -->
+      <aside class="spec-panel">
+        <!-- Spec Header -->
+        <div class="spec-header">
+          <div>
+            <div class="spec-screen-id">Màn hình M05</div>
+            <h2 class="spec-screen-name">Tìm người dùng (User Discovery)</h2>
+          </div>
+          <div class="spec-badges">
+            <span class="badge-tag-yellow">F04 · Tìm người dùng & Kết bạn</span>
+            <span class="badge-success">Phạm vi MVP xác nhận</span>
+          </div>
+        </div>
+
+        <!-- 1. Yêu cầu & Mục tiêu thiết kế -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>📋</span> 1. Yêu cầu sản phẩm (Theo docs/app-functions-and-screens.md)
+          </h3>
+          <div class="spec-card">
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--color-ink); display: flex; flex-direction: column; gap: 6px;">
+              <li><strong>Tìm kiếm theo trường được phép:</strong> Cho phép tìm kiếm chính xác theo username hoặc email của tài khoản đã đăng ký.</li>
+              <li><strong>Gửi lời mời kết bạn:</strong> Thao tác gửi lời mời kết bạn trực tiếp từ danh sách kết quả tìm kiếm.</li>
+              <li><strong>Chống gửi lời mời trùng lặp:</strong> Hiển thị trực quan trạng thái quan hệ tương ứng: Chưa kết bạn, Đã gửi lời mời (chờ duyệt), Đã là bạn bè. Tránh gửi lại khi đã có lời mời đang chờ.</li>
+              <li><strong>Quy tắc nghiệp vụ cốt lõi:</strong>
+                <ul style="padding-left: 18px; margin-top: 4px; display: flex; flex-direction: column; gap: 3px;">
+                  <li>Không cho phép tự gửi lời mời kết bạn cho chính tài khoản của mình.</li>
+                  <li>Nếu đối phương đã gửi lời mời cho bạn trước đó, hệ thống hướng dẫn chấp nhận thay vì gửi đè lời mời mới.</li>
+                  <li>Cho phép hủy lời mời đã gửi nếu đối phương chưa phản hồi.</li>
+                </ul>
+              </li>
+              <li><strong>Tiền đề tạo thông báo:</strong> Khi lời mời được chấp nhận, tài khoản sẽ xuất hiện trong danh sách bạn bè được phép nhận thông báo ở M04.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 2. Cấu trúc dữ liệu & Zod Schema Mapping -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🛡️</span> 2. Ràng buộc Validation (packages/validation userSearchSchema)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Trường dữ liệu</th>
+                  <th>Kiểu & Ràng buộc Zod</th>
+                  <th>Mô tả / Thông báo lỗi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>query (q)</strong></td>
+                  <td><code class="spec-token-code">z.string().trim().min(2).max(100)</code></td>
+                  <td>Từ khóa tìm kiếm (tối thiểu 2 ký tự, tối đa 100)</td>
+                </tr>
+                <tr>
+                  <td><strong>targetUserId</strong></td>
+                  <td><code class="spec-token-code">z.string().uuid()</code></td>
+                  <td>ID tài khoản nhận lời mời kết bạn</td>
+                </tr>
+                <tr>
+                  <td><strong>friendshipStatus</strong></td>
+                  <td><code class="spec-token-code">'NONE' | 'PENDING' | 'ACCEPTED'</code></td>
+                  <td>Trạng thái quan hệ kết bạn giữa 2 tài khoản</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. Minh họa trạng thái tương tác mẫu (Visual States) -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>⚠️</span> 3. Minh họa trạng thái giao diện (Visual States)
+          </h3>
+          <div class="validation-showcase-box">
+            <!-- State 1: Chưa nhập từ khóa (Initial State) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 1: Chưa nhập từ khóa tìm kiếm (Initial)</span>
+              <div class="inbox-empty-card" style="margin: 8px 0; padding: 20px 16px;">
+                <div class="empty-icon-circle" style="background-color: var(--color-surface); color: var(--color-steel);">🔍</div>
+                <div style="font-weight: 600; font-size: 13px; color: var(--color-ink);">Nhập username hoặc email</div>
+                <p class="caption" style="color: var(--color-steel); max-width: 240px; margin: 0 auto;">
+                  Nhập tối thiểu 2 ký tự để bắt đầu tìm kiếm bạn bè trên hệ thống.
+                </p>
+              </div>
+            </div>
+
+            <!-- State 2: Không tìm thấy kết quả (No Results Found) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 2: Không tìm thấy người dùng phù hợp</span>
+              <div class="inbox-empty-card" style="margin: 8px 0; padding: 20px 16px;">
+                <div class="empty-icon-circle" style="background-color: #fee2e2; color: #991b1b;">🚫</div>
+                <div style="font-weight: 600; font-size: 13px; color: var(--color-ink);">Không tìm thấy người dùng</div>
+                <p class="caption" style="color: var(--color-steel); max-width: 240px; margin: 0 auto;">
+                  Vui lòng kiểm tra lại chính tả username hoặc email đã đăng ký.
+                </p>
+              </div>
+            </div>
+
+            <!-- State 3: Gửi lời mời thành công (Toast notification) -->
+            <div class="validation-state-item">
+              <span class="micro" style="text-transform: uppercase; color: var(--color-slate); font-weight: 600;">Trạng thái 3: Phản hồi gửi lời mời thành công</span>
+              <div style="margin-top: 6px; padding: 10px 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); display: flex; align-items: center; gap: 8px;">
+                <span style="color: #166534; font-size: 14px;">✅</span>
+                <span class="body-sm" style="color: #166534; font-weight: 500;">Đã gửi lời mời kết bạn đến @minhtriet thành công!</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Đối chiếu Design Tokens Bắt Buộc -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🎨</span> 4. Đối chiếu Design Tokens (DESIGN.md)
+          </h3>
+          <div class="spec-card">
+            <table class="spec-table">
+              <thead>
+                <tr>
+                  <th>Thành phần UI</th>
+                  <th>Token nguồn</th>
+                  <th>Giá trị áp dụng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Thanh tìm kiếm</td>
+                  <td><code class="spec-token-code">search-pill</code></td>
+                  <td>Cao 44px, nền surface #f7f8fa, viền hairline #e0e2e8</td>
+                </tr>
+                <tr>
+                  <td>Nút kết bạn nhỏ</td>
+                  <td><code class="spec-token-code">button-primary (small)</code></td>
+                  <td>#1c1c1e, pill full (9999px), touch 36px, font 13px 500</td>
+                </tr>
+                <tr>
+                  <td>Thẻ người dùng</td>
+                  <td><code class="spec-token-code">user-card</code></td>
+                  <td>Nền #ffffff, radius 16px, viền hairline-soft #eef0f3</td>
+                </tr>
+                <tr>
+                  <td>Avatar chữ tròn</td>
+                  <td><code class="spec-token-code">user-avatar-lg</code></td>
+                  <td>Kích thước 42x42px, radius 9999px, viền mảnh hairline</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 5. Điều hướng liên quan -->
+        <section class="spec-section">
+          <h3 class="spec-section-title">
+            <span>🔗</span> 5. Điều hướng liên kết
+          </h3>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="m06-friends.html" class="button-primary" style="flex: 1; text-align: center; text-decoration: none;">
+              Xem M06: Bạn bè & Lời mời &rarr;
+            </a>
+            <a href="m03-inbox.html" class="button-secondary" style="flex: 1; text-align: center;">
+              Quay lại M03: Hộp thư
+            </a>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,8 +1,5 @@
 import { View } from 'react-native';
-import { colors } from '@nexa/design-tokens';
-import { AppText } from './app-text';
-import { Icon } from './icon';
-import { TextLink } from './text-link';
+import { InlineAlert } from './common/inline-alert';
 import { styles } from './error-notice.styles';
 
 export function ErrorNotice({
@@ -13,14 +10,8 @@ export function ErrorNotice({
   action?: { label: string; onPress(): void };
 }) {
   return (
-    <View style={styles.error} accessibilityRole="alert" accessibilityLiveRegion="polite">
-      <View style={styles.errorRow}>
-        <Icon name="alert" color={colors['coral-dark']} />
-        <AppText variant="body-sm" style={styles.errorText}>
-          {message}
-        </AppText>
-      </View>
-      {action && <TextLink label={action.label} onPress={action.onPress} />}
+    <View style={styles.wrapper}>
+      <InlineAlert variant="danger" message={message} action={action} />
     </View>
   );
 }

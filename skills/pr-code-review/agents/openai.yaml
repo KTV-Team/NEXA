@@ -1,0 +1,4 @@
+interface:
+  display_name: "PR Code Review"
+  short_description: "Review GitHub PRs and export Markdown issue reports"
+  default_prompt: "Use $pr-code-review to review this pull request through my existing GitHub connection and save a Vietnamese Markdown report grouped by Critical, High, Medium, and Low: PR_URL"

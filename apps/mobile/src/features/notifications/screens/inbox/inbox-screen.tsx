@@ -61,6 +61,24 @@ export default function InboxScreen() {
           <AppText variant="button-md" style={styles.createButtonText}>Tạo thông báo mới</AppText>
         </Pressable>
 
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Mở bạn bè và lời mời kết bạn"
+          onPress={() => router.push('/friends')}
+          style={({ pressed }) => [styles.friendsLink, pressed && styles.friendsLinkPressed]}
+        >
+          <View style={styles.friendsLinkIcon}>
+            <Icon name="users" size={18} color={colors.ink} />
+          </View>
+          <View style={styles.friendsLinkCopy}>
+            <AppText variant="body-sm-medium">Bạn bè và lời mời</AppText>
+            <AppText variant="caption" style={styles.friendsLinkHint}>
+              Tìm người dùng và quản lý kết nối
+            </AppText>
+          </View>
+          <Icon name="chevron-right" size={18} color={colors.steel} />
+        </Pressable>
+
         <View style={styles.connectionNotice}>
           <Icon name="alert" size={18} color={colors['yellow-dark']} />
           <AppText variant="body-sm" style={styles.connectionText}>
