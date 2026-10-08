@@ -1,4 +1,5 @@
 import { AuthAccountEntity } from '../auth/entities/auth-account.entity';
+import { AuthSessionEntity } from '../auth/entities/auth-session.entity';
 import { EventEntity } from '../events/entities/event.entity';
 import { EventParticipantEntity } from '../events/entities/event-participant.entity';
 import { NotificationEntity } from '../notifications/entities/notification.entity';
@@ -12,6 +13,7 @@ import { UserEntity } from '../users/entities/user.entity';
 export const coreEntities = [
   UserEntity,
   AuthAccountEntity,
+  AuthSessionEntity,
   TeamEntity,
   TeamMemberEntity,
   TodoListEntity,

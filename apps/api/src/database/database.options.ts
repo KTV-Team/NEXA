@@ -5,6 +5,7 @@ import { coreEntities } from './entities';
 
 const migrations = [
   `${__dirname.replace(/\\/g, '/')}/migrations/*{.ts,.js}`,
+  `${__dirname.replace(/\\/g, '/')}/../auth/migrations/*{.ts,.js}`,
 ];
 
 export const databaseOptions: DataSourceOptions = {

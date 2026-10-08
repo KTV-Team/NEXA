@@ -1,11 +1,13 @@
 import type { ApiResponse } from '@nexa/types';
 import { ApiClientError } from './errors';
+import type { AuthClientType } from '@nexa/types';
 
 export interface ApiClientConfig {
   baseUrl: string;
   getAccessToken?: () => string | null | Promise<string | null>;
   onUnauthorized?: () => void;
   timeoutMs?: number;
+  authClient?: AuthClientType;
 }
 
 export type ApiRequest = <T>(method: string, path: string, body?: unknown) => Promise<T>;
@@ -14,10 +16,12 @@ export function createTransport(config: ApiClientConfig): ApiRequest {
   const baseUrl = config.baseUrl.replace(/\/$/, '');
   const getAccessToken = config.getAccessToken ?? (() => null);
   const timeoutMs = config.timeoutMs ?? 15000;
+  const authClient = config.authClient ?? 'mobile';
 
   return async function request<T>(method: string, path: string, body?: unknown): Promise<T> {
     const token = await getAccessToken();
-    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const headers: Record<string, string> = { 'X-Auth-Client': authClient };
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
     if (token) headers.Authorization = `Bearer ${token}`;
 
     const controller = new AbortController();
@@ -26,6 +30,7 @@ export function createTransport(config: ApiClientConfig): ApiRequest {
       const response = await fetch(`${baseUrl}${path}`, {
         method,
         headers,
+        credentials: authClient === 'web' ? 'include' : 'omit',
         signal: controller.signal,
         body: body !== undefined ? JSON.stringify(body) : undefined,
       });

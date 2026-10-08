@@ -9,7 +9,7 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json --noEmit",
     "test": "jest",
-    "test:db": "jest --runInBand database/database.integration.spec.ts dev/dev.integration.spec.ts",
+    "test:db": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand database/database.integration.spec.ts dev/dev.integration.spec.ts auth/auth.integration.spec.ts auth/api-client.contract.spec.ts",
     "db:migration:generate": "typeorm-ts-node-commonjs migration:generate",
     "db:migration:run": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts",
     "db:migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/data-source.ts",
@@ -23,10 +23,13 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@fastify/cookie": "11.1.2",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.0",
+    "@nestjs/jwt": "11.0.2",
     "@nestjs/platform-fastify": "^11.0.0",
+    "@nestjs/throttler": "6.7.1",
     "@nestjs/typeorm": "11.0.0",
     "@nexa/types": "workspace:*",
     "@nexa/validation": "workspace:*",
@@ -35,7 +38,8 @@
     "pg": "^8.23.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "typeorm": "0.3.28"
+    "typeorm": "0.3.28",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
