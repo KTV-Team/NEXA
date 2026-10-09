@@ -30,3 +30,8 @@ export interface UserSummary {
   name: string;
   avatarUrl?: string;
 }
+
+export interface SearchUserSummary extends UserSummary {
+  relationship: 'none' | 'incoming' | 'outgoing' | 'friend';
+  requestId?: ID;
+}

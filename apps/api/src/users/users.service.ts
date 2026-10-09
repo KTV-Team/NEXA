@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
-import type { UpdateUserDto, UserSummary } from '@nexa/types';
+import type { SearchUserSummary, UpdateUserDto } from '@nexa/types';
 import { AuthService } from '../auth/auth.service';
 import { UserEntity } from './entities/user.entity';
 
@@ -26,6 +26,29 @@ export class UsersService {
     const [rows, total] = await query.select(['user.id', 'user.name', 'user.avatarUrl'])
       .orderBy('user.name', 'ASC').addOrderBy('user.id', 'ASC')
       .skip((page - 1) * limit).take(limit).getManyAndCount();
-    return { data: rows.map((row): UserSummary => ({ id: row.id, name: row.name, ...(row.avatarUrl ? { avatarUrl: row.avatarUrl } : {}) })), meta: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+    if (rows.length === 0) return { data: [], meta: { page, limit, total, totalPages: Math.ceil(total / limit) } };
+    const relations = await this.users.manager.query(
+      `SELECT target.id, f.id AS friendship_id, r.id AS request_id, r.sender_id
+       FROM unnest($2::uuid[]) AS target(id)
+       LEFT JOIN friendships f ON f.low_user_id = LEAST($1::uuid, target.id)
+         AND f.high_user_id = GREATEST($1::uuid, target.id) AND f.removed_at IS NULL
+       LEFT JOIN friend_requests r ON r.status = 'PENDING'
+         AND LEAST(r.sender_id, r.recipient_id) = LEAST($1::uuid, target.id)
+         AND GREATEST(r.sender_id, r.recipient_id) = GREATEST($1::uuid, target.id)`,
+      [userId, rows.map((row) => row.id)],
+    ) as { id: string; friendship_id: string | null; request_id: string | null; sender_id: string | null }[];
+    const byId = new Map(relations.map((relation) => [relation.id, relation]));
+    const data = rows.map((row): SearchUserSummary => {
+      const relation = byId.get(row.id);
+      return {
+        id: row.id,
+        name: row.name,
+        ...(row.avatarUrl ? { avatarUrl: row.avatarUrl } : {}),
+        relationship: relation?.friendship_id ? 'friend' : relation?.request_id
+          ? relation.sender_id === userId ? 'outgoing' : 'incoming' : 'none',
+        ...(relation?.request_id && !relation.friendship_id ? { requestId: relation.request_id } : {}),
+      };
+    });
+    return { data, meta: { page, limit, total, totalPages: Math.ceil(total / limit) } };
   }
 }

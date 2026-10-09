@@ -21,7 +21,17 @@ export const styles = StyleSheet.create({
   },
   checked: { backgroundColor: colors.primary, borderColor: colors.primary },
   rememberText: { flex: 1 },
-  previewAction: { alignItems: 'center', marginTop: spacing.xs },
+  googleButton: {
+    minHeight: 48,
+    marginTop: spacing.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.hairline,
+    borderRadius: rounded.full,
+    backgroundColor: colors.canvas,
+  },
+  googlePressed: { opacity: 0.7 },
   switchRow: {
     borderTopWidth: 1,
     borderTopColor: colors['hairline-soft'],

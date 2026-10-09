@@ -5,7 +5,7 @@ import type { AuthClientType } from '@nexa/types';
 export interface ApiClientConfig {
   baseUrl: string;
   getAccessToken?: () => string | null | Promise<string | null>;
-  onUnauthorized?: () => void;
+  onUnauthorized?: (accessToken: string | null) => void;
   timeoutMs?: number;
   authClient?: AuthClientType;
 }
@@ -36,7 +36,7 @@ export function createTransport(config: ApiClientConfig): ApiRequest {
       });
 
       if (response.status === 401 && !path.startsWith('/auth/')) {
-        config.onUnauthorized?.();
+        config.onUnauthorized?.(token);
       }
 
       if (response.ok && response.status === 204) return undefined as T;

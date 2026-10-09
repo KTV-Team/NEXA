@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "nest build",
-    "dev": "nest start --watch",
+    "build": "pnpm --filter @nexa/validation build && nest build",
+    "dev": "pnpm --filter @nexa/validation build && nest start --watch",
     "start": "node dist/main",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit && tsc --project tsconfig.test.json --noEmit",
-    "test": "jest",
-    "test:db": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
+    "test": "pnpm --filter @nexa/validation build && jest",
+    "test:db": "pnpm --filter @nexa/validation build && node --experimental-vm-modules ./node_modules/jest/bin/jest.js --runInBand",
     "db:migration:generate": "typeorm-ts-node-commonjs migration:generate",
     "db:migration:run": "typeorm-ts-node-commonjs migration:run -d src/database/data-source.ts",
     "db:migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/database/data-source.ts",
@@ -18,8 +18,8 @@
     "db:migration:show:prod": "typeorm migration:show -d dist/database/data-source.js",
     "db:seed": "ts-node src/database/seeds/seed.ts",
     "db:seed:reset": "ts-node src/database/seeds/seed.ts --reset-fixtures",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:watch": "pnpm --filter @nexa/validation build && jest --watch",
+    "test:cov": "pnpm --filter @nexa/validation build && jest --coverage",
     "clean": "rm -rf dist"
   },
   "dependencies": {

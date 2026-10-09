@@ -21,7 +21,9 @@ interface AuthContextValue {
   login(values: LoginDto, remember: boolean): Promise<void>;
   register(values: RegisterDto): Promise<void>;
   updateProfile(values: UpdateUserDto): Promise<void>;
+  refreshProfile(): Promise<void>;
   logout(): Promise<void>;
+  api: AuthService['api'];
 }
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -29,6 +31,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [restorationError, setRestorationError] = useState<string | null>(null);
+  const refreshProfile = useCallback(async () => {
+    setSession(await service.refreshProfile());
+  }, []);
   const retryRestore = useCallback(async () => {
     setLoading(true);
     setRestorationError(null);
@@ -41,6 +46,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, []);
   useEffect(() => {
+    service.setSessionEndedListener((error) => {
+      setSession(null);
+      if (error) setRestorationError(authErrorMessage(error));
+    });
     let active = true;
     void service
       .restore()
@@ -55,6 +64,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       });
     return () => {
       active = false;
+      service.setSessionEndedListener(null);
     };
   }, []);
 
@@ -76,6 +86,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
         updateProfile: async (values) => {
           setSession(await service.updateProfile(values));
         },
+        refreshProfile,
+        api: service.api,
         logout: async () => {
           try {
             await service.logout();
