@@ -69,18 +69,6 @@ export const styles = StyleSheet.create({
     backgroundColor: colors['surface-yellow'],
   },
   successText: { flex: 1, color: colors['moss-dark'] },
-  settingsLink: {
-    minHeight: 48,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderRadius: rounded.lg,
-    borderWidth: 1,
-    borderColor: colors['hairline-soft'],
-    backgroundColor: colors.surface,
-  },
-  settingsLinkText: { flex: 1 },
   logoutButton: {
     minHeight: 48,
     flexDirection: 'row',

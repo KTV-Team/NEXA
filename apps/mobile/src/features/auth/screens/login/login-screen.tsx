@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Keyboard, Pressable, TextInput, View } from 'react-native';
+import { Alert, Keyboard, Pressable, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import { colors } from '@nexa/design-tokens';
 import { loginSchema } from '@nexa/validation';
@@ -121,15 +121,16 @@ export default function LoginScreen() {
         </AppText>
       </Pressable>
       <PrimaryButton label="Đăng nhập" busy={busy} onPress={() => void submit()} />
-      {__DEV__ && (
-        <View style={styles.previewAction}>
-          <TextLink
-            label="Xem Inbox không cần đăng nhập (dev)"
-            disabled={busy}
-            onPress={() => router.replace('/')}
-          />
-        </View>
-      )}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Đăng nhập với Google"
+        accessibilityState={{ disabled: busy }}
+        disabled={busy}
+        onPress={() => Alert.alert('Đăng nhập với Google', 'Chức năng đang được phát triển.')}
+        style={({ pressed }) => [styles.googleButton, pressed && styles.googlePressed]}
+      >
+        <AppText variant="body-sm-medium">Đăng nhập với Google</AppText>
+      </Pressable>
       <View style={styles.switchRow}>
         <AppText variant="body-sm" style={styles.switchLabel}>
           Chưa có tài khoản NEXA?

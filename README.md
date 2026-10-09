@@ -19,10 +19,10 @@ Product requirements come only from the user-supplied task “Audit and Align Pr
 
 Product status updated on 2026-10-08. The repository is an early implementation and still needs deployment and native-delivery work.
 
-- Mobile has native login/register forms, shared validation, session restoration/refresh handling, protected routes, local logout, and SecureStore persistence. Inbox and create-notification screens are UI scaffolds; account/session information has its own route.
+- Mobile has native login/register forms, shared validation, session restoration/refresh handling, protected routes, local logout, SecureStore persistence, profile editing, people search, and friend-request/friendship management through the API. Google sign-in displays a development notice only. Inbox and create-notification screens remain UI scaffolds.
 - The API has PostgreSQL/TypeORM migrations, development seeds, health, a database-backed development demo, email/password auth, profile update/search, friend requests/friendships, personal notifications, durable inbox records, and a PostgreSQL-backed scheduler. See [Social and notification API](docs/social-notification-api.md) for the current contract.
 - Mobile can use the auth API with bearer access tokens and refresh tokens in JSON. A future same-site web client can use the same backend with an HttpOnly refresh cookie; no web auth UI has been added.
-- Realtime inbox updates, native push delivery, device-token registration, and mobile UI integration remain unimplemented. The scheduler commits inbox items but does not claim OS display. Existing team/event notification entities remain separate legacy scaffold and are not used by the personal notification APIs. The older database scaffold also contains teams, todos, events, and roles; these are not confirmed MVP features.
+- Realtime inbox updates, native push delivery, device-token registration, and mobile notification/inbox UI integration remain unimplemented. The scheduler commits inbox items but does not claim OS display. Existing team/event notification entities remain separate legacy scaffold and are not used by the personal notification APIs. The older database scaffold also contains teams, todos, events, and roles; these are not confirmed MVP features.
 - `apps/web` is retained historical scaffold, outside current scope. Expo browser preview is a development aid, not a supported web product.
 
 ## Required behavior across app states
@@ -78,6 +78,8 @@ pnpm --filter @nexa/api dev
 ```
 
 When starting API and mobile separately, run `pnpm --filter @nexa/mobile dev` in another terminal. HTTP health being reachable does not prove auth or other product features work.
+
+The API and mobile development, build, test, and native-run scripts build `@nexa/validation` first so Node and Metro can load its compiled runtime module. After changing a shared validation schema, restart a running development server to pick up the rebuilt package. To start the compiled API, run `pnpm --filter @nexa/api build` before `pnpm --filter @nexa/api start`.
 
 ## Environment variables
 
