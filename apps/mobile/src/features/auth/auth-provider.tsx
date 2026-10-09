@@ -11,9 +11,11 @@ import { apiUrl } from '../../config/env';
 import { AuthService, type AuthSession } from './auth-service';
 import { sessionStorage } from './session-storage';
 import { authErrorMessage } from './auth-errors';
+import { unregisterDevice } from '@/notifications/device-registration';
 
 const service = new AuthService(apiUrl, sessionStorage);
 interface AuthContextValue {
+  api: AuthService['api'];
   session: AuthSession | null;
   loading: boolean;
   restorationError: string | null;
@@ -21,6 +23,8 @@ interface AuthContextValue {
   login(values: LoginDto, remember: boolean): Promise<void>;
   register(values: RegisterDto): Promise<void>;
   updateProfile(values: UpdateUserDto): Promise<void>;
+  clearExpiredSession(): Promise<void>;
+  getAccessToken(): Promise<string | null>;
   logout(): Promise<void>;
 }
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -29,6 +33,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [restorationError, setRestorationError] = useState<string | null>(null);
+  const clearExpiredSession = useCallback(async () => {
+    try {
+      await service.clearExpiredSession();
+    } finally {
+      setSession(null);
+    }
+  }, []);
   const retryRestore = useCallback(async () => {
     setLoading(true);
     setRestorationError(null);
@@ -61,6 +72,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   return (
     <AuthContext.Provider
       value={{
+        api: service.api,
         session,
         loading,
         restorationError,
@@ -76,8 +88,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
         updateProfile: async (values) => {
           setSession(await service.updateProfile(values));
         },
+        clearExpiredSession,
+        getAccessToken: () => service.getAccessToken(),
         logout: async () => {
           try {
+            try {
+              await unregisterDevice(service.api);
+            } catch {
+              // Logout still revokes the session, so a failed cleanup cannot authorize later pushes.
+            }
             await service.logout();
           } finally {
             setSession(null);

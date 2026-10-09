@@ -37,4 +37,15 @@ export const readInboxSchema = z.object({ read: z.boolean() }).strict();
 export const idParamSchema = z.object({ id: uuid }).strict();
 export const requestIdParamSchema = z.object({ requestId: uuid }).strict();
 export const itemIdParamSchema = z.object({ itemId: uuid }).strict();
+export const installationIdParamSchema = z.object({ installationId: uuid }).strict();
 export const inboxReadAllSchema = z.object({}).strict();
+export const deviceRegistrationSchema = z.object({
+  platform: z.enum(['android', 'ios']),
+  pushToken: z.string().regex(/^(?:ExponentPushToken|ExpoPushToken)\[[A-Za-z0-9_-]+\]$/).max(512).nullable(),
+  permissionStatus: z.enum(['granted', 'provisional', 'denied', 'undetermined']),
+}).strict().superRefine((value, context) => {
+  const permissionAllowsToken = value.permissionStatus === 'granted' || value.permissionStatus === 'provisional';
+  if (value.pushToken !== null && !permissionAllowsToken) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ['pushToken'], message: 'A push token is required only when notification permission is granted.' });
+  }
+});

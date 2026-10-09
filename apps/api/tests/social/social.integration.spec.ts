@@ -35,6 +35,10 @@ describe('profile, friends, notifications and inbox API', () => {
     if (db?.isInitialized) {
       const ids = users.map((user) => user.id);
       if (ids.length) {
+        await db.query(
+          'DELETE FROM inbox_delivery_outbox WHERE occurrence_id IN (SELECT o.id FROM notification_occurrences o JOIN personal_notifications n ON n.id=o.notification_id WHERE n.sender_id=ANY($1::uuid[]) OR n.recipient_id=ANY($1::uuid[]))',
+          [ids],
+        );
         await db.query('DELETE FROM inbox_items WHERE recipient_id=ANY($1::uuid[]) OR sender_id=ANY($1::uuid[])', [ids]);
         await db.query('DELETE FROM notification_occurrences WHERE notification_id IN (SELECT id FROM personal_notifications WHERE sender_id=ANY($1::uuid[]) OR recipient_id=ANY($1::uuid[]))', [ids]);
         await db.query('DELETE FROM personal_notifications WHERE sender_id=ANY($1::uuid[]) OR recipient_id=ANY($1::uuid[])', [ids]);
@@ -81,11 +85,12 @@ describe('profile, friends, notifications and inbox API', () => {
 
     const createDto = { clientRequestId: randomUUID(), recipientId: bob.id, title: 'Hello', body: 'From the inbox integration test', delivery: { mode: 'immediate' } };
     const created = await request('POST', '/notifications', createDto, alice.token);
-    expect(created.status).toBe(201); expect((created.data as PersonalNotification).status).toBe('COMPLETED');
+    expect(created.status).toBe(201); expect((created.data as PersonalNotification).status).toBe('QUEUED');
     const replay = await request('POST', '/notifications', createDto, alice.token);
     expect(replay.status).toBe(200); expect(replay.data.id).toBe(created.data.id);
     const changedReplay = await request('POST', '/notifications', { ...createDto, title: 'Changed' }, alice.token);
     expect(changedReplay.status).toBe(409);
+    await app.get(SocialService).processDue();
     const inbox = await request('GET', '/inbox?read=false', undefined, bob.token);
     const item = (inbox.data as { data: InboxItem[] }).data.find((candidate) => candidate.notificationId === created.data.id)!;
     expect(item.title).toBe('Hello'); expect(item.sender.id).toBe(alice.id);
@@ -154,6 +159,7 @@ describe('profile, friends, notifications and inbox API', () => {
     const createResponse=await fetch(`${base}/notifications`,{method:'POST',headers,body:JSON.stringify({clientRequestId:randomUUID(),recipientId:alice.id,title:'Socket smoke',body:'Real network request',delivery:{mode:'immediate'}})});
     expect(createResponse.status).toBe(201);
     const created=await createResponse.json() as ApiResponse<PersonalNotification>;
+    await app.get(SocialService).processDue();
     const inboxResponse=await fetch(`${base}/inbox`,{headers:{authorization:`Bearer ${alice.token}`,'x-auth-client':'mobile'}});
     expect(inboxResponse.status).toBe(200);
     const inbox=await inboxResponse.json() as ApiResponse<{data:InboxItem[]}>;

@@ -121,6 +121,10 @@ export class AuthService {
     );
   }
 
+  async getAccessToken(): Promise<string | null> {
+    return this.accessToken();
+  }
+
   private async accessToken(): Promise<string | null> {
     if (!this.session) return null;
     if (this.session.expiresAt > Date.now() + 30000) return this.session.tokens.accessToken;
@@ -148,6 +152,10 @@ export class AuthService {
     } finally {
       await this.clear();
     }
+  }
+
+  async clearExpiredSession(): Promise<void> {
+    await this.clear();
   }
 
   private async clear(): Promise<void> {

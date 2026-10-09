@@ -18,6 +18,7 @@ export interface AppEnvironment {
   DB_SSL: boolean;
   ALLOW_DEV_SEED: boolean;
   NOTIFICATION_WORKER_ENABLED: boolean;
+  EXPO_ACCESS_TOKEN?: string;
   DEV_SEED_PASSWORD?: string;
 }
 
@@ -104,6 +105,7 @@ export function loadEnvironment(): AppEnvironment {
     DB_SSL: bool('DB_SSL', false),
     ALLOW_DEV_SEED: bool('ALLOW_DEV_SEED', false),
     NOTIFICATION_WORKER_ENABLED: bool('NOTIFICATION_WORKER_ENABLED', mode !== 'test'),
+    EXPO_ACCESS_TOKEN: process.env['EXPO_ACCESS_TOKEN']?.trim() || undefined,
     DEV_SEED_PASSWORD: process.env['DEV_SEED_PASSWORD'],
   };
 }

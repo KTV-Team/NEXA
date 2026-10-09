@@ -279,6 +279,40 @@ export class AuthService {
     }
   }
 
+  async authenticateAccessToken(token: string): Promise<AuthIdentity & { expiresAt: number }> {
+    let claims: { sub?: string; sid?: string; tokenType?: string; iat?: number; exp?: number };
+    try {
+      claims = await this.jwt.verifyAsync(token, {
+        algorithms: ['HS256'],
+        issuer: 'nexa-api',
+        audience: 'nexa-client',
+      });
+    } catch {
+      throw new AuthException(401, 'INVALID_ACCESS_TOKEN', 'Access token is invalid or expired.');
+    }
+    if (
+      !claims.sub || !claims.sid || claims.tokenType !== 'access' ||
+      typeof claims.iat !== 'number' || typeof claims.exp !== 'number'
+    ) {
+      throw new AuthException(401, 'INVALID_ACCESS_TOKEN', 'Access token is invalid or expired.');
+    }
+    const session = await this.sessions.findOne({ where: { id: claims.sid, userId: claims.sub } });
+    if (!session || session.revokedAt || session.expiresAt <= new Date()) {
+      throw new AuthException(401, 'SESSION_REVOKED', 'The session is no longer active.');
+    }
+    const user = await this.users.findOne({ where: { id: claims.sub, deletedAt: IsNull() } });
+    if (!user) throw new AuthException(401, 'INVALID_ACCESS_TOKEN', 'Access token is invalid or expired.');
+    return { userId: user.id, sessionId: session.id, expiresAt: claims.exp * 1000 };
+  }
+
+  async isSessionActive(identity: AuthIdentity): Promise<boolean> {
+    const session = await this.sessions.findOne({
+      where: { id: identity.sessionId, userId: identity.userId, revokedAt: IsNull() },
+    });
+    if (!session || session.expiresAt <= new Date()) return false;
+    return !!(await this.users.findOne({ where: { id: identity.userId, deletedAt: IsNull() } }));
+  }
+
   private async authResponse(user: UserEntity, refreshToken: string): Promise<AuthResponse> {
     return {
       user: this.serializeUser(user),

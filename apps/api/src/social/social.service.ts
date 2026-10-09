@@ -1,9 +1,10 @@
 import { HttpException, Injectable, Logger } from '@nestjs/common';
 import { DataSource, QueryRunner } from 'typeorm';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import { Temporal } from '@js-temporal/polyfill';
 import type {
   Delivery,
+  DeviceRegistrationDto,
   FriendRequest,
   Friendship,
   InboxItem,
@@ -12,10 +13,22 @@ import type {
   RecurrenceRule,
   UpdateNotificationDto,
 } from '@nexa/types';
+import { NotificationDeliveryService } from './notification-delivery.service';
+import { RecipientPolicyService } from './recipient-policy.service';
 
 // TypeORM returns untyped driver rows for parameterized SQL operations below.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Row = Record<string, any>;
+type DeliveryClaim = {
+  occurrenceId: string;
+  notificationId: string;
+  senderId: string;
+  recipientId: string;
+  title: string;
+  body: string;
+  scheduledFor: Date;
+  claimToken: string;
+};
 const error = (status: number, code: string, message: string, details?: Record<string, unknown>) =>
   new HttpException({ code, message, ...(details ? { details } : {}) }, status);
 function requiredStamp(value: unknown): string {
@@ -84,7 +97,17 @@ export async function calculateNextOccurrence(
 @Injectable()
 export class SocialService {
   private readonly logger = new Logger(SocialService.name);
-  constructor(private readonly db: DataSource) {}
+  private readonly recipientPolicy: RecipientPolicyService;
+  private readonly delivery: NotificationDeliveryService;
+
+  constructor(
+    private readonly db: DataSource,
+    recipientPolicy?: RecipientPolicyService,
+    delivery?: NotificationDeliveryService,
+  ) {
+    this.recipientPolicy = recipientPolicy ?? new RecipientPolicyService();
+    this.delivery = delivery ?? new NotificationDeliveryService(db, this.recipientPolicy);
+  }
 
   private async lockUsers(q: QueryRunner, ids: string[]) {
     const unique = [...new Set(ids)].sort();
@@ -103,16 +126,7 @@ export class SocialService {
     if (rows.length !== unique.length) throw error(404, 'USER_NOT_FOUND', 'User was not found.');
   }
   private async isFriends(q: QueryRunner, a: string, b: string) {
-    if (a === b) return true;
-    const [low, high] = [a, b].sort();
-    return (
-      (
-        await q.query(
-          'SELECT 1 FROM friendships WHERE low_user_id=$1 AND high_user_id=$2 AND removed_at IS NULL',
-          [low, high],
-        )
-      ).length > 0
-    );
+    return this.recipientPolicy.isEligible(q, a, b);
   }
   private readonly friendRequestSelect = `SELECT r.*, s.name AS sender_name,s.avatar_url AS sender_avatar_url,d.name AS recipient_name,d.avatar_url AS recipient_avatar_url
       FROM friend_requests r JOIN users s ON s.id=r.sender_id JOIN users d ON d.id=r.recipient_id
@@ -452,30 +466,13 @@ export class SocialService {
     if (!row) throw error(404, 'NOTIFICATION_NOT_FOUND', 'Notification was not found.');
     return this.serializeNotification(row);
   }
-  private async insertInbox(q: QueryRunner, notification: Row, when: Date) {
-    const sender = (
-      await q.query('SELECT name,avatar_url FROM users WHERE id=$1', [notification.sender_id])
-    )[0];
-    const occurrence = (
-      await q.query(
-        'INSERT INTO notification_occurrences(notification_id,scheduled_for,notification_version) VALUES($1,$2,$3) RETURNING id,delivered_at',
-        [notification.id, when, notification.version],
-      )
-    )[0];
-    await q.query(
-      `INSERT INTO inbox_items(occurrence_id,recipient_id,sender_id,sender_name,sender_avatar_url,title,body)
-      VALUES($1,$2,$3,$4,$5,$6,$7)`,
-      [
-        occurrence.id,
-        notification.recipient_id,
-        notification.sender_id,
-        sender.name,
-        sender.avatar_url,
-        notification.title,
-        notification.body,
-      ],
+  private async insertOccurrence(q: QueryRunner, notification: Row, when: Date) {
+    const [occurrence] = await q.query(
+      `INSERT INTO notification_occurrences(notification_id,scheduled_for,notification_version,payload_title,payload_body)
+       VALUES($1,$2,$3,$4,$5) RETURNING id`,
+      [notification.id, when, notification.version, notification.title, notification.body],
     );
-    return occurrence;
+    return occurrence as { id: string };
   }
   async createNotification(
     senderId: string,
@@ -514,7 +511,7 @@ export class SocialService {
     const next = await this.validateDelivery(normalizedDelivery, now);
     const status =
       normalizedDelivery.mode === 'immediate'
-        ? 'COMPLETED'
+        ? 'QUEUED'
         : normalizedDelivery.mode === 'recurring'
           ? 'ACTIVE'
           : 'SCHEDULED';
@@ -541,12 +538,12 @@ export class SocialService {
           normalized.body,
           JSON.stringify(normalizedDelivery),
           status,
-          status === 'COMPLETED' ? null : next,
-          status === 'COMPLETED' ? now : null,
+          next,
+          null,
         ],
       );
       const n = rows[0];
-      if (status === 'COMPLETED') await this.insertInbox(q, n, now);
+      if (status === 'QUEUED') await this.insertOccurrence(q, n, now);
       const response = { created: true, data: await this.notificationDto(n.id, q) };
       await q.commitTransaction();
       return response;
@@ -701,9 +698,26 @@ export class SocialService {
           'NOTIFICATION_STATE_CONFLICT',
           'This notification can no longer be cancelled.',
         );
+      const persistedWhileProcessing = await q.query(
+        `SELECT o.id FROM notification_occurrences o
+         JOIN inbox_items i ON i.occurrence_id=o.id
+         WHERE o.notification_id=$1 AND o.status='processing'
+         LIMIT 1 FOR UPDATE OF o`,
+        [id],
+      );
+      if (persistedWhileProcessing.length > 0)
+        throw error(
+          409,
+          'NOTIFICATION_DUE',
+          'An inbox item has already been persisted for the current occurrence.',
+        );
       await q.query(
         "UPDATE personal_notifications SET status='CANCELLED',cancelled_at=now(),next_run_at=NULL,retry_at=NULL,version=version+1,updated_at=now() WHERE id=$1 AND version=$2",
         [id, dto.version],
+      );
+      await q.query(
+        "UPDATE notification_occurrences SET status='failed',last_error='NOTIFICATION_CANCELLED',retry_at=NULL,lease_until=NULL,claim_token=NULL WHERE notification_id=$1 AND status IN ('pending','processing')",
+        [id],
       );
       const response = await this.notificationDto(id, q);
       await q.commitTransaction();
@@ -732,7 +746,50 @@ export class SocialService {
       readAt: stamp(r.read_at),
     };
   }
-  private inboxSelect = `SELECT i.*,o.notification_id,o.scheduled_for,o.delivered_at FROM inbox_items i JOIN notification_occurrences o ON o.id=i.occurrence_id`;
+  private inboxSelect = `SELECT i.*,o.notification_id,o.scheduled_for,i.created_at AS delivered_at FROM inbox_items i JOIN notification_occurrences o ON o.id=i.occurrence_id`;
+
+  private async appendInboxEvent(
+    q: QueryRunner,
+    recipientId: string,
+    kind: 'created' | 'updated' | 'deleted' | 'resync',
+    itemId: string | null = null,
+  ): Promise<void> {
+    await q.query(
+      'INSERT INTO inbox_event_outbox(recipient_id,kind,item_id) VALUES($1,$2,$3)',
+      [recipientId, kind, itemId],
+    );
+  }
+
+  async registerDevice(
+    userId: string,
+    sessionId: string,
+    installationId: string,
+    dto: DeviceRegistrationDto,
+  ) {
+    try {
+      await this.db.query(
+        `INSERT INTO device_registrations(installation_id,user_id,session_id,platform,push_token,permission_status)
+         VALUES($1,$2,$3,$4,$5,$6)
+         ON CONFLICT (installation_id) DO UPDATE SET user_id=EXCLUDED.user_id,session_id=EXCLUDED.session_id,
+           platform=EXCLUDED.platform,push_token=EXCLUDED.push_token,permission_status=EXCLUDED.permission_status,updated_at=now()
+         RETURNING installation_id`,
+        [installationId, userId, sessionId, dto.platform, dto.pushToken, dto.permissionStatus],
+      );
+      return { installationId, registered: dto.pushToken !== null };
+    } catch (failure) {
+      if ((failure as { code?: string })?.code === '23505')
+        throw error(409, 'PUSH_TOKEN_IN_USE', 'This push token is already registered.');
+      throw failure;
+    }
+  }
+
+  async deleteDevice(userId: string, installationId: string): Promise<void> {
+    const [row] = await this.db.query(
+      'UPDATE device_registrations SET push_token=NULL,session_id=NULL,updated_at=now() WHERE installation_id=$1 AND user_id=$2 RETURNING installation_id',
+      [installationId, userId],
+    );
+    if (!row) throw error(404, 'DEVICE_NOT_FOUND', 'Device registration was not found.');
+  }
   async listInbox(
     userId: string,
     p: { page: number; limit: number; read?: boolean },
@@ -771,31 +828,79 @@ export class SocialService {
     return this.inboxDto(rows[0]);
   }
   async setInboxRead(userId: string, id: string, read: boolean) {
-    const rows = await this.db.query(
-      `WITH updated AS (UPDATE inbox_items SET read_at=CASE WHEN $3::boolean THEN COALESCE(read_at,now()) ELSE NULL END,updated_at=now() WHERE id=$1 AND recipient_id=$2 AND deleted_at IS NULL RETURNING *) SELECT i.*,o.notification_id,o.scheduled_for,o.delivered_at FROM updated i JOIN notification_occurrences o ON o.id=i.occurrence_id`,
-      [id, userId, read],
-    );
-    if (!rows.length) throw error(404, 'INBOX_ITEM_NOT_FOUND', 'Inbox item was not found.');
-    return this.inboxDto(rows[0]);
+    const q = this.db.createQueryRunner();
+    try {
+      await q.connect();
+      await q.startTransaction();
+      const updated = await q.query(
+        `UPDATE inbox_items SET read_at=CASE WHEN $3::boolean THEN statement_timestamp() ELSE NULL END,updated_at=statement_timestamp()
+         WHERE id=$1 AND recipient_id=$2 AND deleted_at IS NULL
+           AND (($3::boolean AND read_at IS NULL) OR (NOT $3::boolean AND read_at IS NOT NULL)) RETURNING id`,
+        [id, userId, read],
+      );
+      if (updated.length) await this.appendInboxEvent(q, userId, 'updated', id);
+      const [row] = await q.query(
+        `${this.inboxSelect} WHERE i.id=$1 AND i.recipient_id=$2 AND i.deleted_at IS NULL`,
+        [id, userId],
+      );
+      if (!row) throw error(404, 'INBOX_ITEM_NOT_FOUND', 'Inbox item was not found.');
+      await q.commitTransaction();
+      return this.inboxDto(row);
+    } catch (failure) {
+      if (q.isTransactionActive) await q.rollbackTransaction();
+      throw failure;
+    } finally {
+      await q.release();
+    }
   }
   async readAll(userId: string) {
-    const [result] = await this.db.query(
-      `WITH updated AS (UPDATE inbox_items SET read_at=statement_timestamp(),updated_at=statement_timestamp() WHERE recipient_id=$1 AND deleted_at IS NULL AND read_at IS NULL RETURNING id) SELECT count(*)::int AS count FROM updated`,
-      [userId],
-    );
-    return { updatedCount: result.count };
+    const q = this.db.createQueryRunner();
+    try {
+      await q.connect();
+      await q.startTransaction();
+      const [result] = await q.query(
+        `WITH updated AS (UPDATE inbox_items SET read_at=statement_timestamp(),updated_at=statement_timestamp()
+          WHERE recipient_id=$1 AND deleted_at IS NULL AND read_at IS NULL RETURNING id)
+         SELECT count(*)::int AS count FROM updated`,
+        [userId],
+      );
+      if (result.count > 0) await this.appendInboxEvent(q, userId, 'resync');
+      await q.commitTransaction();
+      return { updatedCount: result.count };
+    } catch (failure) {
+      if (q.isTransactionActive) await q.rollbackTransaction();
+      throw failure;
+    } finally {
+      await q.release();
+    }
   }
   async deleteInbox(userId: string, id: string) {
-    const [result] = await this.db.query(
-      `WITH updated AS (UPDATE inbox_items SET deleted_at=COALESCE(deleted_at,now()),updated_at=now() WHERE id=$1 AND recipient_id=$2 RETURNING id) SELECT count(*)::int AS count FROM updated`,
-      [id, userId],
-    );
-    if (!result.count) throw error(404, 'INBOX_ITEM_NOT_FOUND', 'Inbox item was not found.');
+    const q = this.db.createQueryRunner();
+    try {
+      await q.connect();
+      await q.startTransaction();
+      const updated = await q.query(
+        'UPDATE inbox_items SET deleted_at=statement_timestamp(),updated_at=statement_timestamp() WHERE id=$1 AND recipient_id=$2 AND deleted_at IS NULL RETURNING id',
+        [id, userId],
+      );
+      if (updated.length) {
+        await this.appendInboxEvent(q, userId, 'deleted', id);
+      } else {
+        const [owned] = await q.query('SELECT id FROM inbox_items WHERE id=$1 AND recipient_id=$2', [id, userId]);
+        if (!owned) throw error(404, 'INBOX_ITEM_NOT_FOUND', 'Inbox item was not found.');
+      }
+      await q.commitTransaction();
+    } catch (failure) {
+      if (q.isTransactionActive) await q.rollbackTransaction();
+      throw failure;
+    } finally {
+      await q.release();
+    }
   }
 
   async processDue(now = new Date(), limit = 50): Promise<number> {
     const candidates = await this.db.query(
-      `SELECT id,version,next_run_at FROM personal_notifications WHERE status IN ('SCHEDULED','ACTIVE') AND next_run_at <= $1 AND (retry_at IS NULL OR retry_at <= $1) ORDER BY COALESCE(retry_at,next_run_at),id LIMIT $2`,
+      `SELECT id,version,next_run_at FROM personal_notifications WHERE status IN ('QUEUED','SCHEDULED','ACTIVE') AND next_run_at <= $1 AND (retry_at IS NULL OR retry_at <= $1) ORDER BY COALESCE(retry_at,next_run_at),id LIMIT $2`,
       [now, limit],
     );
     let processed = 0;
@@ -809,7 +914,7 @@ export class SocialService {
           errorCode: code,
           event: 'DELIVERY_TRANSACTION_FAILED',
         });
-        await this.recordRetry(item, now, this.isTransientFailure(code));
+        await this.recordRetry(item, now, this.isTransientFailure(code), code);
       }
     }
     return processed;
@@ -825,6 +930,23 @@ export class SocialService {
     return { latest, next: occurrence };
   }
   private async processCandidate(id: string, now: Date) {
+    const claim = await this.claimCandidate(id, now);
+    if (!claim) return false;
+
+    const receipt = await this.delivery.persistDelivery({
+      occurrenceId: claim.occurrenceId,
+      notificationId: claim.notificationId,
+      senderId: claim.senderId,
+      recipientId: claim.recipientId,
+      title: claim.title,
+      body: claim.body,
+    });
+    if (!receipt.itemId) throw new Error('Delivery provider returned no inbox item ID.');
+    await this.acknowledgeDelivery(claim, new Date());
+    return true;
+  }
+
+  private async claimCandidate(id: string, now: Date): Promise<DeliveryClaim | null> {
     const q = this.db.createQueryRunner();
     try {
       await q.connect();
@@ -834,62 +956,81 @@ export class SocialService {
       )[0] as Row | undefined;
       if (!before) {
         await q.rollbackTransaction();
-        return false;
+        return null;
       }
       const ids = [...new Set([before.sender_id, before.recipient_id])].sort();
-      const lockedUsers = await q.query(
-        'SELECT id,deleted_at FROM users WHERE id=ANY($1::uuid[]) ORDER BY id FOR UPDATE',
-        [ids],
-      );
+      await this.lockExistingUsers(q, ids);
       const n = (
         await q.query(
-          "SELECT * FROM personal_notifications WHERE id=$1 AND status IN ('SCHEDULED','ACTIVE') AND next_run_at <= $2 AND (retry_at IS NULL OR retry_at <= $2) FOR UPDATE SKIP LOCKED",
+          "SELECT * FROM personal_notifications WHERE id=$1 AND status IN ('QUEUED','SCHEDULED','ACTIVE') AND next_run_at <= $2 AND (retry_at IS NULL OR retry_at <= $2) FOR UPDATE SKIP LOCKED",
           [id, now],
         )
       )[0] as Row | undefined;
       if (!n) {
         await q.commitTransaction();
-        return false;
+        return null;
       }
-      const active =
-        lockedUsers.length === ids.length && lockedUsers.every((u: Row) => u.deleted_at === null);
-      const allowed = active && (await this.isFriends(q, n.sender_id, n.recipient_id));
-      if (!allowed) {
-        await q.query(
-          "UPDATE personal_notifications SET status='BLOCKED',block_reason=$2,next_run_at=NULL,retry_at=NULL,version=version+1,updated_at=now() WHERE id=$1",
-          [id, active ? 'FRIENDSHIP_REMOVED' : 'USER_INACTIVE'],
-        );
+
+      const [leased] = await q.query(
+        "SELECT id FROM notification_occurrences WHERE notification_id=$1 AND status='processing' AND lease_until>$2 LIMIT 1",
+        [id, now],
+      );
+      if (leased) {
         await q.commitTransaction();
-        return true;
+        return null;
       }
-      let deliverAt = new Date(n.next_run_at);
-      let nextRun: Date | null = null;
-      let nextStatus = 'COMPLETED';
-      if (n.delivery.mode === 'recurring') {
-        const result = await this.latestDue(n.delivery.rule, deliverAt, now);
-        if (result.latest) deliverAt = result.latest;
-        nextRun = result.next;
-        if (nextRun) {
-          nextStatus = 'ACTIVE';
-          if (n.delivery.rule.endsOn) {
-            const candidateLocal = Temporal.Instant.from(nextRun.toISOString())
-              .toZonedDateTimeISO(n.delivery.rule.timeZone)
-              .toPlainDate()
-              .toString();
-            if (candidateLocal > n.delivery.rule.endsOn) {
-              nextRun = null;
-              nextStatus = 'COMPLETED';
-            }
-          }
+
+      let occurrence = (
+        await q.query(
+          `SELECT * FROM notification_occurrences
+           WHERE notification_id=$1 AND status IN ('pending','processing')
+             AND (retry_at IS NULL OR retry_at<=$2)
+             AND (status='pending' OR lease_until<=$2)
+           ORDER BY scheduled_for,id LIMIT 1 FOR UPDATE SKIP LOCKED`,
+          [id, now],
+        )
+      )[0] as Row | undefined;
+      if (occurrence && n.delivery.mode === 'recurring') {
+        const overdue = await this.latestDue(n.delivery.rule, new Date(occurrence.scheduled_for), now);
+        if (overdue.latest && overdue.latest.getTime() > new Date(occurrence.scheduled_for).getTime()) {
+          await q.query('UPDATE notification_occurrences SET scheduled_for=$2 WHERE id=$1', [
+            occurrence.id,
+            overdue.latest,
+          ]);
+          occurrence.scheduled_for = overdue.latest;
         }
       }
-      await this.insertInbox(q, n, deliverAt);
+
+      if (!occurrence) {
+        let scheduledFor = new Date(n.next_run_at);
+        if (n.delivery.mode === 'recurring') {
+          const overdue = await this.latestDue(n.delivery.rule, scheduledFor, now);
+          if (overdue.latest) scheduledFor = overdue.latest;
+        }
+        occurrence = await this.insertOccurrence(q, n, scheduledFor) as unknown as Row;
+        occurrence = (
+          await q.query('SELECT * FROM notification_occurrences WHERE id=$1 FOR UPDATE', [occurrence.id])
+        )[0] as Row;
+      }
+
+      const claimToken = randomUUID();
       await q.query(
-        'UPDATE personal_notifications SET status=$2,next_run_at=$3,last_delivered_at=now(),retry_count=0,retry_at=NULL,failure_code=NULL,version=version+1,updated_at=now() WHERE id=$1',
-        [id, nextStatus, nextRun],
+        `UPDATE notification_occurrences
+         SET status='processing',attempt_count=attempt_count+1,retry_at=NULL,lease_until=$2,claim_token=$3
+         WHERE id=$1`,
+        [occurrence.id, new Date(now.getTime() + 30000), claimToken],
       );
       await q.commitTransaction();
-      return true;
+      return {
+        occurrenceId: occurrence.id,
+        notificationId: id,
+        senderId: n.sender_id,
+        recipientId: n.recipient_id,
+        title: occurrence.payload_title,
+        body: occurrence.payload_body,
+        scheduledFor: new Date(occurrence.scheduled_for),
+        claimToken,
+      };
     } catch (e) {
       if (q.isTransactionActive) await q.rollbackTransaction();
       throw e;
@@ -897,7 +1038,81 @@ export class SocialService {
       await q.release();
     }
   }
+
+  private async acknowledgeDelivery(claim: DeliveryClaim, deliveredAt: Date): Promise<void> {
+    const queryRunner = this.db.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      const [owner] = await queryRunner.query(
+        'SELECT sender_id,recipient_id FROM personal_notifications WHERE id=$1',
+        [claim.notificationId],
+      );
+      if (!owner) throw error(404, 'NOTIFICATION_NOT_FOUND', 'Notification was not found.');
+      await this.lockExistingUsers(queryRunner, [owner.sender_id, owner.recipient_id]);
+      const [notification] = await queryRunner.query(
+        'SELECT * FROM personal_notifications WHERE id=$1 FOR UPDATE',
+        [claim.notificationId],
+      );
+      const [occurrence] = await queryRunner.query(
+        'SELECT * FROM notification_occurrences WHERE id=$1 AND notification_id=$2 FOR UPDATE',
+        [claim.occurrenceId, claim.notificationId],
+      );
+      if (!occurrence || occurrence.status !== 'processing' || occurrence.claim_token !== claim.claimToken) {
+        await queryRunner.commitTransaction();
+        return;
+      }
+
+      await queryRunner.query(
+        `UPDATE notification_occurrences
+         SET status='persisted',delivered_at=$2,retry_at=NULL,lease_until=NULL,claim_token=NULL
+         WHERE id=$1 AND claim_token=$3`,
+        [claim.occurrenceId, deliveredAt, claim.claimToken],
+      );
+
+      if (['QUEUED', 'SCHEDULED', 'ACTIVE'].includes(notification.status)) {
+        let nextRun: Date | null = null;
+        if (notification.delivery.mode === 'recurring') {
+          const result = await this.latestDue(notification.delivery.rule, claim.scheduledFor, deliveredAt);
+          nextRun = result.next;
+          if (nextRun && notification.delivery.rule.endsOn) {
+            const nextLocalDate = Temporal.Instant.from(nextRun.toISOString())
+              .toZonedDateTimeISO(notification.delivery.rule.timeZone)
+              .toPlainDate()
+              .toString();
+            if (nextLocalDate > notification.delivery.rule.endsOn) nextRun = null;
+          }
+        }
+        const status = notification.delivery.mode === 'recurring' && nextRun ? 'ACTIVE' : 'COMPLETED';
+        await queryRunner.query(
+          `UPDATE personal_notifications
+           SET status=$2,next_run_at=$3,last_delivered_at=$4,retry_count=0,retry_at=NULL,failure_code=NULL,
+               version=version+1,updated_at=now()
+           WHERE id=$1`,
+          [claim.notificationId, status, nextRun, deliveredAt],
+        );
+      } else if (notification.status === 'CANCELLED') {
+        await queryRunner.query(
+          'UPDATE personal_notifications SET last_delivered_at=$2,version=version+1,updated_at=now() WHERE id=$1',
+          [claim.notificationId, deliveredAt],
+        );
+      }
+      await queryRunner.commitTransaction();
+    } catch (failure) {
+      if (queryRunner.isTransactionActive) await queryRunner.rollbackTransaction();
+      throw failure;
+    } finally {
+      await queryRunner.release();
+    }
+  }
   private failureCode(failure: unknown): string {
+    if (failure instanceof HttpException) {
+      const response = failure.getResponse();
+      if (response && typeof response === 'object' && 'code' in response) {
+        const code = (response as { code?: unknown }).code;
+        if (typeof code === 'string' && /^[A-Z0-9_]{2,64}$/.test(code)) return code;
+      }
+    }
     if (!failure || typeof failure !== 'object') return 'UNEXPECTED_ERROR';
     const candidate = failure as {
       code?: unknown;
@@ -936,6 +1151,7 @@ export class SocialService {
     candidate: { id: string; version: number; next_run_at: Date },
     now: Date,
     retryable: boolean,
+    failureCode: string,
   ) {
     const { id } = candidate;
     const q = this.db.createQueryRunner();
@@ -944,7 +1160,7 @@ export class SocialService {
       await q.startTransaction();
       const owner = (
         await q.query(
-          "SELECT sender_id,recipient_id FROM personal_notifications WHERE id=$1 AND version=$2 AND next_run_at=$3 AND status IN ('SCHEDULED','ACTIVE')",
+      "SELECT sender_id,recipient_id FROM personal_notifications WHERE id=$1 AND version=$2 AND next_run_at=$3 AND status IN ('QUEUED','SCHEDULED','ACTIVE')",
           [id, candidate.version, candidate.next_run_at],
         )
       )[0] as Row | undefined;
@@ -955,7 +1171,7 @@ export class SocialService {
       await this.lockExistingUsers(q, [owner.sender_id, owner.recipient_id]);
       const n = (
         await q.query(
-          "SELECT * FROM personal_notifications WHERE id=$1 AND version=$2 AND next_run_at=$3 AND status IN ('SCHEDULED','ACTIVE') FOR UPDATE",
+          "SELECT * FROM personal_notifications WHERE id=$1 AND version=$2 AND next_run_at=$3 AND status IN ('QUEUED','SCHEDULED','ACTIVE') FOR UPDATE",
           [id, candidate.version, candidate.next_run_at],
         )
       )[0] as Row | undefined;
@@ -964,20 +1180,49 @@ export class SocialService {
         return;
       }
       const retries = retryable ? n.retry_count + 1 : n.retry_count;
-      if (!retryable || retries > 5)
-        await q.query(
-          "UPDATE personal_notifications SET status='FAILED',failure_code='DELIVERY_FAILED',next_run_at=NULL,retry_at=NULL,retry_count=$2,version=version+1,updated_at=now() WHERE id=$1",
-          [id, retries],
+      const exhausted = !retryable || retries > 5;
+      const blocked = !retryable && failureCode === 'RECIPIENT_NOT_ALLOWED';
+      const publicFailureCode = blocked ? failureCode : 'DELIVERY_FAILED';
+      if (blocked) {
+        const activeUsers = await q.query(
+          'SELECT id FROM users WHERE id=ANY($1::uuid[]) AND deleted_at IS NULL',
+          [[...new Set([n.sender_id, n.recipient_id])]],
         );
-      else
+        const blockReason = activeUsers.length < new Set([n.sender_id, n.recipient_id]).size
+          ? 'USER_INACTIVE'
+          : 'FRIENDSHIP_REMOVED';
+        await q.query(
+          "UPDATE notification_occurrences SET status='failed',last_error=$2,retry_at=NULL,lease_until=NULL,claim_token=NULL WHERE notification_id=$1 AND status='processing'",
+          [id, failureCode],
+        );
+        await q.query(
+          "UPDATE personal_notifications SET status='BLOCKED',block_reason=$2,failure_code=$3,next_run_at=NULL,retry_at=NULL,version=version+1,updated_at=now() WHERE id=$1",
+          [id, blockReason, failureCode],
+        );
+      } else if (exhausted) {
+        await q.query(
+          "UPDATE notification_occurrences SET status='failed',last_error=$2,retry_at=NULL,lease_until=NULL,claim_token=NULL WHERE notification_id=$1 AND status='processing'",
+          [id, failureCode],
+        );
+        await q.query(
+          "UPDATE personal_notifications SET status='FAILED',failure_code=$2,next_run_at=NULL,retry_at=NULL,retry_count=$3,version=version+1,updated_at=now() WHERE id=$1",
+          [id, publicFailureCode, retries],
+        );
+      } else {
+        const retryAt = new Date(now.getTime() + Math.pow(2, retries - 1) * 1000);
+        await q.query(
+          "UPDATE notification_occurrences SET status='pending',last_error=$2,retry_at=$3,lease_until=NULL,claim_token=NULL WHERE notification_id=$1 AND status='processing'",
+          [id, failureCode, retryAt],
+        );
         await q.query(
           'UPDATE personal_notifications SET retry_count=$2,retry_at=$3,updated_at=now() WHERE id=$1',
-          [id, retries, new Date(now.getTime() + Math.pow(2, retries - 1) * 1000)],
+          [id, retries, retryAt],
         );
+      }
       await q.commitTransaction();
       this.logger.warn({
         notificationId: id,
-        event: !retryable || retries > 5 ? 'DELIVERY_FAILED' : 'DELIVERY_RETRY_SCHEDULED',
+        event: blocked ? 'DELIVERY_BLOCKED' : exhausted ? 'DELIVERY_FAILED' : 'DELIVERY_RETRY_SCHEDULED',
         retryCount: retries,
       });
     } catch (failure) {

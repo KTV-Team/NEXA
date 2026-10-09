@@ -7,6 +7,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { LoadingScreen } from '@/components/common/loading-screen';
 import { ToastProvider } from '@/components/common/toast-provider';
 import { AuthProvider, useAuth } from '@/features/auth/auth-provider';
+import { NotificationRuntimeProvider } from '@/notifications/notification-runtime';
 import { styles } from './root-layout.styles';
 
 void SplashScreen.preventAutoHideAsync();
@@ -50,7 +51,9 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <ToastProvider>
         <AuthProvider>
-          <RootNavigator />
+          <NotificationRuntimeProvider>
+            <RootNavigator />
+          </NotificationRuntimeProvider>
         </AuthProvider>
       </ToastProvider>
     </SafeAreaProvider>

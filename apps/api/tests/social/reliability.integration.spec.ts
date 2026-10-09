@@ -32,6 +32,10 @@ describe('social persistence and scheduling reliability', () => {
     jest.useRealTimers();
     jest.restoreAllMocks();
     await db.query(
+      'DELETE FROM inbox_delivery_outbox WHERE occurrence_id IN (SELECT o.id FROM notification_occurrences o JOIN personal_notifications n ON n.id=o.notification_id WHERE n.sender_id=ANY($1::uuid[]) OR n.recipient_id=ANY($1::uuid[]))',
+      [users],
+    );
+    await db.query(
       'DELETE FROM inbox_items WHERE recipient_id=ANY($1::uuid[]) OR sender_id=ANY($1::uuid[])',
       [users],
     );
@@ -124,7 +128,9 @@ describe('social persistence and scheduling reliability', () => {
     try {
       const single = new SocialService(limited);
       const result = await single.createNotification(users[0]!, dto(users[0]!));
-      expect(result.data.status).toBe('COMPLETED');
+      expect(result.data.status).toBe('QUEUED');
+      expect(await single.processDue()).toBe(1);
+      expect((await single.getNotification(users[0]!, result.data.id)).status).toBe('COMPLETED');
       expect((await single.sendRequest(users[0]!, users[1]!)).created).toBe(true);
     } finally {
       await limited.destroy();
@@ -133,6 +139,8 @@ describe('social persistence and scheduling reliability', () => {
       Array.from({ length: 10 }, () => service.createNotification(users[0]!, dto(users[0]!))),
     );
     expect(results.every((result) => result.created)).toBe(true);
+    expect(results.every((result) => result.data.status === 'QUEUED')).toBe(true);
+    expect(await service.processDue()).toBe(10);
     expect((await service.listInbox(users[0]!, { page: 1, limit: 100 })).meta.total).toBe(11);
   });
 
@@ -172,6 +180,7 @@ describe('social persistence and scheduling reliability', () => {
     );
     expect(results.filter((result) => result.created)).toHaveLength(1);
     expect(new Set(results.map((result) => result.data.id)).size).toBe(1);
+    expect(await service.processDue()).toBe(1);
     expect((await service.listInbox(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(1);
   });
 
@@ -180,6 +189,7 @@ describe('social persistence and scheduling reliability', () => {
     await Promise.all(
       Array.from({ length: 3 }, () => service.createNotification(users[0]!, dto(users[0]!))),
     );
+    expect(await service.processDue()).toBe(3);
     const items = (await service.listInbox(users[0]!, { page: 1, limit: 20 })).data;
     const first = await service.setInboxRead(users[0]!, items[0]!.id, true);
     expect((await service.setInboxRead(users[0]!, items[0]!.id, true)).readAt).toBe(first.readAt);
@@ -201,6 +211,7 @@ describe('social persistence and scheduling reliability', () => {
 
   it('leaves inbox arrivals after the read-all statement unread', async () => {
     await service.createNotification(users[0]!, dto(users[0]!));
+    await service.processDue();
     const query = db.query.bind(db);
     let injected = false;
     jest.spyOn(db, 'query').mockImplementation(async (...args: Parameters<DataSource['query']>) => {
@@ -211,6 +222,7 @@ describe('social persistence and scheduling reliability', () => {
       ) {
         injected = true;
         await service.createNotification(users[0]!, dto(users[0]!));
+        await service.processDue();
       }
       return result;
     });
@@ -350,6 +362,33 @@ describe('social persistence and scheduling reliability', () => {
     else expect(results[1].status).toBe('rejected');
   });
 
+  it('rejects cancellation between inbox persistence and occurrence acknowledgement', async () => {
+    const n = await scheduled();
+    const delivery = (service as unknown as { delivery: { persistDelivery: (payload: unknown) => Promise<{ itemId: string }> } }).delivery;
+    const persist = delivery.persistDelivery.bind(delivery);
+    let markPersisted!: () => void;
+    let continueDelivery!: () => void;
+    const persisted = new Promise<void>((resolve) => { markPersisted = resolve; });
+    const continueAfterPersistence = new Promise<void>((resolve) => { continueDelivery = resolve; });
+    jest.spyOn(delivery, 'persistDelivery').mockImplementation(async (payload) => {
+      const receipt = await persist(payload);
+      markPersisted();
+      await continueAfterPersistence;
+      return receipt;
+    });
+
+    const processing = service.processDue(start);
+    await persisted;
+    await expect(service.cancelNotification(users[0]!, n.id, { version: 1 })).rejects.toMatchObject({
+      status: 409,
+      response: expect.objectContaining({ code: 'NOTIFICATION_DUE' }),
+    });
+    continueDelivery();
+    expect(await processing).toBe(1);
+    expect((await state(n.id)).status).toBe('COMPLETED');
+    expect((await service.listInbox(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(1);
+  });
+
   it('rolls back partial delivery, bounds transient retries and then fails cleanly', async () => {
     const n = await scheduled();
     faultOnInbox('40001');
@@ -358,20 +397,24 @@ describe('social persistence and scheduling reliability', () => {
     for (let attempt = 1; attempt <= 6; attempt++) {
       expect(await service.processDue(now)).toBe(0);
       const row = await state(n.id);
-      expect(
-        await db.query('SELECT id FROM notification_occurrences WHERE notification_id=$1', [n.id]),
-      ).toHaveLength(0);
+      const [occurrence] = await db.query(
+        'SELECT status,attempt_count,retry_at FROM notification_occurrences WHERE notification_id=$1',
+        [n.id],
+      );
       if (attempt <= 5) {
+        expect(occurrence).toMatchObject({ status: 'pending', attempt_count: attempt });
         expect(row.status).toBe('SCHEDULED');
         expect(new Date(row.retry_at).getTime() - now.getTime()).toBe(2 ** (attempt - 1) * 1000);
         now = new Date(row.retry_at);
-      } else
+      } else {
+        expect(occurrence).toMatchObject({ status: 'failed', attempt_count: attempt, retry_at: null });
         expect(row).toMatchObject({
           status: 'FAILED',
           failure_code: 'DELIVERY_FAILED',
           retry_count: 6,
           next_run_at: null,
         });
+      }
     }
     expect(log).toHaveBeenCalled();
     expect(JSON.stringify(log.mock.calls)).not.toContain('private payload');
@@ -463,14 +506,47 @@ describe('social persistence and scheduling reliability', () => {
       retry_count: 0,
       next_run_at: null,
     });
+    expect(
+      await db.query('SELECT status,last_error,claim_token FROM notification_occurrences WHERE notification_id=$1', [n.id]),
+    ).toEqual([expect.objectContaining({ status: 'failed', last_error: 'NOTIFICATION_CANCELLED', claim_token: null })]);
   });
 
-  it('rolls back the entire immediate-create transaction on inbox failure', async () => {
+  it('queues an immediate create durably before the worker persists its inbox item', async () => {
     faultOnInbox('40001');
-    await expect(service.createNotification(users[0]!, dto(users[0]!))).rejects.toMatchObject({
-      code: '40001',
-    });
-    expect((await service.listNotifications(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(0);
+    const result = await service.createNotification(users[0]!, dto(users[0]!));
+    expect(result.data.status).toBe('QUEUED');
+    expect((await service.listNotifications(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(1);
     expect((await service.listInbox(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(0);
+    expect(await service.processDue()).toBe(0);
+    expect((await service.getNotification(users[0]!, result.data.id)).status).toBe('QUEUED');
+    expect((await service.listInbox(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(0);
+  });
+
+  it('replays a persisted inbox item after losing the delivery response without creating a duplicate', async () => {
+    const result = await service.createNotification(users[0]!, dto(users[0]!));
+    const delivery = (service as unknown as { delivery: { persistDelivery: (payload: unknown) => Promise<{ itemId: string }> } }).delivery;
+    const persist = delivery.persistDelivery.bind(delivery);
+    let loseFirstResponse = true;
+    jest.spyOn(delivery, 'persistDelivery').mockImplementation(async (payload) => {
+      const receipt = await persist(payload);
+      if (loseFirstResponse) {
+        loseFirstResponse = false;
+        throw Object.assign(new Error('Delivery response was lost.'), { code: '08006' });
+      }
+      return receipt;
+    });
+
+    expect(await service.processDue()).toBe(0);
+    expect((await service.listInbox(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(1);
+    const pending = await state(result.data.id);
+    expect(pending.status).toBe('QUEUED');
+    expect(pending.retry_count).toBe(1);
+
+    expect(await service.processDue(new Date(pending.retry_at))).toBe(1);
+    expect((await service.getNotification(users[0]!, result.data.id)).status).toBe('COMPLETED');
+    expect((await service.listInbox(users[0]!, { page: 1, limit: 20 })).meta.total).toBe(1);
+    expect(
+      await db.query('SELECT occurrence_id FROM inbox_delivery_outbox WHERE occurrence_id IN (SELECT id FROM notification_occurrences WHERE notification_id=$1)', [result.data.id]),
+    ).toHaveLength(1);
   });
 });

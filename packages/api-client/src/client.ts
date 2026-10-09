@@ -15,6 +15,7 @@ export class ApiClient<T extends AuthClientType = 'mobile'> {
   readonly friends: ReturnType<typeof createSocialEndpoints>['friends'];
   readonly notifications: ReturnType<typeof createSocialEndpoints>['notifications'];
   readonly inbox: ReturnType<typeof createSocialEndpoints>['inbox'];
+  readonly devices: ReturnType<typeof createSocialEndpoints>['devices'];
   readonly dev: ReturnType<typeof createDevEndpoints>;
   readonly health: ReturnType<typeof createHealthEndpoints>;
 
@@ -26,6 +27,7 @@ export class ApiClient<T extends AuthClientType = 'mobile'> {
     this.friends = social.friends;
     this.notifications = social.notifications;
     this.inbox = social.inbox;
+    this.devices = social.devices;
     this.dev = createDevEndpoints(request);
     this.health = createHealthEndpoints(request);
   }

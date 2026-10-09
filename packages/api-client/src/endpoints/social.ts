@@ -1,5 +1,5 @@
 import type {
-  CancelNotificationDto, CreateNotificationDto, FriendRequest, Friendship, InboxItem,
+  CancelNotificationDto, CreateNotificationDto, DeviceRegistrationDto, DeviceRegistrationResponse, FriendRequest, Friendship, InboxItem,
   PaginatedResponse, PersonalNotification, ReadAllResponse, SendFriendRequestDto,
   SetInboxReadDto, UpdateNotificationDto, UserSummary,
 } from '@nexa/types';
@@ -36,6 +36,10 @@ export function createSocialEndpoints(request: ApiRequest) {
       setRead: (itemId: string, dto: SetInboxReadDto): Promise<InboxItem> => request('PATCH', `/inbox/${encodeURIComponent(itemId)}`, dto),
       readAll: (): Promise<ReadAllResponse> => request('POST', '/inbox/read-all'),
       delete: (itemId: string): Promise<void> => request('DELETE', `/inbox/${encodeURIComponent(itemId)}`),
+    },
+    devices: {
+      register: (installationId: string, dto: DeviceRegistrationDto): Promise<DeviceRegistrationResponse> => request('PUT', `/devices/${encodeURIComponent(installationId)}`, dto),
+      unregister: (installationId: string): Promise<void> => request('DELETE', `/devices/${encodeURIComponent(installationId)}`),
     },
   };
 }

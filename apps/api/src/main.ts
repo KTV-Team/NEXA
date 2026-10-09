@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { appEnvironment } from './config/environment';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import fastifyCookie from '@fastify/cookie';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -18,6 +19,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
   await app.register(fastifyCookie);
+  app.useWebSocketAdapter(new WsAdapter(app));
   app.useGlobalFilters(new ApiExceptionFilter());
 
   // Global prefix

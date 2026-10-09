@@ -14,6 +14,9 @@ import { FriendRequestEntity } from '../social/entities/friend-request.entity';
 import { PersonalNotificationEntity } from '../social/entities/personal-notification.entity';
 import { NotificationOccurrenceEntity } from '../social/entities/notification-occurrence.entity';
 import { InboxItemEntity } from '../social/entities/inbox-item.entity';
+import { InboxDeliveryOutboxEntity } from '../social/entities/inbox-delivery-outbox.entity';
+import { DeviceRegistrationEntity } from '../social/entities/device-registration.entity';
+import { InboxPushJobEntity } from '../social/entities/inbox-push-job.entity';
 
 export const coreEntities = [
   UserEntity,
@@ -32,4 +35,7 @@ export const coreEntities = [
   PersonalNotificationEntity,
   NotificationOccurrenceEntity,
   InboxItemEntity,
+  InboxDeliveryOutboxEntity,
+  DeviceRegistrationEntity,
+  InboxPushJobEntity,
 ] as const;

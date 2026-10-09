@@ -4,7 +4,8 @@
   "compilerOptions": {
     "rootDir": ".",
     "noEmit": true,
-    "incremental": false
+    "incremental": false,
+    "types": ["node", "jest"]
   },
   "include": ["src/**/*.ts", "tests/**/*.ts"],
   "exclude": ["node_modules", "dist"]

@@ -17,7 +17,7 @@ export type Delivery = { mode: 'immediate' } | { mode: 'scheduled'; scheduledAt:
 export interface CreateNotificationDto { clientRequestId: ID; recipientId: ID; title: string; body: string; delivery: Delivery }
 export interface UpdateNotificationDto { version: number; title?: string; body?: string; delivery?: Delivery }
 export interface CancelNotificationDto { version: number }
-export type NotificationStatus = 'SCHEDULED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'BLOCKED' | 'FAILED';
+export type NotificationStatus = 'QUEUED' | 'SCHEDULED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'BLOCKED' | 'FAILED';
 export interface PersonalNotification {
   id: ID; senderId: ID; recipientId: ID; recipient: UserSummary | null; title: string; body: string;
   delivery: Delivery; status: NotificationStatus; version: number; nextRunAt: string | null;
@@ -31,3 +31,18 @@ export interface InboxItem {
 export type Page<T> = PaginatedResponse<T>;
 export interface SetInboxReadDto { read: boolean }
 export interface ReadAllResponse { updatedCount: number }
+
+export type PushPlatform = 'android' | 'ios';
+export type PushPermissionStatus = 'granted' | 'provisional' | 'denied' | 'undetermined';
+export interface DeviceRegistrationDto {
+  platform: PushPlatform;
+  pushToken: string | null;
+  permissionStatus: PushPermissionStatus;
+}
+export interface DeviceRegistrationResponse { installationId: ID; registered: boolean }
+export type InboxEventKind = 'created' | 'updated' | 'deleted' | 'resync';
+export interface InboxRealtimeEvent {
+  eventId: ID;
+  kind: InboxEventKind;
+  itemId?: ID;
+}

@@ -1,64 +1,62 @@
 # KhangDL — Inbox, realtime và native push
 
-## 1. Chức năng và màn hình
+## Phạm vi
 
-| Phần                              | Công việc                                                                             |
-| --------------------------------- | ------------------------------------------------------------------------------------- |
-| `/` — Inbox                       | Danh sách/lịch sử, tải thêm, số chưa đọc; đọc/chưa đọc, đọc tất cả, xóa.              |
-| `/notification-target?itemId=...` | Tải đúng nội dung được phép; xử lý thiếu ID, mục đã xóa hoặc không có quyền.          |
-| App đang mở                       | Cập nhật inbox qua realtime; gộp tín hiệu realtime/push trùng nhau.                   |
-| App chạy nền/đã đóng              | Nhận native push Android/iOS; quản lý permission và device token.                     |
-| Mở lại/chạm push                  | Đồng bộ inbox; xử lý tap khi app đang chạy hoặc khởi động mới, đăng nhập lại nếu cần. |
+- `/` hiển thị inbox có phân trang, số chưa đọc, đánh dấu đã/chưa đọc, đọc tất cả và xóa riêng khỏi inbox.
+- `/notification-target?itemId=...` tải nội dung qua API có xác thực; không dùng payload push để cấp quyền hoặc tải URL tùy ý.
+- Khi app foreground, WebSocket làm mới inbox và không hiện banner native trùng.
+- Khi app background hoặc đóng, Expo Push Service gửi native push cho Android/iOS. Quyền OS quyết định hệ điều hành có thể hiển thị push hay không.
+- Khi mở lại app hoặc chạm push, app đồng bộ inbox. Tap giữ `itemId` qua quá trình khôi phục phiên/đăng nhập rồi tải lại nội dung từ API.
 
-Màn hình có loading, empty, lỗi/thử lại và tải thêm. Permission/cài đặt OS dùng giao diện native, không tạo màn hình riêng.
+## Quyết định đã xác nhận
 
-## 2. API contract đề xuất
+| Chủ đề | Quyết định |
+| --- | --- |
+| Native push | Expo Push Service; Android/iOS native token và quyền OS |
+| Realtime | WebSocket tại `/api/v1/inbox/events`; xác thực bằng frame `authenticate` chứa access token sau khi kết nối |
+| Đánh dấu đã đọc | Giữ contract hiện hành `{ "read": boolean }` |
+| App foreground | Cập nhật inbox qua realtime; ẩn banner/list native để tránh báo trùng |
+| Lock screen | Push có title và body; đây là nội dung người nhận đã được phép xem trong inbox |
+| Mở inbox item | Tải item thành công rồi gửi API đánh dấu đã đọc |
+| Push retry | Một lần gửi ban đầu và tối đa 5 lần thử lại sau 5/15/45/135/405 giây, có jitter ±20% |
+| Phân trang | Mặc định `page=1&limit=20`, giới hạn `limit` là 100 |
 
-Đường dẫn tính từ API base URL; mọi endpoint xác thực bằng Bearer token của TranTH. Chủ sở hữu lấy từ session.
+## API và contract
 
-| Method / endpoint                 | Đầu vào                                     | Kết quả `data`                                               |
-| --------------------------------- | ------------------------------------------- | ------------------------------------------------------------ |
-| `GET /inbox`                      | Query `page, limit`                         | `List<InboxItem>`, mới nhất trước, thứ tự ổn định            |
-| `GET /inbox/unread-count`         | —                                           | `{ unreadCount: number }`                                    |
-| `GET /inbox/:itemId`              | ID mục của mình                             | `InboxItem`                                                  |
-| `PATCH /inbox/:itemId`            | `{ isRead: boolean }`                       | `InboxItem` đã cập nhật                                      |
-| `POST /inbox/read-all`            | —                                           | `{ updatedCount: number }`; các mục trong snapshot lúc xử lý |
-| `DELETE /inbox/:itemId`           | ID mục của mình                             | `204`, xóa riêng khỏi inbox                                  |
-| `PUT /devices/:installationId`    | `{ platform, pushToken, permissionStatus }` | `{ installationId, registered: boolean }`                    |
-| `DELETE /devices/:installationId` | Thiết bị thuộc tài khoản hiện tại           | `204`, gỡ đăng ký push                                       |
+Các route inbox dùng Bearer access token và lấy chủ sở hữu từ session. `GET /inbox/:itemId` chỉ đọc, không tự đổi trạng thái. API hiện dùng `404 INBOX_ITEM_NOT_FOUND` cho item không tồn tại, đã xóa hoặc không thuộc người gọi.
 
-Response và `List<T>` theo [mẫu của TranTH](member-a-spec.md). Mã lỗi đề xuất: `400 VALIDATION_ERROR`, `401 UNAUTHORIZED`, `403 FORBIDDEN`, `404 NOT_FOUND`.
-URL/transport realtime chốt riêng; kết nối phải xác thực và chỉ phát dữ liệu của chính tài khoản.
+| Method và route | Đầu vào | Kết quả |
+| --- | --- | --- |
+| `GET /inbox?page=1&limit=20&read=true\|false` | Bộ lọc đọc tùy chọn | Trang inbox, mới nhất trước |
+| `GET /inbox/unread-count` | — | `{ unreadCount }` |
+| `GET /inbox/:itemId` | ID inbox | `InboxItem`, không tự đánh dấu đã đọc |
+| `PATCH /inbox/:itemId` | `{ "read": boolean }` | `InboxItem` đã cập nhật |
+| `POST /inbox/read-all` | — | `{ updatedCount }` |
+| `DELETE /inbox/:itemId` | ID inbox | `204`, soft-delete item của caller |
+| `PUT /devices/:installationId` | `{ platform, pushToken, permissionStatus }` | `{ installationId, registered }` |
+| `DELETE /devices/:installationId` | ID cài đặt của caller | `204` |
 
-## 3. Trường dữ liệu và biến cần có
+`InboxItem` trả về `id`, `notificationId`, `occurrenceId`, `sender`, `title`, `body`, `scheduledFor`, `deliveredAt` và `readAt`. Inbox delete không hủy notification/lịch nguồn và retry không tạo lại item đã lưu. Mỗi `(occurrenceId, recipientId)` chỉ tạo một item.
 
-`?` = tùy chọn; ID là chuỗi; thời gian dùng ISO 8601 UTC. Đối chiếu entity/migration hiện có trước khi bổ sung.
+DTO nằm ở `packages/types`, boundary schemas ở `packages/validation`, HTTP transport ở `packages/api-client`. Device registration gắn installation với tài khoản và session đã xác thực; logout gỡ registration trước khi thu hồi session. Worker kiểm tra lại chủ sở hữu, session và token trước khi gửi.
 
-| Đối tượng               | Trường đề xuất                                                                                                                                                                                |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `InboxItem`             | `id` (= `itemId`), `occurrenceId`, `notificationId`, `senderId`, `recipientId`, `title`, `body`, `createdAt`, `readAt: string\|null`; `deletedAt` nội bộ                                      |
-| Device registration     | `installationId`, `userId`/`sessionId` từ server, `platform: android\|ios`, `pushToken: string\|null`, `permissionStatus`, `updatedAt`; enum permission thống nhất với adapter native đã chọn |
-| Công việc push bền vững | `id`, `itemId`, `installationId`, `status: pending\|accepted\|failed\|skipped`, `attemptCount`, `retryAt?`, `providerMessageId?`, `lastError?`                                                |
-| Realtime event          | `eventId`, `kind: created\|updated\|deleted\|resync`, `itemId?`; client tải lại dữ liệu cần thiết từ API                                                                                      |
-| Push data               | `{ itemId, occurrenceId }`; dùng để đồng bộ/điều hướng, không thay kiểm tra quyền                                                                                                             |
-| State UI                | `items`, `unreadCount`, `page`, `hasMore`, `loading`, `refreshing`, `error`, `pendingTapItemId`, `permissionStatus`                                                                           |
+## Xử lý bền vững và trạng thái
 
-`accepted` = provider chấp nhận push, không chứng minh OS đã hiển thị. `readAt` do thao tác đọc quyết định, không suy ra từ gửi/nhận push.
+`NotificationDeliveryService.persistDelivery` ghi inbox item cùng event outbox trong transaction. Sau commit, `InboxDeliveryWorker` xử lý outbox, tạo push job và phát `pg_notify`; WebSocket gateway chỉ gửi event ID, kind và item ID đến các socket thuộc đúng user/session. Client tải lại dữ liệu từ API. Realtime mất kết nối được nối lại; khi nối lại hoặc khi app resume, client đồng bộ inbox và số chưa đọc từ backend.
 
-## 4. Quy tắc bắt buộc
+Push job lưu riêng trạng thái provider: `pending`, `accepted`, `failed` hoặc `skipped`. `accepted` chỉ có nghĩa Expo chấp nhận ticket, không khẳng định OS đã hiển thị. Receipt được kiểm tra sau khoảng 15 phút; receipt còn thiếu được đánh dấu hết hạn sau 24 giờ. `DeviceNotRegistered` vô hiệu hóa token đã dùng. Lỗi push, quyền bị từ chối hoặc không có thiết bị không làm mất inbox item.
 
-- Chỉ tài khoản sở hữu được đọc/sửa/xóa inbox; mục xóa không còn trong danh sách/số chưa đọc. Xóa inbox không hủy lịch của VanLT và không được tạo lại khi retry.
-- Export provider nội bộ `persistDelivery({ occurrenceId, notificationId, senderId, recipientId, title, body })` → `{ itemId }`, giống [spec VanLT](member-b-spec.md). Một `(occurrenceId, recipientId)` chỉ tạo một inbox item.
-- Lưu inbox và công việc phát tín hiệu bền vững trong cùng transaction trước khi trả `itemId`; phát realtime/push sau commit. Lỗi push hoặc không có thiết bị không làm mất inbox.
-- Đăng ký token cho tài khoản hiện tại; xử lý token rotation, token hết hiệu lực, logout/đổi tài khoản và job đang chờ. Kiểm tra lại chủ sở hữu token trước khi gửi, không gửi sang tài khoản mới trên cùng thiết bị.
-- Khi mở lại/reconnect, lấy dữ liệu và số chưa đọc từ backend; gộp theo `itemId`, không tăng đếm hai lần vì realtime/push. Đọc/xóa cập nhật lại số đếm theo server.
-- Tap giữ `itemId` qua bước khôi phục/đăng nhập, rồi tải nội dung có kiểm tra quyền. Payload push không được tự cấp quyền hoặc mở URL tùy ý.
-- Kiểm thử ba trạng thái bình thường: mở, nền/khóa màn hình, đóng. Quyền bị từ chối, mất mạng, giới hạn OS hoặc Force stop có thể ngăn hiển thị push; inbox vẫn phải lưu bền vững.
+Worker chạy trong backend, poll PostgreSQL mỗi giây và claim tối đa 50 event/job mỗi lượt bằng row lock/lease. `NOTIFICATION_WORKER_ENABLED=false` tắt worker; mặc định bật ngoài môi trường test. `EXPO_ACCESS_TOKEN` là tùy chọn để xác thực request tới Expo Push Service. Mobile cần `EXPO_PUBLIC_EAS_PROJECT_ID` cùng APNs/FCM credentials phù hợp trong EAS để cấp Expo push token.
 
-## 5. Bàn giao và nghiệm thu
+## Files và migration
 
-- KhangDL sở hữu inbox/read state, provider `persistDelivery`, realtime, device registration và push. VanLT sở hữu tạo thông báo/lịch/occurrence; TranTH sở hữu auth/session. KhangDL phối hợp hook logout/đổi tài khoản với TranTH, không viết lại auth.
-- DTO ở `packages/types`, schema ở `packages/validation`, transport ở `packages/api-client`; giữ feature notifications hiện có. KhangDL sở hữu migration inbox/device/push, VanLT sở hữu command/occurrence; phối hợp file chung trước khi sửa.
-- Thứ tự: inbox + provider cho VanLT → đọc/xóa/phân trang → realtime/resume → push/token/tap. Không coi chỉ realtime là hoàn thành MVP.
-- Nghiệm thu với API thật và push thật trên Android/iOS ở cả ba trạng thái; test truy cập chéo tài khoản, retry VanLT/KhangDL, token đổi chủ, tín hiệu trùng, permission denied, push failure, cold/warm tap và mục đã xóa. Lint/typecheck/test phần thay đổi phải pass.
-- Leader xác nhận hoặc dẫn nguồn trước triển khai: provider native push, transport realtime, giới hạn phân trang, retry và cách hiển thị khi app mở. Chỉ chọn dependency sau khi kiểm tra manifest và phương án tích hợp thực tế.
+- Realtime gateway, push adapter và worker thuộc `apps/api/src/social/`.
+- Inbox/device/push contracts và validation ở `packages/types`, `packages/validation`, `packages/api-client`.
+- Runtime đăng ký token, WebSocket, resume và tap nằm ở `apps/mobile/src/notifications/`; màn hình thuộc feature notifications.
+- `1791600000000-AddInboxRealtimePush` mở rộng outbox và thêm device registration/push job tables. Chạy migration rõ ràng bằng `pnpm --filter @nexa/api db:migration:run`.
+
+## Nghiệm thu
+
+Code lint/typecheck/test phải pass cho API, mobile và các package phụ thuộc. Kiểm tra API cần xác nhận quyền sở hữu chéo, chuyển installation giữa tài khoản, duplicate event/delivery, retry/receipt failure và item đã xóa. Trên thiết bị thật Android và iOS, kiểm tra app mở, background/khóa màn hình, terminated, permission denied, mất mạng, token rotation, warm/cold tap và đăng nhập lại.
+
+Các credential EAS/APNs/FCM, API production, và thiết bị thật là cấu hình môi trường triển khai. Chưa coi push OS hiển thị hay hành vi lifecycle trên thiết bị là đã xác minh chỉ từ typecheck hoặc test backend. Quyền bị từ chối, mất mạng, giới hạn OS hoặc Force stop có thể ngăn OS hiển thị push; inbox vẫn được lưu bền vững trên backend.

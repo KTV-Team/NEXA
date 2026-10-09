@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Put, Query, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from '../auth/auth.guard';
 import { CurrentAuth } from '../auth/current-auth.decorator';
 import type { AuthIdentity } from '../auth/auth-request';
 import { ZodValidationPipe } from '../auth/zod-validation.pipe';
-import { cancelNotificationSchema, createNotificationSchema, friendRequestQuerySchema, idParamSchema, inboxQuerySchema, itemIdParamSchema, readInboxSchema, requestIdParamSchema, sendFriendRequestSchema, updateNotificationSchema } from '@nexa/validation';
-import type { CancelNotificationDto, CreateNotificationDto, SendFriendRequestDto, SetInboxReadDto, UpdateNotificationDto } from '@nexa/types';
+import { cancelNotificationSchema, createNotificationSchema, deviceRegistrationSchema, friendRequestQuerySchema, idParamSchema, inboxQuerySchema, installationIdParamSchema, itemIdParamSchema, readInboxSchema, requestIdParamSchema, sendFriendRequestSchema, updateNotificationSchema } from '@nexa/validation';
+import type { CancelNotificationDto, CreateNotificationDto, DeviceRegistrationDto, SendFriendRequestDto, SetInboxReadDto, UpdateNotificationDto } from '@nexa/types';
 import { SocialService } from './social.service';
 import { NoStoreInterceptor } from '../common/interceptors/no-store.interceptor';
 
@@ -55,4 +55,13 @@ export class SocialController {
   readAll(@CurrentAuth() auth: AuthIdentity) { return this.service.readAll(auth.userId); }
   @Delete('inbox/:itemId') @HttpCode(204) @Throttle({ default: { limit: 120, ttl: 60_000 } })
   deleteInbox(@CurrentAuth() auth: AuthIdentity, @Param(new ZodValidationPipe(itemIdParamSchema)) params: { itemId: string }) { return this.service.deleteInbox(auth.userId, params.itemId); }
+
+  @Put('devices/:installationId') @Throttle({ default: { limit: 30, ttl: 60_000 } })
+  registerDevice(@CurrentAuth() auth: AuthIdentity, @Param(new ZodValidationPipe(installationIdParamSchema)) params: { installationId: string }, @Body(new ZodValidationPipe(deviceRegistrationSchema)) dto: DeviceRegistrationDto) {
+    return this.service.registerDevice(auth.userId, auth.sessionId, params.installationId, dto);
+  }
+  @Delete('devices/:installationId') @HttpCode(204) @Throttle({ default: { limit: 30, ttl: 60_000 } })
+  deleteDevice(@CurrentAuth() auth: AuthIdentity, @Param(new ZodValidationPipe(installationIdParamSchema)) params: { installationId: string }) {
+    return this.service.deleteDevice(auth.userId, params.installationId);
+  }
 }
