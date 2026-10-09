@@ -60,13 +60,17 @@ describe('profile, friends, notifications and inbox API', () => {
     const limited=await request('PATCH','/users/me',{name:'Alice Social'},alice.token);
     expect(limited.status).toBe(429);expect(limited.error?.code).toBe('RATE_LIMITED');
     const search = await request('GET', `/users?q=${encodeURIComponent('100%_User')}`, undefined, alice.token);
-    expect(search.data.data).toEqual([expect.objectContaining({ id: bob.id, name: 'Bob 100%_User' })]);
+    expect(search.data.data).toEqual([expect.objectContaining({ id: bob.id, name: 'Bob 100%_User', relationship: 'none' })]);
     expect(search.data.data[0]).not.toHaveProperty('email');
     const exactEmail=await request('GET',`/users?q=${encodeURIComponent(emails[1]!)}`,undefined,alice.token);
     expect(exactEmail.data.data).toEqual([expect.objectContaining({id:bob.id})]);
 
     const sent = await request('POST', '/friend-requests', { recipientId: bob.id }, alice.token);
     expect(sent.status).toBe(201);
+    const outgoing = await request('GET', `/users?q=${encodeURIComponent(emails[1]!)}`, undefined, alice.token);
+    expect(outgoing.data.data[0]).toMatchObject({ relationship: 'outgoing', requestId: sent.data.id });
+    const incoming = await request('GET', `/users?q=${encodeURIComponent(emails[0]!)}`, undefined, bob.token);
+    expect(incoming.data.data[0]).toMatchObject({ relationship: 'incoming', requestId: sent.data.id });
     const duplicate = await request('POST', '/friend-requests', { recipientId: bob.id }, alice.token);
     expect(duplicate.status).toBe(200); expect(duplicate.data.id).toBe(sent.data.id);
     const crossed = await request('POST', '/friend-requests', { recipientId: alice.id }, bob.token);
@@ -82,6 +86,9 @@ describe('profile, friends, notifications and inbox API', () => {
     expect(acceptedResults[1]!.data.id).toBe(accepted.data.id);
     const friendship = accepted.data as Friendship;
     expect(friendship.friend.id).toBe(alice.id);
+    const acceptedSearch = await request('GET', `/users?q=${encodeURIComponent(emails[1]!)}`, undefined, alice.token);
+    expect(acceptedSearch.data.data[0]).toMatchObject({ relationship: 'friend' });
+    expect(acceptedSearch.data.data[0]).not.toHaveProperty('requestId');
 
     const createDto = { clientRequestId: randomUUID(), recipientId: bob.id, title: 'Hello', body: 'From the inbox integration test', delivery: { mode: 'immediate' } };
     const created = await request('POST', '/notifications', createDto, alice.token);

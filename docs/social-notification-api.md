@@ -6,7 +6,7 @@ All routes use `/api/v1`, require `Authorization: Bearer <accessToken>`, and ret
 
 `PATCH /users/me` accepts `{ name?, avatarUrl? }`; include at least one field. Names are trimmed to 2–100 characters. Avatar URLs must use HTTPS and may be set to `null` to remove the avatar. The response is the existing `User` representation for the signed-in account.
 
-`GET /users?q=<query>&page=1&limit=20` searches active accounts and excludes the caller. A valid email query matches the normalized email exactly; other queries search a case-insensitive substring of the name. Results contain only `{ id, name, avatarUrl? }`; email and role are never returned. `%`, `_`, and the escape character are treated literally. `GET /users/:id` remains unimplemented.
+`GET /users?q=<query>&page=1&limit=20` searches active accounts and excludes the caller. A valid email query matches the normalized email exactly; other queries search a case-insensitive substring of the name. Results contain `{ id, name, avatarUrl?, relationship, requestId? }`; `relationship` is `none`, `incoming`, `outgoing`, or `friend` relative to the caller, and `requestId` identifies a pending request. Email and role are never returned. `%`, `_`, and the escape character are treated literally. `GET /users/:id` remains unimplemented.
 
 ## Friend requests and friendships
 

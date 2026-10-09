@@ -25,7 +25,7 @@ function RootNavigator() {
           <Stack.Screen name="login" />
           <Stack.Screen name="register" options={{ gestureEnabled: false }} />
         </Stack.Protected>
-        <Stack.Protected guard={!!session || __DEV__}>
+        <Stack.Protected guard={!!session}>
           <Stack.Screen name="index" />
           <Stack.Screen name="create-notification" />
         </Stack.Protected>

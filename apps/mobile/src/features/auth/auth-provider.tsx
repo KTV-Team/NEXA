@@ -25,6 +25,7 @@ interface AuthContextValue {
   updateProfile(values: UpdateUserDto): Promise<void>;
   clearExpiredSession(): Promise<void>;
   getAccessToken(): Promise<string | null>;
+  refreshProfile(): Promise<void>;
   logout(): Promise<void>;
 }
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -40,6 +41,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setSession(null);
     }
   }, []);
+  const refreshProfile = useCallback(async () => {
+    setSession(await service.refreshProfile());
+  }, []);
   const retryRestore = useCallback(async () => {
     setLoading(true);
     setRestorationError(null);
@@ -52,6 +56,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, []);
   useEffect(() => {
+    service.setSessionEndedListener((error) => {
+      setSession(null);
+      if (error) setRestorationError(authErrorMessage(error));
+    });
     let active = true;
     void service
       .restore()
@@ -66,6 +74,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       });
     return () => {
       active = false;
+      service.setSessionEndedListener(null);
     };
   }, []);
 
@@ -90,6 +99,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
         },
         clearExpiredSession,
         getAccessToken: () => service.getAccessToken(),
+        refreshProfile,
         logout: async () => {
           try {
             try {

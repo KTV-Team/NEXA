@@ -2,7 +2,7 @@
 
 Expo + React Native + TypeScript trong workspace pnpm/Turborepo. Trạng thái triển khai bên dưới được kiểm chứng từ mã nguồn mobile/API, không suy ra từ mẫu giao diện.
 
-Sản phẩm hiện được xác nhận là ứng dụng **thông báo cá nhân và quản lý bạn bè cho Android/iOS**, dùng chung backend. Xem [chức năng và màn hình MVP](../../docs/app-functions-and-screens.md). Bạn bè, gửi ngay/hẹn giờ/lặp lại, inbox, realtime và native push là yêu cầu chưa triển khai. Thông báo phải hỗ trợ cả đang mở, chạy nền/khóa màn hình và đã đóng app trên Android/iOS. Nguồn yêu cầu duy nhất là task brief người dùng cung cấp đầu cuộc chat và các xác nhận bổ sung. HTML chỉ dùng chốt UI/UX; không quy định mục đích app, tính năng hay nghiệp vụ.
+Sản phẩm hiện được xác nhận là ứng dụng **thông báo cá nhân và quản lý bạn bè cho Android/iOS**, dùng chung backend. Xem [chức năng và màn hình MVP](../../docs/app-functions-and-screens.md). Mobile đã nối auth, hồ sơ và kết bạn với backend; màn thông báo/inbox vẫn là giao diện mẫu. Realtime và native push chưa tích hợp. Thông báo phải hỗ trợ cả đang mở, chạy nền/khóa màn hình và đã đóng app trên Android/iOS. Nguồn yêu cầu duy nhất là task brief người dùng cung cấp đầu cuộc chat và các xác nhận bổ sung. HTML chỉ dùng chốt UI/UX; không quy định mục đích app, tính năng hay nghiệp vụ.
 
 ## Phạm vi hiện tại
 
@@ -10,12 +10,12 @@ Sản phẩm hiện được xác nhận là ứng dụng **thông báo cá nhâ
 - Điều hướng đăng nhập/đăng ký, safe area, cuộn và xử lý bàn phím trong mã native hiện có.
 - Loading, khóa gửi form khi pending và ánh xạ lỗi kết nối/timeout, thông tin không hợp lệ, email trùng, HTTP 429 từ dịch vụ. Đây không phải bằng chứng backend đã chống trùng hoặc giới hạn thử lại.
 - Session provider, kiểm tra phiên khi mở app, refresh token trước request khi sắp hết hạn, route bảo vệ và đăng xuất.
+- Hồ sơ tải lại từ API khi mở, sửa tên/URL ảnh HTTPS và xóa avatar; tìm theo tên hoặc email chính xác, xem trạng thái quan hệ, gửi lời mời, chấp nhận/từ chối/hủy lời mời, xem/hủy bạn bè. Danh sách có tải thêm, trạng thái rỗng và thử lại khi lỗi.
+- Nút Google chỉ báo chức năng đang phát triển; chưa có Google sign-in.
 - Native dùng Expo SecureStore; không lưu mật khẩu. Bỏ chọn duy trì đăng nhập chỉ giữ phiên trong bộ nhớ. Web preview dùng `sessionStorage` trong tab hiện tại.
 - Noto Sans 400/500/600 đóng gói trong app, dùng được offline, theo fallback của DESIGN.md.
 
-**Backend xác thực hiện vẫn là stub.** Chưa có đăng ký thật, kiểm tra mật khẩu/token hay quyền sở hữu; response chưa đúng hợp đồng shared API client. App sẽ báo lỗi khi dịch vụ chưa sẵn sàng hoặc trả sai hợp đồng. Không có tài khoản mẫu hay chế độ đăng nhập giả trong mobile; API có dữ liệu người dùng mẫu trong bộ nhớ.
-
-Trang `/` chỉ hiển thị tài khoản/đăng xuất sau phản hồi API hợp lệ, chưa phải inbox hay trang quản lý bạn bè. Luồng xác thực chưa hoàn tất đầu cuối cho đến khi backend thật được nối vào.
+Backend auth, hồ sơ và quan hệ bạn bè hiện dùng PostgreSQL. Cần khởi động cơ sở dữ liệu và chạy migration trước khi thử trên thiết bị. Trang `/` vẫn là inbox UI scaffold, chưa nối API thông báo.
 
 ## Yêu cầu thông báo trong cả ba trạng thái — chưa triển khai
 
@@ -41,11 +41,11 @@ pnpm --filter @nexa/mobile android
 pnpm --filter @nexa/mobile ios
 ```
 
-Expo Go cần phiên bản hỗ trợ SDK của dự án. Khi thêm native module hoặc đổi config plugin, rebuild development/native app tương ứng.
+Expo Go cần phiên bản hỗ trợ SDK của dự án. Khi thêm native module hoặc đổi config plugin, rebuild development/native app tương ứng. Xem [hướng dẫn backend và PostgreSQL](../../README.md#local-development) trước khi chạy app.
 
 ## Địa chỉ API
 
-Sao chép `apps/mobile/.env.example` thành `apps/mobile/.env` và đặt `EXPO_PUBLIC_API_URL`. Ví dụ dùng localhost: cần đổi trước khi chạy Android emulator/điện thoại thật. Biến `EXPO_PUBLIC_*` được đóng gói vào client: chỉ chứa URL công khai, không chứa secret. API chưa tự nạp `.env`; override `PORT`/`CORS_ORIGIN` qua environment của process như [README gốc](../../README.md).
+Sao chép `apps/mobile/.env.example` thành `apps/mobile/.env` và đặt `EXPO_PUBLIC_API_URL`. Ví dụ dùng localhost: cần đổi trước khi chạy Android emulator/điện thoại thật. Biến `EXPO_PUBLIC_*` được đóng gói vào client: chỉ chứa URL công khai, không chứa secret. API nạp `apps/api/.env` ở chế độ development; xem [README gốc](../../README.md).
 
 | Môi trường          | API URL                                        |
 | ------------------- | ---------------------------------------------- |
@@ -86,6 +86,6 @@ pnpm --filter @nexa/mobile build
 pnpm --filter @nexa/mobile exec expo install --check
 ```
 
-`build` export bundle Android, iOS và browser preview vào `dist` theo config hiện có; output browser không mở rộng MVP sang web. Đây không phải APK/IPA đã ký. `eas.json` có profile `preview` (Android APK, iOS simulator) và `production`. Native/cloud build cần tài khoản EAS, API và signing phù hợp; audit tài liệu này không chạy build hay xác nhận release.
+`build` export bundle Android, iOS và browser preview vào `dist` theo config hiện có; output browser không mở rộng MVP sang web. Đây không phải APK/IPA đã ký. `eas.json` có profile `preview` (Android APK, iOS simulator) và `production`. Native/cloud build cần tài khoản EAS, API và signing phù hợp. Bundle Android/iOS export thành công; chưa kiểm thử runtime trên thiết bị.
 
-Hành vi client được kiểm tra trong [auth service tests](tests/features/auth/auth-service.test.ts) và [registration schema tests](tests/features/auth/screens/register/register-form-schema.test.ts); API stub hiện tại nằm trong [auth controller](../api/src/auth/auth.controller.ts).
+Hành vi client được kiểm tra trong [auth service tests](tests/features/auth/auth-service.test.ts) và [registration schema tests](tests/features/auth/screens/register/register-form-schema.test.ts); backend xác thực nằm trong [auth controller](../api/src/auth/auth.controller.ts).

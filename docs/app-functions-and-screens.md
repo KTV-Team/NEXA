@@ -1,6 +1,6 @@
 # Chức năng và màn hình NEXA
 
-Phạm vi MVP cho ứng dụng Android/iOS dùng chung backend, dựa trên task brief và các xác nhận của người dùng. Tài liệu này phân biệt yêu cầu sản phẩm với trạng thái source. Backend đã có auth, cập nhật/tìm hồ sơ, friend request/friendship, personal notification, inbox persistence và worker lịch gửi. Mobile UI, realtime inbox và native push chưa được tích hợp; API delivery hiện kết thúc tại commit inbox. Contract backend ở [social-notification-api.md](social-notification-api.md).
+Phạm vi MVP cho ứng dụng Android/iOS dùng chung backend, dựa trên task brief và các xác nhận của người dùng. Tài liệu này phân biệt yêu cầu sản phẩm với trạng thái source. Backend đã có auth, cập nhật/tìm hồ sơ, friend request/friendship, personal notification, inbox persistence và worker lịch gửi. Mobile đã nối auth, hồ sơ và bạn bè với API; mobile notification/inbox UI, realtime inbox và native push chưa được tích hợp. API delivery hiện kết thúc tại commit inbox. Contract backend ở [social-notification-api.md](social-notification-api.md).
 
 ## Chức năng chính
 

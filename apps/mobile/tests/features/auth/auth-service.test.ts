@@ -175,6 +175,15 @@ describe('session lifecycle', () => {
     const restored = await new AuthService('https://api.example', storage).restore();
     expect(restored?.expiresAt).toBe(expiresAt);
   });
+  it('shares an in-flight restore across concurrent callers', async () => {
+    const storage = store(JSON.stringify({ ...response, expiresAt: Date.now() + 120000 }));
+    const fetcher = vi.fn(async () => json(user));
+    vi.stubGlobal('fetch', fetcher);
+    const service = new AuthService('https://api.example', storage);
+    const [first, second] = await Promise.all([service.restore(), service.restore()]);
+    expect(first).toEqual(second);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
   it('rotates an expired token before accessing the profile and persists the new token', async () => {
     const storage = store(JSON.stringify({ ...response, expiresAt: Date.now() - 1 }));
     const newTokens = { ...tokens, accessToken: 'rotated-access', refreshToken: 'rotated-refresh' };
@@ -232,5 +241,61 @@ describe('session lifecycle', () => {
         body: JSON.stringify({ refreshToken: tokens.refreshToken }),
       }),
     );
+  });
+  it('does not restore a logged-out session when a refresh response arrives late', async () => {
+    const storage = store();
+    let resolveRefresh: (response: Response) => void = () => { throw new Error('Refresh did not start'); };
+    let markRefreshStarted: () => void = () => undefined;
+    const refreshStarted = new Promise<void>((resolve) => { markRefreshStarted = resolve; });
+    const fetcher = vi.fn(async (url: string) => {
+      if (url.endsWith('/auth/login')) return json({ user, tokens: { ...tokens, expiresIn: 1 } });
+      if (url.endsWith('/auth/refresh')) {
+        markRefreshStarted();
+        return new Promise<Response>((resolve) => { resolveRefresh = resolve; });
+      }
+      if (url.endsWith('/auth/logout')) return new Response(null, { status: 204 });
+      throw new Error('Profile request must not run after logout');
+    });
+    vi.stubGlobal('fetch', fetcher);
+    const service = new AuthService('https://api.example', storage);
+    await service.login(credentials, true);
+    const profile = service.api.users.me();
+    const rejected = expect(profile).rejects.toMatchObject({ code: 'SESSION_EXPIRED' });
+    await refreshStarted;
+    await service.logout();
+    resolveRefresh(json({ ...tokens, accessToken: 'late-access', refreshToken: 'late-refresh' }));
+    await rejected;
+    expect(await storage.read()).toBeNull();
+    expect(fetcher).toHaveBeenCalledTimes(3);
+  });
+  it('ignores an unauthorized response from an account used before logout', async () => {
+    const storage = store();
+    let rejectOldRequest: (response: Response) => void = () => { throw new Error('Request did not start'); };
+    let markStarted: () => void = () => undefined;
+    const requestStarted = new Promise<void>((resolve) => { markStarted = resolve; });
+    let logins = 0;
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => {
+      if (url.endsWith('/auth/login')) {
+        ++logins;
+        return json({ user: { ...user, id: `user-${logins}` }, tokens: { ...tokens, accessToken: `access-${logins}` } });
+      }
+      if (url.endsWith('/auth/logout')) return new Response(null, { status: 204 });
+      if (url.endsWith('/users/me') && logins === 1) {
+        markStarted();
+        return new Promise<Response>((resolve) => { rejectOldRequest = resolve; });
+      }
+      return json({ ...user, id: 'user-2' });
+    }));
+    const service = new AuthService('https://api.example', storage);
+    await service.login(credentials, true);
+    const oldRequest = service.api.users.me();
+    const rejection = expect(oldRequest).rejects.toMatchObject({ statusCode: 401 });
+    await requestStarted;
+    await service.logout();
+    await service.login(credentials, true);
+    rejectOldRequest(new Response(JSON.stringify({ success: false, error: { code: 'UNAUTHORIZED', message: 'Expired' } }), { status: 401 }));
+    await rejection;
+    expect((await service.api.users.me()).id).toBe('user-2');
+    expect(await storage.read()).toContain('access-2');
   });
 });

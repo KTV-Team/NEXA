@@ -4,13 +4,13 @@
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
-    "dev": "expo start",
-    "build": "expo export",
+    "dev": "pnpm --filter @nexa/validation build && expo start",
+    "build": "pnpm --filter @nexa/validation build && expo export",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
+    "test": "pnpm --filter @nexa/validation build && vitest run",
+    "android": "pnpm --filter @nexa/validation build && expo run:android",
+    "ios": "pnpm --filter @nexa/validation build && expo run:ios",
     "clean": "rm -rf dist .expo"
   },
   "dependencies": {
